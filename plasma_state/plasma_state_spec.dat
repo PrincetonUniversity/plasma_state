@@ -10,6 +10,7 @@
 #  Version 1 (swim_state_spec.dat) D. McCune 9-2006 -- 8-2007
 #  Version 2 (plasma_state_spec.dat) D. McCune 11-2007 --
 #            Review and update of comments: D. McCune 6-2008
+#  Version 3 Moved out of the TRANSP repository and into its own 5-2023
 #
 #  THIS FILE IS INPUT TO A PYTHON CODE GENERATOR...
 #
@@ -192,9 +193,10 @@
 #                                 phigrilh removed => not needed because of assumption of toroidal symmetry
 #                                 heghilh, thegrilh, rhopsi0lh, nthinlh have been resized to depend only on the antenna index.
 #                                 These geometrical parameters should have the same value for all lobes in teh spectrum.
-#                                 The current definition was causing confusion in several users who are not RF experts.  
+#                                 The current definition was causing confusion in several users who are not RF experts.
+#    3.000 -- 2023/05/22 (jss) -- Moved into its own respository.
 #
-Version_ID:  2.056
+Version_ID:  3.000
 
 #---------------
 #  glossary:

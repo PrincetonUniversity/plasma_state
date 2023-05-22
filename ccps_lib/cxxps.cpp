@@ -1,6 +1,6 @@
 
 // written by plasma_cwrite.py
-// input: plasma_state_spec.dat   version 2.056
+// input: plasma_state_spec.dat   version 3.000
 //  *** do not edit *** (use code generator instead)
 
 // std includes

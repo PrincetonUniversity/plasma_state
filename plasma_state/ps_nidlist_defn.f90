@@ -1,6 +1,6 @@
 
 ! written by plasma_state_gen.py
-!   input: plasma_state_spec.dat, version id: 2.056
+!   input: plasma_state_spec.dat, version id: 3.000
 ! *** do not edit *** (use code generator instead)
 
 MODULE ps_nidlist_defn

@@ -1,5 +1,5 @@
 ! written by plasma_state_gen.py
-!   input: plasma_state_spec.dat, version id: 2.056
+!   input: plasma_state_spec.dat, version id: 3.000
 ! *** do not edit *** (use code generator instead)
 
 
@@ -19,7 +19,7 @@ MODULE plasma_state_constants_mod
   !
   !--------------------------------------------
 
-  CHARACTER*32, PARAMETER, PUBLIC :: ps_version_id = "2.056"
+  CHARACTER*32, PARAMETER, PUBLIC :: ps_version_id = "3.000"
 
 
   !---------------------------------------
