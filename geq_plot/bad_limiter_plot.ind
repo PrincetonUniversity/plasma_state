@@ -1,0 +1,14 @@
+;
+; geq_plot @bad_limiter_plot
+;
+; date: 08Oct2010 username: dmccune
+;GEQ path, or "q" or "Q" to quit:$
+bad_limiter.geq
+;GEQ data viewing option:$
+b
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+q
+;GEQ data viewing option:$
+q
+;GEQ path, or "q" or "Q" to quit:$
+q

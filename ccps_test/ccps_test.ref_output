@@ -1,0 +1,18 @@
+  ps_init_tag: Plasma State v2.026 f90 module initialization.
+  %ps_merge_species_lists: impurities in "sa" abridged thermal species list:
+     C Fe
+loop voltage at center: 2
+loop voltage at edge  : 2
+-- building plasma state equilibrium from g file -- 
+  %ps_update_fromxplasma: allocating nr,nz  = 129 ,129
+  %ps_update_fromxplasma: allocating nlim   = 49
+nrho_eq = 51
+nrho_eq_geo = 0
+  %ps_mhdeq_nclass: allocating 16 Pfirsch-Schlutter moments profiles.
+plasma_state_test: locked machine description (mdescr).
+plasma_state_test: locked shot configuration (sconfig).
+  %ps_mdescr_namelist_check:
+   machine description namelist checks: not implemented.
+  %ps_merge_species_lists: impurities in "sa" abridged thermal species list:
+     C Fe
+  %ps_rezone_chk: no rezone operator available (no MHD equilibrium).

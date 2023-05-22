@@ -1,0 +1,3 @@
+$(OBJDIR)/mdescr_data.o : mdescr_data.f90 
+$(OBJDIR)/mdescr_read.o : mdescr_read.f90 $(OBJDIR)/mdescr_data.o 
+$(OBJDIR)/mdescr_init.o : mdescr_init.f90 $(OBJDIR)/mdescr_data.o 

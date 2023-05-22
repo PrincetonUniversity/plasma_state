@@ -1,0 +1,10 @@
+$(OBJDIR)/ps_filter.o : ps_filter.f90 
+$(OBJDIR)/ps_qksmooth.o : ps_qksmooth.f90 
+$(OBJDIR)/ps_ierfcn.o : ps_ierfcn.f90 
+$(OBJDIR)/ps_wxfint.o : ps_wxfint.f90 
+$(OBJDIR)/ps_filtr6.o : ps_filtr6.f90 
+$(OBJDIR)/ps_filfn6.o : ps_filfn6.f90 
+$(OBJDIR)/ps_ddrop.o : ps_ddrop.f90 
+$(OBJDIR)/ps_fileps.o : ps_fileps.f90 
+$(OBJDIR)/ps_wxcint.o : ps_wxcint.f90 
+$(OBJDIR)/ps_filers.o : ps_filers.f90 

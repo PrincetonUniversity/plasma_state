@@ -1,0 +1,7 @@
+$(OBJDIR)/xpl_dbg_module.o : xpl_dbg_module.f90 
+$(OBJDIR)/xplasma_debug_module.o : xplasma_debug_module.f90 $(OBJDIR)/xpl_dbg_module.o 
+$(OBJDIR)/xplasma_debug_link.o : xplasma_debug_link.f90 
+$(OBJDIR)/xplasma_debug.o : xplasma_debug.f90 $(OBJDIR)/xplasma_debug_module.o 
+$(OBJDIR)/xplasma_debug_r4momry.o : xplasma_debug_r4momry.f90 $(OBJDIR)/xpl_dbg_module.o 
+$(OBJDIR)/xpmom_debug.o : xpmom_debug.f90 $(OBJDIR)/xpl_dbg_module.o 
+$(OBJDIR)/eqdbg_plot.o : eqdbg_plot.f90 $(OBJDIR)/xplasma_debug_link.o 

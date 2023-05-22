@@ -1,0 +1,166 @@
+export BUILD=${TRANSPHOME}/builds/${git_branch}
+export LOCAL=${BUILD}/icc/21
+
+export FORTRAN_VARIANT=Intel
+export INTEL_CXXLIB_ICC=1
+export GCC_VERSION=485
+
+export MAKE_SO=TRUE
+
+module load intel/2021.1.2
+export F90HOME=/opt/intel/oneapi/compiler/2021.1.2/linux/compiler
+export FLIBROOT=/opt/intel/oneapi/compiler/2021.1.2/linux/compiler/lib/intel64
+
+#module load intel-mkl/11.3.4/4/64
+export BLASHOME=$MKLROOT/lib/intel64
+export LAPACKHOME=$BLASHOME
+
+# Open MPI
+module load openmpi/intel-2021.1/4.1.0
+export MPI_FC_CMD_EXT=mpif90
+export INCLUDE_PATH=$(which mpiexec | sed 's/bin\/mpiexec.*/include/'):$INCLUDE_PATH
+export C_INCLUDE_PATH=$(which mpiexec | sed 's/bin\/mpiexec.*/include/'):$C_INCLUDE_PATH
+export CPLUS_INCLUDE_PATH=$(which mpiexec | sed 's/bin\/mpiexec.*/include/')
+
+export MPI_CMD=$(which mpiexec)
+export MPI_CMD="${MPI_CMD} --bind-to none"
+
+export FORTRAN_COMMAND=mpif90
+export CC_COMMAND=mpicc
+export CX_COMMAND=mpicxx
+
+# scalapack and blacs
+module load scalapack/openmpi-4.1.0/2.0.2
+export BLACSHOME=$SCALAPACK_DIR
+export SCALAPACKHOME=$SCALAPACK_DIR
+
+# HDF5
+module load hdf5/intel-2021.1/openmpi-4.1.0/1.10.6
+
+# NetCDF
+module load netcdf/intel-2021.1/hdf5-1.10.6/4.7.4
+export NETCDF_FORTRAN_HOME=/usr/local/netcdf/intel-2021.1/hdf5-1.10.6/4.7.4
+export NETCDF_C_HOME=$NETCDF_FORTRAN_HOME
+export NETCDF_DIR=$NETCDF_FORTRAN_HOME
+export NETCDF_PLN=TRUE
+
+# FFTW
+module load fftw/intel-2021.1/openmpi-4.1.0/3.3.9
+export FFTW_HOME=/usr/local/fftw/intel-2021.1/openmpi-4.1.0/3.3.9
+
+# SuperLU
+export SUPERLUHOME=/projects/TRANSP/opt/superlu/5.2.2/intel/2021
+export SUPERLU_ROOT=$SUPERLUHOME
+
+# FANN
+export FANN_ROOT=/projects/TRANSP/opt/fann/2.2.0/intel/2021
+export LD_LIBRARY_PATH=$FANN_ROOT/lib:$LD_LIBRARY_PATH
+
+# PSPLINE
+export PSPLINE_HOME=/projects/TRANSP/opt/pspline/2.0.1/intel/2021
+export LD_LIBRARY_PATH=$PSPLINE_HOME/lib:$LD_LIBRARY_PATH
+
+# EZCDF
+export EZCDF_HOME=/projects/TRANSP/opt/pspline/0.0.1/intel/2021
+export LD_LIBRARY_PATH=$EZCDF_HOME/lib:$LD_LIBRARY_PATH
+
+# TGLF
+export TGLF_ROOT=/projects/TRANSP/opt/gacode/c310244b/intel/2021
+export LD_LIBRARY_PATH=$TGLF_ROOT/lib:$LD_LIBRARY_PATH
+
+# GLF23
+export GLF23_ROOT=/projects/TRANSP/opt/gacode/c310244b/intel/2021
+export LD_LIBRARY_PATH=$GLF23_ROOT/lib:$LD_LIBRARY_PATH
+
+# NEO
+export NEO_ROOT=/projects/TRANSP/opt/gacode/transp_compatability/intel/2021
+export LD_LIBRARY_PATH=$NEO_ROOT/lib:$LD_LIBRARY_PATH
+
+# MMM
+export MMM_ROOT=/projects/TRANSP/opt/mmm/9.0.10/intel/2021
+export LD_LIBRARY_PATH=$MMM_ROOT/lib:$LD_LIBRARY_PATH
+
+# CQL3D_F90
+export CQL3D_ROOT=/projects/TRANSP/opt/cql3d_f90/1.2.0/intel/2021
+export LD_LIBRARY_PATH=$CQL3D_ROOT/lib:$LD_LIBRARY_PATH
+
+#GENRAY
+export GENRAY_ROOT=/projects/TRANSP/opt/genray/dev/intel/2021
+export LD_LIBRARY_PATH=$GENRAY_ROOT/lib:$LD_LIBRARY_PATH
+
+#TORAY_GA
+export TORAY_GA_ROOT=/projects/TRANSP/opt/toray_ga/dev/intel/2021
+export LD_LIBRARY_PATH=$TORAY_GA_ROOT/lib:$LD_LIBRARY_PATH
+
+#TORBEAM
+export TORBEAM_ROOT=/projects/TRANSP/opt/torbeam/dev/intel/2021
+export LD_LIBRARY_PATH=$TORBEAM_ROOT/lib:$LD_LIBRARY_PATH
+
+#LSCSQ
+export LSCSQ_ROOT=/projects/TRANSP/opt/lscsq/dev/intel/2021
+export LD_LIBRARY_PATH=$LSCSQ_ROOT/lib:$LD_LIBRARY_PATH
+
+#UFILES
+export UFILES_ROOT=/projects/TRANSP/opt/ufiles/0.2.7/intel/2021
+export LD_LIBRARY_PATH=$UFILES_ROOT/lib:$LD_LIBRARY_PATH
+
+export FTN_MAIN=$FLIBROOT/for_main.o
+export FTN_TRAILER="-L$FLIBROOT -lifport -lintlc -limf -lifcore -ldl -lm -lirc -lsvml"
+#GCC_PATH=$(gcc -print-file-name=libstdc++.a)
+#GCC_DIR=$(dirname $GCC_PATH)
+export CPP_TRAILER=" -L/usr/lib64 -lstdc++"
+export LOADER_TRAILER=" -L$LOCAL/other -lreadline -lhistory -ltermcap -ldl"
+
+# At this site both C and F netcdf libs are exposed in same dir.
+export L_NETCDF=" -L$NETCDF_FORTRAN_HOME/lib64 -lnetcdf -lnetcdff"
+export NETCDF_CCOPTS=" -DNO_NETCDF_2"
+
+export L_BLAS=" -L$BLASHOME -lmkl_blas95_lp64"
+export L_LAPACK=" -L$LAPACKHOME -lmkl_lapack95_lp64 -lmkl_intel_lp64 -lmkl_core -lmkl_sequential"
+
+export LMPI_BLACS=" -L$BLACSHOME/lib -lmpiblacs"
+export LMPI_SCALAPACK=" -L$SCALAPACKHOME/lib -lscalapack"
+
+export L_SUPERLU=" -L$SUPERLU_ROOT/lib64 -lsuperlu $L_BLAS"
+
+export L_NNLIB=" -L$FANN_ROOT/lib -lfann"
+export C_INCLUDE_PATH=$FANN_ROOT/include:$C_INCLUDE_PATH
+
+export L_PSPLINE=" -L$PSPLINE_HOME/lib -lpspline"
+export L_EZCDF=" -L$EZCDF_HOME/lib -lezcdf"
+
+export L_FFTW=" -L$FFTW_HOME/lib64 -lfftw3"
+export L_F2C=" -lf2c"
+
+export L_TGLF=" -L$TGLF_ROOT/lib -ltglf"
+export LMPI_TGLF=" -L$TGLF_ROOT/lib -ltglf"
+
+export L_GLF23=" -L$GLF23_ROOT/lib -lglf23"
+export LMPI_GLF23=" -L$GLF23_ROOT/lib -lglf23"
+
+export L_MMM=" -L$MMM_ROOT/lib -lmmm"
+export LMPI_MMM=" -L$MMM_ROOT/lib -lmmm"
+
+export L_NEO=" -L$NEO_ROOT/lib -lneo -lgeo -lexpro -lmath -lumfpack -lbrainfuse"
+export LMPI_NEO=" -L$NEO_ROOT/lib -lneo -lgeo -lexpro_mpi -lmath -lumfpack -lbrainfuse"
+
+export L_CQL3D=" -L$CQL3D_ROOT/lib -lcql3d"
+export LMPI_CQL3D=" -L$CQL3D_ROOT/lib -lmpi_cql3d"
+
+export L_GENRAY=" -L$GENRAY_ROOT/lib -lgenray"
+export LMPI_GENRAY=" -L$GENRAY_ROOT/lib -lgenray"
+
+export L_TORAY_GA=" -L$TORAY_GA_ROOT/lib -ltoray_ga"
+export LMPI_TORAY_GA=" -L$TORAY_GA_ROOT/lib -ltoray_ga"
+
+export L_TORBEAM=" -L$TORBEAM_ROOT/lib -ltorbeam"
+export LMPI_TORBEAM=" -L$TORBEAM_ROOT/lib -ltorbeam"
+
+export L_LSCSQ=" -L$LSCSQ_ROOT/lib -llscsq -qopenmp"
+export LMPI_LSCSQ=" -L$LSCSQ_ROOT/lib -llscsq -qopenmp"
+
+export L_SGLIB=" -L$UFILES_ROOT/lib -lsg -ljc -lufport"
+export L_SGDUMMY=" -L$UFILES_ROOT/lib -lsgdummy"
+
+export L_UFILES=" -L$UFILES_ROOT/lib -luflib_userio -luflib -lr4smlib_userio -lr4smlib -lmds_sub -lufhdf -lmdstransp -linterp_sub -lextrac_sub -ltrgraf -lureadsub -ltokid -lufencod -lufport"
+export L_MDSDUMMY=" -L$UFILES_ROOT/lib -lmds_dummy -lmdstransp -lureadsub -lufencod"

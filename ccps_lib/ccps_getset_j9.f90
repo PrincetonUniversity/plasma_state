@@ -1,0 +1,141 @@
+
+! written by plasma_cwrite.py
+! input: plasma_state_spec.dat   version 2.056
+! *** do not edit *** (use code generator instead)
+
+
+  subroutine ccps_getset_j9_dummy
+     return
+  end subroutine ccps_getset_j9_dummy
+
+subroutine psget_jdotb(iobj, n1, data, ierr)
+    !! <J.B>, Parallel current * mod(B) -- note sign convention:,
+    !! Local positive values indicate local current flow, in the
+    !! direction of the main toroidal current; i.e. actually,
+    !! kccw_Jphi * kccw_Bphi * <J.B> is stored.  So, even if the, main
+    !! toroidal current and the toroidal field are anti-parallel,,
+    !! jdotb is generally positive, but there can be localized
+    !! regions, of negative values, usually near the plasma edge.',
+    !! "From a parallel Ampere's Law expression, <J.B> can be
+    !! expressed", 'as a combination of derivatives of toroidal
+    !! current and toroidal, field functions curt(rho) and g(rho):,
+    !! <J.B> = 2pi*[g*d(curt)/drho-curt*dg/drho]/(dVol/drho)
+    use plasma_state_mod, only : plasma_state_container, plasma_state, &
+                                & load_ps_container, rspec
+    implicit NONE
+    integer, intent(in) :: iobj(*)  ! object handle
+    integer, intent(in) :: n1 ! list of dimensions (if any)
+    REAL(KIND=rspec), intent(out)  :: data(n1) ! to read to/write from
+    integer, intent(out) :: ierr ! error code (0=OK)
+    ! local
+    type (plasma_state_container) :: ptr
+    type (plasma_state), pointer  :: ss
+
+    ierr = 0
+    call ccps_argcheck('psget_jdotb', iobj, ierr)
+    if(ierr.ne.0) return
+    ! proceed...
+    call load_ps_container(iobj,ptr)
+    ss => ptr % ps_ptr
+    ! set
+    data(1:n1) = ss % jdotb
+end subroutine psget_jdotb
+
+
+subroutine psset_jdotb(iobj, n1, data, ierr)
+    !! <J.B>, Parallel current * mod(B) -- note sign convention:,
+    !! Local positive values indicate local current flow, in the
+    !! direction of the main toroidal current; i.e. actually,
+    !! kccw_Jphi * kccw_Bphi * <J.B> is stored.  So, even if the, main
+    !! toroidal current and the toroidal field are anti-parallel,,
+    !! jdotb is generally positive, but there can be localized
+    !! regions, of negative values, usually near the plasma edge.',
+    !! "From a parallel Ampere's Law expression, <J.B> can be
+    !! expressed", 'as a combination of derivatives of toroidal
+    !! current and toroidal, field functions curt(rho) and g(rho):,
+    !! <J.B> = 2pi*[g*d(curt)/drho-curt*dg/drho]/(dVol/drho)
+    use plasma_state_mod, only : plasma_state_container, plasma_state, &
+                                & load_ps_container, rspec
+    implicit NONE
+    integer, intent(in) :: iobj(*)  ! object handle
+    integer, intent(in) :: n1 ! list of dimensions (if any)
+    REAL(KIND=rspec), intent(in)  :: data(n1) ! to read to/write from
+    integer, intent(out) :: ierr ! error code (0=OK)
+    ! local
+    type (plasma_state_container) :: ptr
+    type (plasma_state), pointer  :: ss
+
+    ierr = 0
+    call ccps_argcheck('psset_jdotb', iobj, ierr)
+    if(ierr.ne.0) return
+    ! proceed...
+    call load_ps_container(iobj,ptr)
+    ss => ptr % ps_ptr
+    ! set
+    ss % jdotb = data(1:n1)
+end subroutine psset_jdotb
+
+
+subroutine psgetrnk_jdotb(iobj, ndims, ierr)
+    !! <J.B>, Parallel current * mod(B) -- note sign convention:,
+    !! Local positive values indicate local current flow, in the
+    !! direction of the main toroidal current; i.e. actually,
+    !! kccw_Jphi * kccw_Bphi * <J.B> is stored.  So, even if the, main
+    !! toroidal current and the toroidal field are anti-parallel,,
+    !! jdotb is generally positive, but there can be localized
+    !! regions, of negative values, usually near the plasma edge.',
+    !! "From a parallel Ampere's Law expression, <J.B> can be
+    !! expressed", 'as a combination of derivatives of toroidal
+    !! current and toroidal, field functions curt(rho) and g(rho):,
+    !! <J.B> = 2pi*[g*d(curt)/drho-curt*dg/drho]/(dVol/drho)
+    use plasma_state_mod, only :  plasma_state_container, plasma_state, rspec
+    implicit NONE
+    integer, intent(in) :: iobj(*) ! object handle
+    integer, intent(out) :: ndims  ! number of dimensions
+    integer, intent(out) :: ierr   ! error code (0=OK)
+    ! local
+    type (plasma_state_container) :: ptr
+    type (plasma_state), pointer  :: ss
+
+    ierr = 0
+    ndims = 1
+end subroutine psgetrnk_jdotb
+
+
+subroutine psgetdim_jdotb(iobj, ndims, dims, ierr)
+    !! <J.B>, Parallel current * mod(B) -- note sign convention:,
+    !! Local positive values indicate local current flow, in the
+    !! direction of the main toroidal current; i.e. actually,
+    !! kccw_Jphi * kccw_Bphi * <J.B> is stored.  So, even if the, main
+    !! toroidal current and the toroidal field are anti-parallel,,
+    !! jdotb is generally positive, but there can be localized
+    !! regions, of negative values, usually near the plasma edge.',
+    !! "From a parallel Ampere's Law expression, <J.B> can be
+    !! expressed", 'as a combination of derivatives of toroidal
+    !! current and toroidal, field functions curt(rho) and g(rho):,
+    !! <J.B> = 2pi*[g*d(curt)/drho-curt*dg/drho]/(dVol/drho)
+    use plasma_state_mod, only :  plasma_state_container, plasma_state, &
+                                & load_ps_container, rspec
+    implicit NONE
+    integer, intent(in) :: iobj(*) ! object handle
+    integer, intent(in) :: ndims   ! number of dimensions
+    integer, intent(out) :: dims(ndims) ! sizes
+    integer, intent(out) :: ierr ! error code (0=OK)
+    ! local
+    type (plasma_state_container) :: ptr
+    type (plasma_state), pointer  :: ss
+
+    ierr = 0
+    if (ndims /= 1) ierr = 1
+    call ccps_argcheck('psgetdim_jdotb', iobj, ierr)
+    if(ierr.ne.0) return
+    ! proceed...
+    call load_ps_container(iobj,ptr)
+    ss => ptr % ps_ptr
+    dims = 0
+    if (allocated( ss % jdotb ) ) then
+        ! can only call 'shape' on allocated/associated arrays
+        dims = shape(ss % jdotb)
+    endif
+end subroutine psgetdim_jdotb
+

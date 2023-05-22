@@ -1,0 +1,11 @@
+$(OBJDIR)/find_io_unit.o : find_io_unit.f90 
+$(OBJDIR)/psexit.o : psexit.f90 
+$(OBJDIR)/cstring.o : cstring.for 
+$(OBJDIR)/frename.o : frename.for 
+$(OBJDIR)/sget_env.o : sget_env.for 
+$(OBJDIR)/sget_pid_str.o : sget_pid_str.for 
+$(OBJDIR)/showdefl.o : showdefl.for 
+$(OBJDIR)/str_pad.o : str_pad.for 
+$(OBJDIR)/tmpfile.o : tmpfile.for 
+$(OBJDIR)/ulower.o : ulower.for 
+$(OBJDIR)/uupper.o : uupper.for 

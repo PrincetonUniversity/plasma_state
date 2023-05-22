@@ -1,0 +1,435 @@
+ (eqm_fromgeqdsk call)
+ adjust boundary so that minimum local curvature is at least
+     0.075000 * [the midplane half-width of the plasma]
+
+ --> eqm_fromgeqdsk sets up xplasma g-eqdsk data: g103875.nstx
+     (note eqm_fromgeqdsk can also acquire EFIT data
+     over the network from standard EFIT MDSplus trees).
+
+  
+  ...reading & converting G-eqdsk... 
+   *** minimum normalized curvature =  7.406235990313909E-02
+  %eqi_contour:  contour violates sharp curvature limit.
+   ...reducing psi(bdy) to find closed contour.  Now fbdy= 0.9975000000000001
+ %eqi_contour:  contour angular velocity reversed.
+   ...reducing psi(bdy) to find closed contour.  Now fbdy= 0.9950062500000001
+   *** minimum normalized curvature =  5.957630161547050E-02
+  %eqi_contour:  contour violates sharp curvature limit.
+   ...reducing psi(bdy) to find closed contour.  Now fbdy= 0.9925187343750002
+   *** minimum normalized curvature =  7.311469331835467E-02
+  %eqi_contour:  contour violates sharp curvature limit.
+   ...reducing psi(bdy) to find closed contour.  Now fbdy= 0.9900374375390627
+   *** minimum normalized curvature =  7.128731453097500E-02
+  %eqi_contour:  contour violates sharp curvature limit.
+   ...reducing psi(bdy) to find closed contour.  Now fbdy= 0.9875623439452151
+   *** minimum normalized curvature =  7.463379153212076E-02
+  %eqi_contour:  contour violates sharp curvature limit.
+   ...reducing psi(bdy) to find closed contour.  Now fbdy= 0.9850934380853521
+  
+ geqxpl2_pro...
+ ...define TE and TI
+ ...setting up alternate rho grid
+ ...define NE and ion density profiles.
+
+ xplasma data access routines are described at:
+  http://w3.pppl.gov/~pshare/help/xplasma_hlp.html
+
+ ========>> axis & function name translation.
+  (a) given name, fetch xplasma id.
+      eq_ganum:  axis;  eq_gfnum:  function.
+      eq_gflist:  list of funcionts.
+
+ call eq_ganum("__RHO",id_rho) --> id_rho=    9
+  
+ call eq_gfnum("Te",id) -> id=   47
+ call eq_gfnum("TE",id) -> id=   47
+  ... the name matching is case-insensitive.
+  
+ call eq_gflist(n,namlist(1:n),idlist(1:n),ierr)
+   ierr=   0 (set if any name is unknown)
+   a list of length n=   2 was processed:
+     namlist(1)="TE" -> idlist(1)=  47
+     namlist(2)="NE" -> idlist(2)=  50
+  
+  (b) given id, fetch name (reverse translation).
+      id_rho=   9  id=  47
+
+ call eq_get_aname(id_rho,zname) -> zname = "__RHO"
+ call eq_get_fname(id,zname) -> zname = "TE"
+  
+  (c) given id, fetch characteristics:
+      magdim=1 => f(rho), magdim=2 => f(rho,chi) magdim=0 => (none)
+      magfit=[Cn of fit, e.g 2 for C2 spline]
+      cyldim=2 => f(R,Z), magdim=0 => (none)
+      cylfit=[Cn of fit, e.g 2 for C2 spline]
+      iwarn set if an xplasma "private" function;
+      ierr set if no such function for given id.
+
+      for "TE":
+ call eq_fun(id,magdim,magfit,cyldim,cylfit,iwarn,ierr)
+      magdim=1 magfit=2
+      cyldim=0 cylfit=0
+       iwarn=0   ierr=0
+
+ a named object can exist in both f(rho) and f(R,Z) form,
+ and sometimes this is advantageous for performance reasons.
+  
+  ========>> axis (grid) information.
+  
+ call eq_ganum("my_rho",idgrid) --> idgrid=   49
+  
+ eq_ngrid(idgrid,ngrid) --> ngrid=   26
+  
+  allocate(xbuf(ngrid),xbuf_zc(ngrid-1))
+  
+ call eq_grid(idgrid,xbuf(1:ngrid),ngrid,igot,ierr)  -->
+      igot=  26 ierr=    0
+  xbuf= = 
+   0.000000   0.040000   0.080000   0.120000   0.160000   0.200000
+   0.240000   0.280000   0.320000   0.360000   0.400000   0.440000
+   0.480000   0.520000   0.560000   0.600000   0.640000   0.680000
+   0.720000   0.760000   0.800000   0.840000   0.880000   0.920000
+   0.960000   1.000000
+  
+ call eq_grid_zc(idgrid,xbuf_zc(1:ngrid-1),ngrid-1,igot,ierr) -->
+      igot=  25 ierr=    0
+  xbuf_zc= = 
+   0.020000   0.060000   0.100000   0.140000   0.180000   0.220000
+   0.260000   0.300000   0.340000   0.380000   0.420000   0.460000
+   0.500000   0.540000   0.580000   0.620000   0.660000   0.700000
+   0.740000   0.780000   0.820000   0.860000   0.900000   0.940000
+   0.980000
+  
+  call eq_ngrds(inumrho,inumchi,inumphi,inumR,inumZ) ->
+  xplasma "common grid" sizes:
+   MHD equilibrium rho grid:      41
+   MHD equilibrium theta grid:    51
+     poloidal angle is sometimes called "chi" in xplasma.
+   MHD equilibrium phi grid:       1
+     (inumphi=1 means axisymmetry).
+     (xplasma requires axisymmetry at present).
+   (R,Z) grids:  inumR, inumZ:    65  65
+
+ although xplasma grid information is available, it
+ is not necessary to use it, in order to perform
+ interpolations...
+
+  n1=ngrid-1
+  allocate(kindx(n1))
+  
+ call eq_nindx(id_rho,n1,xbuf_zc(1:n1),kindx(1:n1),ierr) -->
+      ierr=   0 kindx=    1    3    5    6    8    9   11   13   14   16
+   17   19   21   22   24   25   27   29   30   32
+   33   35   37   38   40
+  ..these indices show which zones in the MHD rho grid
+  ..contain the zone center points from "my_rho" grid.
+  
+  ========>> coordinate transformation.
+   coordinates:
+     cartesian:  (x,y,z)
+     cylindric:  (R,Z,phi)
+     magnetic:   (rho,chi,phi)
+   all coordinate transformations are vectorized,
+   i.e. transform lists of coordinate tuples.
+    ***>> vectorization helps performance
+          on workstations as well as vector machines.
+  
+   ---not all routines demonstrated---
+   ---see the documentation---
+  
+   (rho,chi,phi) -> (R,Z,[phi])
+  call eq_rzget(n,rholist,chilist,philist,rlist,zlist,nregion,ierr)
+  1.  (  0.50000   0.00000   0.00000 ) --> (  1.37090  -0.01216   0.00000 )
+  2.  (  0.55000   0.50000   0.50000 ) --> (  1.31955   0.31470   0.50000 )
+  3.  (  0.60000   1.00000   1.00000 ) --> (  1.12643   0.62999   1.00000 )
+  
+   (R,[Z],phi) -> (x,y,[z])
+  call eq_xcyl(n,rlist,philist,xlist,ylist)
+  1.  (  1.37090  -0.01216   0.00000 ) --> (  1.37090   0.00000  -0.01216 )
+  2.  (  1.31955   0.31470   0.50000 ) --> (  1.15801   0.63263   0.31470 )
+  3.  (  1.12643   0.62999   1.00000 ) --> (  0.60861   0.94786   0.62999 )
+  
+   (x,y,[z]) -> (R,[Z],phi)
+  call eq_rcyl(n,xlist,ylist,rlist,philist)
+  1.  (  1.37090   0.00000  -0.01216 ) --> (  1.37090  -0.01216   0.00000 )
+  2.  (  1.15801   0.63263   0.31470 ) --> (  1.31955   0.31470   0.50000 )
+  3.  (  0.60861   0.94786   0.62999 ) --> (  1.12643   0.62999   1.00000 )
+   (R,Z,phi) -> (rho,chi,[phi])
+    [ tol =  1.0000E-10 ]
+  call eq_inv(n,rlist,zlist,philist,tol, &
+              rholist,chilist,nregion,ierr)
+  1.  (  1.37090  -0.01216   0.00000 ) --> (  0.50000   0.00000   0.00000 )
+  2.  (  1.31955   0.31470   0.50000 ) --> (  0.55000   0.50000   0.50000 )
+  3.  (  1.12643   0.62999   1.00000 ) --> (  0.60000   1.00000   1.00000 )
+  "tol" controls the accuracy of the Newton iteration
+  used to compute the "inverse map".
+    (caution: performance issue).
+  
+  also available:
+    eqx_inv:  (x,y,z) -> (rho,chi,phi)
+    eq_xget:  (rho,chi,phi) -> (x,y,z)
+  
+  
+  ========>> min/max information.
+  
+  ...axis and boundary "rho" coordinate:
+ call eq_rholim(rho_axis,rho_bdy)
+  -->  rho_axis,rho_bdy =     0.0000    1.0000
+  
+  ...min and max R and Z on a flux surface:
+     [rho = rho_bdy]
+ call eq_glimrz(rho,Rmin,Rmax,Zmin,Zmax,ierr)
+  --> ierr=  0
+      Rmin,Rmax,Zmin,Zmax =     0.2065     1.5524    -1.4505     1.3024
+
+  ...min and max mod(B) on a flux surface:
+     [rho = rho_bdy]
+ call eq_glimb(rho,Bmin,Bmax,ierr)
+  --> ierr=  0
+      Bmin,Bmax =     0.2159     1.4757
+
+  ...extrema of (R,Z) rectangular grid covering plasma:
+  call eq_rzlims(Rming,Rmaxg,Zming,Zmaxg,ierr)
+ ...min and max R of grid:      0.0100     2.1500
+ ...min and max Z of grid:     -2.2000     2.2000
+  
+  ...magnetic axis information:
+  ...assuming axisymmetry...
+  call eq_sgaxis(B_axis,R_axis,Z_axis)
+ ...at the magnetic axis:
+   mod(B)=    0.0000 (R,Z) = (    0.9791,   -0.0123)
+ ...note this is the actual mod(B), not the vacuum field.
+  
+  ========>> f(rho) interpolation.
+  
+   to interpolate g(rho) = R*Bphi at n rho values:
+      use iwant=0 for g, iwant=1 for dg/drho, 
+      use iwant=2 for d2g/drho2 (splines only).
+
+ iwant = 0
+ call eq_gfnum("G",id)
+ call eq_rgetf(n,rholist,id,iwant,glist,ierr)
+   ---> ierr=   0
+        rholist(1)=    0.5000 -> glist(1)=    0.3122
+        rholist(2)=    0.5500 -> glist(2)=    0.3099
+        rholist(3)=    0.6000 -> glist(3)=    0.3079
+
+   to interpolate multiple functions {f(rho)} pass a list of
+   function ids and receive a buffer datbuf(1:n,1:nfcns);
+   see xplasma documentation of eq_rgetff (1d interpolation).
+
+  
+  ========>> f(rho,chi) interpolation.
+  
+ to interpolate sets of fucntions {f(rho,chi)}:
+   (a) determine list of desired functions;
+   (b) determine if {f}, {df/drho,df/dchi}, or
+       some other combination of values and derivatives
+       is wanted.
+   (c) set up vectors rho(1:n) and chi(1:n), and call:
+          eq_frhochi -- get {f} values
+          eq_grhochi -- get {df/drho,df/dchi} values
+          eq_hrhochi -- get combination up to 2nd order.
+               (2nd order derivatives for splines only).
+
+ When using these functions one must be careful with the 
+ dimensioning of the data buffer or array which is to contain
+ the results of the interpolations.
+
+ In this example, we are using a list of 3 functions, a
+ rho,chi vector length of 3, and an output buffer which
+ is dimensioned   datbuf(nlist,nlist)  where nlist= 20.
+
+    ** first example **
+ call eq_gfnum("R",idlist(1))
+ call eq_gfnum("BR",idlist(2))
+ call eq_gfnum("BZ",idlist(3))
+ nf=3
+ call eq_frhochi(n,rholist,chilist,nf,idlist,  &
+                 nlist,datbuf,ierr)
+
+ (note that the 1st dimension of datbuf, "nlist", must be
+ passed).  The result is ierr=   0, and:
+ at rholist(1)=    0.5000, chilist(1)=    0.0000,
+     R  = datbuf(1,1)=    1.3709
+     BR = datbuf(1,2)=   -0.0008
+     BZ = datbuf(1,3)=   -0.0948
+     and, glist(1)/R = Bphi =    0.2278
+
+ at rholist(2)=    0.5500, chilist(2)=    0.5000,
+     R  = datbuf(2,1)=    1.3195
+     BR = datbuf(2,2)=    0.0445
+     BZ = datbuf(2,3)=   -0.0919
+     and, glist(2)/R = Bphi =    0.2349
+
+ at rholist(3)=    0.6000, chilist(3)=    1.0000,
+     R  = datbuf(3,1)=    1.1264
+     BR = datbuf(3,2)=    0.0675
+     BZ = datbuf(3,3)=   -0.0636
+     and, glist(3)/R = Bphi =    0.2734
+
+    ** second example **
+ call eq_gfnum("R",idlist(1))
+ call eq_gfnum("Z",idlist(2))
+ nf=2
+ ictwant = (/ 0, 1, 1, 1, 1, 1 /)
+ call eq_hrhochi(n,rholist,chilist,nf,idlist,ictwant,  &
+                 nlist,datbuf,ierr)
+
+ yields ierr=   0.  "ictwant" is interpreted as follows:
+    ictwant(1)=0 --> do NOT return R,Z values.
+    ictwant(2)=1 --> do return d{R,Z}/drho.
+    ictwant(3)=1 --> do return d{R,Z}/dchi.
+    ictwant(4)=1 --> do return d2{R,Z}/drho2.
+    ictwant(5)=1 --> do return d2{R,Z}/dchi2.
+    ictwant(6)=1 --> do return d2{R,Z}/drhodchi.
+ so we get:
+ at rholist(1)=    0.5000, chilist(1)=    0.0000,
+    dR/drho = datbuf(1,1)=    0.5987
+    dR/dchi = datbuf(1,2)=    0.0051
+    d2R/drho2 =    datbuf(1,3)=   -1.0181
+    d2R/dchi2 =    datbuf(1,4)=   -0.6402
+    d2R/drhodchi = datbuf(1,5)=    0.0281
+
+    dZ/drho = datbuf(1,6)=   -0.0019
+    dZ/dchi = datbuf(1,7)=    0.6218
+    d2Z/drho2 =    datbuf(1,8)=   -0.0146
+    d2Z/dchi2 =    datbuf(1,9)=    0.0026
+    d2Z/drhodchi = datbuf(1,10)=    1.1601
+
+ at rholist(2)=    0.5500, chilist(2)=    0.5000,
+    dR/drho = datbuf(2,1)=    0.3459
+    dR/dchi = datbuf(2,2)=   -0.2963
+    d2R/drho2 =    datbuf(2,3)=   -1.3662
+    d2R/dchi2 =    datbuf(2,4)=   -0.4096
+    d2R/drhodchi = datbuf(2,5)=   -0.6983
+
+    dZ/drho = datbuf(2,6)=    0.5526
+    dZ/dchi = datbuf(2,7)=    0.6111
+    d2Z/drho2 =    datbuf(2,8)=    0.2352
+    d2Z/dchi2 =    datbuf(2,9)=   -0.2482
+    d2Z/drhodchi = datbuf(2,10)=    1.1542
+
+ at rholist(3)=    0.6000, chilist(3)=    1.0000,
+    dR/drho = datbuf(3,1)=   -0.1256
+    dR/dchi = datbuf(3,2)=   -0.4843
+    d2R/drho2 =    datbuf(3,3)=   -1.2769
+    d2R/dchi2 =    datbuf(3,4)=   -0.1605
+    d2R/drhodchi = datbuf(3,5)=   -0.9176
+
+    dZ/drho = datbuf(3,6)=    1.0376
+    dZ/dchi = datbuf(3,7)=    0.4562
+    d2Z/drho2 =    datbuf(3,8)=   -0.4321
+    d2Z/dchi2 =    datbuf(3,9)=   -0.6096
+    d2Z/drhodchi = datbuf(3,10)=    0.7679
+
+  Note:  "eq_gfnum" is used in these examples for
+   the sake of clarity, but, name translation calls
+   should be kept out of inner loops for performance
+   reasons...
+  
+  ========>> demo of routines to compute distance from
+  plasma boundary.  Input: lists of (R,Z,phi) values:
+  
+  call eq_dfast(nlist,rlist,zlist,philist,dist,ierr)
+  
+ nlist=  20 on input; on output ierr=   0
+  #    R          Z          phi        distance (output)
+  1     0.9791    -0.0123     0.0000    -0.5708
+  2     1.0092     0.0569     0.0000    -0.5310
+  3     1.0394     0.1261     0.0000    -0.4799
+  4     1.0696     0.1953     0.0000    -0.4256
+  5     1.0998     0.2645     0.0000    -0.3693
+  6     1.1299     0.3337     0.0000    -0.3118
+  7     1.1601     0.4029     0.0000    -0.2531
+  8     1.1903     0.4721     0.0000    -0.1930
+  9     1.2205     0.5413     0.0000    -0.1317
+ 10     1.2506     0.6105     0.0000    -0.0693
+ 11     1.2808     0.6797     0.0000    -0.0055
+ 12     1.3110     0.7488     0.0000     0.0593
+ 13     1.3412     0.8180     0.0000     0.1250
+ 14     1.3714     0.8872     0.0000     0.1916
+ 15     1.4015     0.9564     0.0000     0.2590
+ 16     1.4317     1.0256     0.0000     0.3271
+ 17     1.4619     1.0948     0.0000     0.3957
+ 18     1.4921     1.1640     0.0000     0.4649
+ 19     1.5222     1.2332     0.0000     0.5344
+ 20     1.5524     1.3024     0.0000     0.6043
+  positive distance gives how far outside the plasma;
+  negative distance gives how rar inside.  The numbers
+  from eq_dfast are approximate; a slower but more
+  accurate calculation is also available.
+  
+  Fourier moments representation of flux geometry
+  can be retrieved via calls to eqmom_rcos, etc...
+  
+  ===> x= 0.000000000000000E+00
+  Moment#    Rcos         Rsin         Zcos         Zsin
+    0         9.79061E-01  0.00000E+00 -1.22737E-02  0.00000E+00
+    1         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+    2         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+    3         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+    4         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+    5         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+    6         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+    7         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+    8         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+    9         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+   10         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+   11         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+   12         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+   13         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+   14         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+   15         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+   16         0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
+  
+  ===> x= 0.5000000000000000
+  Moment#    Rcos         Rsin         Zcos         Zsin
+    0         9.20397E-01  0.00000E+00 -1.55397E-02  0.00000E+00
+    1         4.15742E-01  5.71888E-04  3.72775E-03  6.64954E-01
+    2         2.95550E-02  1.01967E-03 -2.11942E-04 -2.10893E-02
+    3         1.53996E-03  1.53140E-04 -2.59111E-05 -3.88333E-03
+    4         1.94424E-03  3.14479E-04 -6.39055E-05  2.98567E-03
+    5         1.13719E-03  1.31389E-06 -5.78449E-05 -5.19486E-04
+    6         3.37707E-04  5.07282E-05  1.27155E-04 -8.32679E-05
+    7         1.37845E-04  3.17500E-05 -1.32996E-04  1.35906E-05
+    8         6.69105E-05 -7.22068E-07  6.56723E-05  1.27519E-04
+    9         4.98848E-07  1.97211E-05 -5.49519E-05  3.49481E-05
+   10         2.76719E-05  2.80909E-06  2.71679E-05  1.26003E-05
+   11         1.51834E-05  1.23477E-06 -2.25284E-05  2.33043E-05
+   12        -7.62548E-09  0.00000E+00 -2.48018E-07  0.00000E+00
+   13        -4.96349E-09 -1.91112E-07  6.22395E-09  1.92343E-08
+   14         0.00000E+00  0.00000E+00  5.13296E-09  0.00000E+00
+   15         0.00000E+00  5.96604E-11 -7.05676E-11 -5.56698E-10
+   16         0.00000E+00  0.00000E+00 -3.32032E-09  0.00000E+00
+  
+  ===> x= 1.000000000000000
+  Moment#    Rcos         Rsin         Zcos         Zsin
+    0         7.45381E-01  0.00000E+00 -6.93220E-02  0.00000E+00
+    1         6.35475E-01 -1.51400E-02  6.81239E-02  1.33992E+00
+    2         1.23976E-01  1.65083E-02 -9.77396E-03 -1.08552E-01
+    3         3.71835E-02  4.02857E-03 -4.46031E-03 -5.56531E-03
+    4         8.42613E-03 -6.01711E-03  9.95613E-04  1.15022E-02
+    5        -5.54506E-03 -1.86581E-03  2.06973E-03  2.16403E-03
+    6        -1.59024E-03  2.38892E-03  7.08690E-04 -3.65638E-03
+    7         4.59252E-03  1.23450E-03 -5.56175E-04 -3.44515E-03
+    8         2.53143E-03 -5.27488E-04 -4.27713E-04 -3.87885E-04
+    9         6.33793E-04 -5.45012E-04  3.34433E-04  9.74203E-04
+   10         1.05949E-03  4.88421E-04  4.73054E-04  7.96894E-05
+   11         2.49491E-04  6.53603E-04 -8.90272E-05 -4.95910E-05
+   12        -8.79983E-05 -2.80602E-04 -5.11101E-04  3.91775E-04
+   13         3.84804E-05 -9.54854E-05 -5.98206E-05  1.03818E-04
+   14         8.74149E-05 -1.19632E-04  3.72549E-04 -1.72537E-04
+   15        -1.24293E-04  2.61308E-04  7.91926E-05  2.69215E-05
+   16         1.06809E-05  1.00853E-04 -1.99155E-04  7.17433E-05
+ 
+  end of geqxpl2_print demo.
+  *** not all xplasma routines shown ***
+  *** see NTCC xplasma documentation for full list ***
+ 
+  
+  =========================== 
+  %eqdbg_plot -- f90 rewrite. 
+  =========================== 
+  
+  --------------- all done --------------- 

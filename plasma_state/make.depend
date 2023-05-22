@@ -1,0 +1,75 @@
+$(OBJDIR)/plasma_state_mod.o : plasma_state_mod.f90 
+$(OBJDIR)/pspro.o : pspro.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/ps_nidlist_defn.o : ps_nidlist_defn.f90 
+$(OBJDIR)/ps_update_file_read_8.o : ps_update_file_read_8.f90 
+$(OBJDIR)/plasma_state_get_3.o : plasma_state_get_3.f90 
+$(OBJDIR)/plasma_state_contents_profs_6.o : plasma_state_contents_profs_6.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/plasma_state_prune_grids.o : plasma_state_prune_grids.f90 
+$(OBJDIR)/plasma_state_xload_parrays.o : plasma_state_xload_parrays.f90 
+$(OBJDIR)/plasma_state_store.o : plasma_state_store.f90 
+$(OBJDIR)/ps_sconfig_namelist_read.o : ps_sconfig_namelist_read.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/ps_update_file_read_3.o : ps_update_file_read_3.f90 
+$(OBJDIR)/plasma_state_get_4.o : plasma_state_get_4.f90 
+$(OBJDIR)/plasma_state_contents_profs_8.o : plasma_state_contents_profs_8.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/plasma_state_store_8.o : plasma_state_store_8.f90 
+$(OBJDIR)/plasma_state_store_4.o : plasma_state_store_4.f90 
+$(OBJDIR)/plasma_state_xload_slists.o : plasma_state_xload_slists.f90 
+$(OBJDIR)/plasma_state_get_5.o : plasma_state_get_5.f90 
+$(OBJDIR)/plasma_state_get_0.o : plasma_state_get_0.f90 
+$(OBJDIR)/ps_update_file_write_7.o : ps_update_file_write_7.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/plasma_state_get_6.o : plasma_state_get_6.f90 
+$(OBJDIR)/plasma_state_contents_profs_3.o : plasma_state_contents_profs_3.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/ps_update_file_write_0.o : ps_update_file_write_0.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/ps_update_file_read_0.o : ps_update_file_read_0.f90 
+$(OBJDIR)/plasma_state_get_9.o : plasma_state_get_9.f90 
+$(OBJDIR)/ps_update_file_write_3.o : ps_update_file_write_3.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/plasma_state_store_5.o : plasma_state_store_5.f90 
+$(OBJDIR)/plasma_state_store_0.o : plasma_state_store_0.f90 
+$(OBJDIR)/ps_update_file_write_8.o : ps_update_file_write_8.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/plasma_state_contents_profs_7.o : plasma_state_contents_profs_7.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/plasma_state_xload_sgrps.o : plasma_state_xload_sgrps.f90 
+$(OBJDIR)/ps_update_file_write_2.o : ps_update_file_write_2.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/plasma_state_contents_profs_1.o : plasma_state_contents_profs_1.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/plasma_state_store_7.o : plasma_state_store_7.f90 
+$(OBJDIR)/plasma_state_contents_mdescr.o : plasma_state_contents_mdescr.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/ps_update_file_read_5.o : ps_update_file_read_5.f90 
+$(OBJDIR)/plasma_state_zonwt.o : plasma_state_zonwt.f90 
+$(OBJDIR)/ps_update_file_write_4.o : ps_update_file_write_4.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/plasma_state_xload.o : plasma_state_xload.f90 
+$(OBJDIR)/ps_update_file_read_6.o : ps_update_file_read_6.f90 
+$(OBJDIR)/plasma_state_contents_sconfig.o : plasma_state_contents_sconfig.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/ps_update_file_read_1.o : ps_update_file_read_1.f90 
+$(OBJDIR)/plasma_state_xload_singl.o : plasma_state_xload_singl.f90 
+$(OBJDIR)/plasma_state_store_6.o : plasma_state_store_6.f90 
+$(OBJDIR)/plasma_state_contents_profs_2.o : plasma_state_contents_profs_2.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/plasma_state_store_1.o : plasma_state_store_1.f90 
+$(OBJDIR)/ps_update_file_write_5.o : ps_update_file_write_5.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/plasma_state_store_2.o : plasma_state_store_2.f90 
+$(OBJDIR)/plasma_state_xload_pgrps.o : plasma_state_xload_pgrps.f90 
+$(OBJDIR)/plasma_state_contents.o : plasma_state_contents.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/plasma_state_contents_profs_4.o : plasma_state_contents_profs_4.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/ps_update_file_read_7.o : ps_update_file_read_7.f90 
+$(OBJDIR)/plasma_state_contents_sini.o : plasma_state_contents_sini.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/ps_update_file_read_9.o : ps_update_file_read_9.f90 
+$(OBJDIR)/plasma_state_xload_psingl.o : plasma_state_xload_psingl.f90 
+$(OBJDIR)/ps_update_file_write_9.o : ps_update_file_write_9.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/plasma_state_get_7.o : plasma_state_get_7.f90 
+$(OBJDIR)/plasma_state_store_3.o : plasma_state_store_3.f90 
+$(OBJDIR)/plasma_state_contents_profs_5.o : plasma_state_contents_profs_5.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/plasma_state_contents_profs_0.o : plasma_state_contents_profs_0.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/plasma_state_get_1.o : plasma_state_get_1.f90 
+$(OBJDIR)/plasma_state_xload_sarrays.o : plasma_state_xload_sarrays.f90 
+$(OBJDIR)/plasma_state_contents_sdata.o : plasma_state_contents_sdata.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/ps_update_file_write_6.o : ps_update_file_write_6.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/ps_update_file_read.o : ps_update_file_read.f90 
+$(OBJDIR)/ps_update_file_write_1.o : ps_update_file_write_1.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/plasma_state_contents_profs_9.o : plasma_state_contents_profs_9.f90 $(OBJDIR)/plasma_state_mod.o 
+$(OBJDIR)/ps_update_file_write.o : ps_update_file_write.f90 $(OBJDIR)/ps_nidlist_defn.o 
+$(OBJDIR)/plasma_state_xload_grids.o : plasma_state_xload_grids.f90 
+$(OBJDIR)/ps_update_file_read_2.o : ps_update_file_read_2.f90 
+$(OBJDIR)/plasma_state_store_9.o : plasma_state_store_9.f90 
+$(OBJDIR)/ps_update_file_read_4.o : ps_update_file_read_4.f90 
+$(OBJDIR)/plasma_state_get.o : plasma_state_get.f90 
+$(OBJDIR)/plasma_state_erase.o : plasma_state_erase.f90 
+$(OBJDIR)/plasma_state_get_8.o : plasma_state_get_8.f90 
+$(OBJDIR)/plasma_state_get_2.o : plasma_state_get_2.f90 

@@ -1,0 +1,6 @@
+; date: 18May2010 username: dmccune
+;ur_cstate_list: command option:$
+a 37065Y22_3s800.cdf a 118419W23_3s995.cdf
+;ur_cstate_list: command option:$
+@qktest0
+;ur_cstate_compare: option select:$

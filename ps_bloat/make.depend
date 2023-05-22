@@ -1,0 +1,4 @@
+$(OBJDIR)/ps_tkbmry.o : ps_tkbmry.for 
+$(OBJDIR)/ps_bloata0.o : ps_bloata0.for ps_tkbparm.inc 
+$(OBJDIR)/ps_tkbmmc.o : ps_tkbmmc.for ps_tkbparm.inc 
+$(OBJDIR)/ps_ntk.o : ps_ntk.for ps_tkbparm.inc 

@@ -1,0 +1,56 @@
+$(OBJDIR)/plasma_state_xpobj.o : plasma_state_xpobj.f90 
+$(OBJDIR)/ps_register_state.o : ps_register_state.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_2dx_prof_store.o : ps_2dx_prof_store.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_get_integ.o : ps_get_integ.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_xload_check.o : ps_xload_check.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_rzsurf_sdata.o : ps_rzsurf_sdata.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_intrp2.o : ps_intrp2.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_intrp1s.o : ps_intrp1s.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_init_xpl.o : ps_init_xpl.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_update_cur.o : ps_update_cur.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_species_list_get.o : ps_species_list_get.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_intrp1.o : ps_intrp1.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_coordchk.o : ps_coordchk.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_xhashes.o : ps_xhashes.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_wrgeq_chk.o : ps_wrgeq_chk.f90 
+$(OBJDIR)/ps_protmp.o : ps_protmp.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_enum_setget.o : ps_enum_setget.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_species_list_store.o : ps_species_list_store.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_wr_geqdsk_file.o : ps_wr_geqdsk_file.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_list_store.o : ps_list_store.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_intrp2s.o : ps_intrp2s.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_mhdeq_flxint.o : ps_mhdeq_flxint.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_remove_grid.o : ps_remove_grid.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_tagchk.o : ps_tagchk.f90 
+$(OBJDIR)/ps_volume.o : ps_volume.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_copy_xpl.o : ps_copy_xpl.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_rho_zonint.o : ps_rho_zonint.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_rhotmp.o : ps_rhotmp.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_grid_get.o : ps_grid_get.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_grid_store.o : ps_grid_store.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_list_get.o : ps_list_get.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_getlabel.o : ps_getlabel.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_psiin_write.o : ps_psiin_write.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_mhdeq_pchk.o : ps_mhdeq_pchk.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_psimap_sub.o : ps_psimap_sub.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/psxpl_ctrans.o : psxpl_ctrans.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_varchk.o : ps_varchk.f90 
+$(OBJDIR)/ps_filename.o : ps_filename.f90 
+$(OBJDIR)/ps_maxid.o : ps_maxid.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_mdescr_namelist_check.o : ps_mdescr_namelist_check.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_time_set.o : ps_time_set.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_update_fromxplasma.o : ps_update_fromxplasma.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_geqdsk_write_nrz.o : ps_geqdsk_write_nrz.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_update_mhdeq.o : ps_update_mhdeq.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_xpdebug.o : ps_xpdebug.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_limcon.o : ps_limcon.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_grid.o : ps_grid.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_rezone_rho.o : ps_rezone_rho.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_purge_equilibrium.o : ps_purge_equilibrium.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_limsize.o : ps_limsize.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_1dx_prof_store.o : ps_1dx_prof_store.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_1d_prof_store.o : ps_1d_prof_store.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_sconfig_namelist_check.o : ps_sconfig_namelist_check.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_freetmp.o : ps_freetmp.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_2d_prof_store.o : ps_2d_prof_store.f90 $(OBJDIR)/plasma_state_xpobj.o 
+$(OBJDIR)/ps_name_check.o : ps_name_check.f90 

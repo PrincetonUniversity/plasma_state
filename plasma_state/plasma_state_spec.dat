@@ -1,0 +1,3098 @@
+#  This file contains data to specify the contents of the Plasma State.
+#  It will be input to a python code generator that will generate not only
+#  the state data type definition (f90), but also the code to read/write 
+#  the state from NetCDF, interact with xplasma or other future software 
+#  to implement interpolation tools, provide a C/C++ access layer, etc...
+#
+#  Separate documents describe the Plasma State software -- see the 
+#  component description documents under http://www.cswim.org ...
+#
+#  Version 1 (swim_state_spec.dat) D. McCune 9-2006 -- 8-2007
+#  Version 2 (plasma_state_spec.dat) D. McCune 11-2007 --
+#            Review and update of comments: D. McCune 6-2008
+#
+#  THIS FILE IS INPUT TO A PYTHON CODE GENERATOR...
+#
+#     Python script files:
+#
+#        plasma_cwrite.py     plasma_state_global.py  plasma_state_write.py
+#        plasma_state_gen.py  plasma_state_sub.py
+#
+#        (I use "csh -f update_ps.csh" to invoke the Python script).
+#
+#---------------
+#  Version ID
+#
+#  **the minor revision count should be incremented, whenever a version
+#    of the specification with data elements added, removed, or modified,
+#    is committed to the source repository.
+#
+#     N.mmm
+#        N -- major revision count
+#       mmm -- minor revision count
+#
+#  Minor version log
+#    2.001 -- added "0:" to "dist_fun" and "ql_operator" dimensioning.
+#             generator now requires use of the same lower limit in any
+#             reference to a particular list dimension. (DMC 24 Jan 2008)
+#    2.002 -- completed set of flux surface averaged metrics and field
+#             quantities linked to the equilibrium representation.
+#    2.003 -- added to NBI machine description.
+#    2.004 -- added state data and profiles needed for NBI component.
+#             Associated changes: addition of ANOM and RIPPLE components;
+#             expansion of GAS component.
+#    2.005 -- added total current profile and <J.B>/<B.grad(phi)>
+#    2.006 -- adjusted hash code treatment: {rlim,zlim}(1:num_rzlim)
+#    2.007 -- allow 2d machine description and shot configuration arrays
+#             (<enumeration-dimension>,<list-dimension>); use this for 
+#             ICRF antenna geometry & input n_phi spectrum
+#    2.008,9 -- adding to ICRF antenna geometry
+#    2.010,11-- adding to ECRF antenna geometry
+#    2.012 -- antenna frequency units standardized: Hz; beam halo sources.
+#    2.013 -- separate profile for beam deposition cold electron source.
+#    2.014 -- added boundary values & locations for transport solvers.
+#    2.015 -- fixed error in specification of n0norm -- normalized 
+#             recycling and gas flow neutral density profiles
+#    2.016 -- removed GASFL and RECYC elements (these are contained within
+#             SC0 now); added E0_AV and VPHI0_AV to characterize the edge
+#             neutral sources.
+#    2.017 -- SC0 sflx0 profile replaced by sprof0, dimensioned by nspec_gas
+#             instead of 0:nspec_th; added separate profile for electrons;
+#             related changes for beam halo and recombination neutrals.
+#    2.018 -- support antenna loading renormalization of TORIC results
+#             provide "absorption spectrum" vs. nphi which can be modified
+#             from the "vacuum spectrum" launched at the antenna.
+#    2.019 -- 13Apr2009 -- added profile elements in PLASMA: 
+#             qie, pohme, curr_bootstrap
+#    2.020 -- 26May2009(dmc) -- added profile element: curr_ohmic
+#    2.021 -- 17Jun2009(dmc) -- add Psi_to_machine_axis (scalar vs. time)
+#    2.022 -- 03Jul2009(dmc) -- add net transport (loss) profiles
+#                pe_trans, pi_trans -- electrons & ions (W/zone)
+#                    >0: local cooling; <0: local heating due to transport
+#                tq_trans -- toroidal momentum (Nt*m/zone)
+#                sn_trans(~rho,:) -- ptcl transport, each thermal species
+#                     (#/sec/zone); sn_trans(:,0) -- electrons
+#                     sn_trans(:,1:nspec)) -- all thermal ions
+#                for all transport profiles, the sum of array elements
+#                from the center to zone j yields the flow between zones
+#                j and j+1-- positive means an outward flow, negative
+#                means an inward flow
+#    2.023 -- 14Aug2009(dmc) -- user requested changes (a) to machine
+#                description: allow horizontal and vertical offsets in
+#                aperture openings; (b) upper and lower outer squareness
+#                equilibrium geometry profiles are added.
+#    2.024 -- 12Feb2010(dmc) -- profiles of fast ion diffusivity vs 
+#                (energy,rho) added for mode effects on fast ion transport
+#                see anom_diffus_2d group & associated member profiles
+#                and their grids.  Also, 1st version coil machine description
+#                and associated values in EQ component for free boundary
+#                simulation support.
+#    2.025 -- 10Apr2010(dmc) -- several requested items:
+#                -- C*80 labeling strings added for components and common 
+#                   input data items: e.g. NBI_Code_Info; NBI_Data_Info.
+#                -- A Fourier Spline representation of the core equilibrium
+#                   (equal arc theta by convention).
+#                -- integer flag arrays e.g. ns_is_input(...) to indicate 
+#                   which density, temperature, and toroidal and poloidal 
+#                   velocity profiles are based on simulation input data.
+#                -- toroidal and poloidal velocity profiles vs. rho, species,
+#                   on outer half midplane flux surface intercepts, 
+#                   supplementing the <vpll> and mass density averaged 
+#                   angular velocity (omegat) profiles previously defined.
+#    2.026 -- 07May2010(dmc) -- trace beam support
+#                nbion_trace(...) to specify a 2nd specie injected in a
+#                given neutral beam; power_nbi_trace(...) to specify the
+#                power in the trace element (this in addition to the
+#                main beam power, power_nbi(...).  It is presumed but
+#                perhaps not enforced, that:
+#                     ps%power_nbi_trace(ib) << ps%power_nbi(ib)
+#                The default value (blank) indicates no trace element.
+#                Also: certain hi-Z "impurity" neutral beam species are now 
+#                supported: Neon, Argon, Krypton, Xenon.  The profile 
+#                qbeami(...) will give the average <Z>*ps_xe of slowing 
+#                down ions of these species; for H and He beams, qbeami 
+#                will be radially invariant at ps_xe and 2*ps_xe, 
+#                respectively.
+#    2.027 -- 21Jun2010(dmc) -- add separate electron heating and current
+#                drive profiles for each ECH/ECCD antenna source: 
+#                peech_src(...) and curech_src(...).
+#                and for each LH antenna source:
+#                pelh_src(...), pilh_src(...), and curlh_src(...)
+#    2.028 -- 06Aug2010(dmc) -- add grirhoi = <1/(R*|grad(rho)|)>
+#                flux surface averaged metric
+#    2.029 -- 17Oct2010(dmc) -- add D & v profiles to describe diffusive-
+#                advective split in transport: e.g. flux = -D*grad(n) + v*n
+#                (Note transport models & experiments may only produce total
+#                fluxes which are then decomposed into advective and diffusive
+#                parts by some means).  Also: add rho_anomth and "anomalous"
+#                profiles for ad-hoc prediction: 
+#                  anomalous sources: {TQ_ANOM,PE_ANOM,PI_ANOM,SC_ANOM}
+#                  anomalous velocities: {VELPPH_ANOM,VELTE_ANOM,VELTI_ANOM,VELNS_ANOM}
+#                  anomalous diffusivities: {CHIPPH_ANOM,CHIE_ANOM,CHII_ANOM,DIFFNS_ANOM}
+#                and "profile consistency target" profiles
+#                  for temperature: TMODEL(...)
+#                  for density:     NMODEL(...)
+#                and electron-ion transport split factor EE_MOBILITY_RATIO(:);
+#                it is not yet clear exactly how these will be used.  Also
+#                added: transport power balance terms:
+#                  compression {Qcomp_e, Qcomp_i}
+#                  rotational energy dissipation {Qrot_diff, Qrot_conv}
+#                  ELDOT = [d(Philim)/dt]/[2*Philim]
+#    2.030 -- 28Oct2010(dmc) -- NMODEL & TMODEL converted to step profiles
+#                for consistency with {ns,Ts}; boundary value scalars added,
+#                NMODEL_BDY and TMODEL_BDY.
+#                Also: Impurity source list (xs_name(1:nxs)), magnitudes xs(1:nxs)
+#                  and associated source profiles sii_xs(:,0:nspec_th,1:nxs)
+#                  normalized to xs(1:nxs) -- RAD component
+#                And: as requested by S. Kruger: 
+#                  EQ profiles RMAJOR_MEAN,RMINOR_MEAN,TRIANG_MILLER_L,_U
+#    2.031 -- 30Dec2010(dmc) -- Upwind differencing data for particle, energy
+#                and momentum transport equations: UPWIND_PFRAC_*(...)
+#    2.032 -- 15Mar2011(dmc) -- Requested changes for transport studies:
+#                vtor_inmp,vpol_inmp,fast ion density boundary values,
+#                flux surface squareness definition for GYRO use
+#    2.033 -- 30Apr2011(dmc) -- Added arrays of transport profile data 
+#                indexed by "category of transport": neoclassical, turbulent,
+#                user specified, MHD-related, etc.  An array dimension
+#                of application defined transport categories is added: the
+#                trcat list
+#    2.034 -- 15May2011(dmc) -- GYRO squareness removed (on 2nd thought).
+#    2.035 -- 25Oct2011(lab) -- adding 3d ich antenna data
+#          -- 24July2012 -- added position of antenna relative to coil midplane
+#    2.036 -- 07Jun2013 (rga) -- incremented id for Xingqiu's nmdifb addition.  Xingqiu
+#                also fixed a units conversion bug affecting the resistivity
+#                returned by the pspro module.
+#    2.037 -- 01Jul2013 (rga) -- modification of weight conversion for consistency
+#                with comput/periodic_table.f90
+#    2.038 -- 15Aug2013 (xqy) -- add KY as Grid variable for turbulent model spectrum outputs, 
+#              such as TGLF, GLF23, and MMM series models, the corresponding python code has been
+#              updated also.
+#    2.039 -- 14Jan2014  (xqy) -- add line-averaged electron density
+#    2.040 -- 04Mar2014  (xqy) -- add residuals profiles for transport eqn.
+#    2.041 -- 05June2014 (xqy) -- add perpendicular velocity profiles for thermal plasmas
+#    2.042 -- 04Mar2015  (rga) -- added EC beam width and curvature for torbeam
+#    2.043 -- 19Dec2015  (xqy) -- add growthrate and frequency for tglf output
+#    2.044 -- 6June2016  (xqy) -- add more than one LH antenna information
+#    2.045 -- 12Apr2017  (xqy) -- add support for NTM
+#    2.046 -- 17Aug2017  (xqy) -- add support for MTM
+#    2.047 -- 11Sep2017  (xqy) -- bug fix for nmini_bdy, and nfusi_bdy
+#    2.048 -- 26Feb2018  (xqy) -- add support dQedGrdte,dQedGrdti,dQidGrdte,dQidGrdti
+#    2.049 -- 2018/06/08 (jss) -- added check for arrays coming out of intrinsic transfer
+#                                 function allocated with length 0
+#    2.050 -- 2018/12/05 (xqy) -- add density and temperature fluctuation spectrum
+#    2.051 -- 2019/05/05 (jss) -- added variables for toroidal and poloidal mode number for LH
+#    2.052 -- 2019/08/28 (xqy) -- defined number of grid points for ky grid (anomalous data over
+#                                 ky spectrum and for mmm model), removed ky_anonmth and ky_mmm
+#                                 grid variables
+#    2.053 -- 2019/09/16 (jss) -- Add poloidal momentum diffusivity and impurity diffusivity for MMM
+#    2.054 -- 2020/05/27 (jss) -- Added pellet source terms and PEL component, will need future mods
+#    2.055 -- 2020/06/10 (jss) -- Added output variables for the MTM model
+#
+#    2.056 -- 2022/12/14 (fmp) -- LH component has been modified as follows:
+#                                 phigrilh removed => not needed because of assumption of toroidal symmetry
+#                                 heghilh, thegrilh, rhopsi0lh, nthinlh have been resized to depend only on the antenna index.
+#                                 These geometrical parameters should have the same value for all lobes in teh spectrum.
+#                                 The current definition was causing confusion in several users who are not RF experts.  
+#
+Version_ID:  2.056
+
+#---------------
+#  glossary:
+#
+#    SWIM -- SciDAC-2 project, MHD & RF interactions, 2005--??
+#            The US DOE funded project under which the first versions
+#            of the Plasma State were created.
+#
+#    IPS  -- Integrated Plasma Simulator, a component of SWIM which
+#            orchestrates initialization of Plasma States and controls
+#            the sequence of computation using physics components.
+#
+#    Tokamak -- a toroidal magnetic device for confinement of fusion
+#       plasmas.  The Plasma State has been created as a tool to aid
+#       in simulation and modeling of Tokamak experiments.  See the
+#       state variable "Tokamak_ID" for identification-- this should
+#       correspond to a known machine description.  Due to occasional
+#       upgrades, the same tokamak might map to two or three configurations;
+#       it is suggested these be named <tokid>_<revid>, e.g. "TFTR_rev1",
+#       "TFTR_rev2", etc.
+#
+#    Shot -- a single tokamak plasma experiment-- see state variable "shot_id".
+#
+#    Run -- a single simulation of a shot.
+#
+#    Runid -- the name of said simulation-- see also state variable 
+#       "Global_label".
+#
+#    Components -- The SWIM SciDAC and similar projects aim at
+#       multi-physics simulation, with a partitioning of implementing
+#       physics codes into more or less self contained "components".
+#       These components exchange data through the Plasma State.
+#       Each element of the Plasma State is associated with a 
+#       component.
+#
+#    Sections -- this file is divided into sections, as follows:
+#
+#      Header -- fortran module information imported into every generated
+#        fortran code.
+#
+#      Components -- list of known physics components.  All subsequently
+#        defined data elements (except constants) are assigned to a 
+#        physics component.
+#
+#      Constants -- fortran PARAMETER values and/or C #define values
+#
+#      Machine_Description -- physical description of a tokamak and its
+#        constituent "bolted on" parts, which do not vary in time and
+#        do not change from shot to shot for a given tokamak.  Machine
+#        description element examples:  coil locations, limiter location 
+#        (axisymmetric description), neutral beam geometry, RF antenna 
+#        geometry.  Machine_Description elements of the Plasma State can
+#        be set from a namelist.
+#
+#      Shot_Configuration -- physical data about a shot, which can vary
+#        from shot to shot, but typically do not vary time dependently
+#        within a shot.  Example elements:  species lists, direction of 
+#        toroidal field, direction of toroidal current.  There may be a
+#        few simulations where select shot configuration data elements 
+#        (such as ECH beam aiming) will vary in time.  Shot_Configuration
+#        elements of the Plasma State can be set from a namelist.
+#
+#      Simulation_Init -- information about a run or simulation, which
+#        (normally) does not vary in time.  Example: spatial grids; 
+#        common numerical controls for physics models.  This section 
+#        also contains information derived from the prior sections, such 
+#        as, combined species lists.  This data is generally initialized
+#        by simulation code components (including Plasma State itself) 
+#        and does not vary in time.  There is no namelist for this data.
+#
+#      State_Data -- non-profile information that does vary in time.
+#        Examples: neutral beam powers, RF antenna powers, min and max 
+#        major radius of plasma boundary, min and max mod(B) around
+#        plasma boundary near last closed flux surface.  There is no
+#        namelist for this data.
+#
+#      State_Profiles -- time dependent profile information, defined over one
+#        or more spatial coordinates (perhaps including velocity space) but
+#        often indexed as well e.g. by plasma species and/or beam or RF 
+#        antenna.  Example elements:  temperature profiles, density profiles,
+#        heating and current drive profiles, profiles that constitute the MHD
+#        equilibrium (geometry and field description of plasma interior).
+#
+#---------------
+#
+#  Description of this file:
+#
+#  Version_ID -- (above) -- identifies version of state definition.  It 
+#    is important that this be incremented when the state definition 
+#    changes, to assure compatibility with state files written by prior
+#    versions (2.000 or later) of the software.
+#
+#  Comments:
+#  ---------
+#  Lines for which the FIRST nonblank character is a "#" are deemed comments
+#  for this file: stripped and never seen by the python code generator.
+#
+#  In non-"#" lines, the fortran comment character "!" often appears; this
+#  indicates a comment that may be transcribed into generated fortran codes
+#  and/or labeling information for Plasma State elements.
+#
+#  The following abbreviations designate the data types known to the Python
+#  code generator:
+#
+#  Basic Data Types:
+#  -----------------
+#    R  -- REAL(KIND=rspec)  (for scalars and arrays)
+#    I  -- INTEGER
+#    N  -- Name (equivalent to C*32).
+#    F  -- Filepath (equivalent to C*256).
+#    C*nn -- CHARACTER string of length (nn)
+#
+#  Compound Types:
+#  ---------------
+#    L  -- item list: 1d array of type N which also implicitly defines an
+#          array dimension -- array is list of item names.  Examples: lists
+#          of neutral beams, lists of RF antennas.  An L-array dimension
+#          must be defined in an L declaration before it is used in
+#          definitions of other state elements.
+#
+#    S  -- species list: set of 1d arrays of various types giving the charge
+#          mass and atomic number of plasma species, and names derived from
+#          the periodic table of elements.  An array dimension is implicitly
+#          defined.  An S-array dimension must be defined in an S declaration
+#          before it is used in definitions of other state elements.
+#
+#    G  -- Grid: 1d R array that also implicitly defines an array dimension.
+#          Grid arrays span a "coordinate", one of the following:
+#              RHO -- radial flux coordinate, sqrt(Phi/Philim), [0,1]
+#              TH  -- poloidal angle coordinate, [-pi,pi]
+#              R   -- major radius grid, [Rmin, Rmax]
+#              Z   -- vertical displacement grid, [Zmin, Zmax].
+#              KY  -- ky spectrum for turbulent model.
+#          Profiles are arrays with 1 or more grid array dimensions.  Grid
+#          array dimensions must be defined in a G declaration before being
+#          used to define a profile element.
+#
+#          The grid name must be of form <coord> or <coord>_<qualifier>
+#          I.e. the first part of the grid name, preceding "_", when
+#          converted to uppercase, must match "RHO", "TH", "R", "Z", or 
+#          "KY".
+#
+#          (Additional supported grid coordinates may be added over time).
+#
+#  Integers and integer vectors can also be used as "enumeration" array
+#  dimensions; for profiles these generate an automatic encoded integer
+#  label.  In non-profile arrays, an enumeration array dimension must be 
+#  the first or only dimension; in profile arrays it must be the first
+#  dimension after the coordinate dimensions.  There can be no more than
+#  a single enumeration per array.  When an integer vector is used for 
+#  an enumeration, it means that the enumeration size varies.
+#
+#  To enable an integer (I) data element to serve as an enumeration 
+#  dimension, it should be qualified with the keyword "ENUM" or 
+#  "ENUM:<integer-array-name>"; the latter form chooses an alternate
+#  source of integer labels than the index itself, for profile arrays 
+#  using the enumeration dimension.
+#
+#  Some examples, based on element specifications below:
+#
+#      I|ENUM  num_rzlim   ! number of (R,Z) limiter points
+#
+#      I|ENUM  nrz_antgeo(nicrf_src)  ! number of points defining antenna
+#
+#      I|ENUM:nphi  num_nphi(nicrf_src)  ! number of n_phi modes
+#                          ! on antenna: mode numbers themselves in nphi(...)
+#
+#  ENUM dimension usage:
+#      num_rzlim -- integer
+#      {rlim(1:num_rzlim),zlim(1:num_rzlim)} -- (R,Z) axisymmetric limiter.
+#
+#      nrz_antgeo(nicrf_src) -- integer vector
+#      {R_antgeo(1:nrz_antgeo(i),i),Z_antgeo(1:nrz_antgeo(i),i)} -- (R,Z) 
+#                                                                  contour
+#          describing geometry for i'th ICRF antenna; number of points also
+#          varies with antenna index.
+#
+#---------------
+#  All grid arrays are oriented to zone boundaries.  For profile data defined
+#  over a grid or grids as a zonal step function, the corresponding grid
+#  array dimension is reduced by one; this is noted by the "~" symbol in the
+#  dimensioning specification: e.g. "~nrho" for "nrho - 1" as used by a step
+#  function defined over a particular rho grid.  More information on this can
+#  be found in the comments on the "STATE_PROFILES" section.
+#
+#  Rank of arrays:
+#    The sections MACHINE_DESCRIPTION and SHOT_CONFIGURATION
+#                 are backed by namelists; the maximum
+#                 rank of arrays is just 1 in these sections-- except
+#                 in the case of variable length ENUM enumerations.
+#
+#    For now, the maximum rank of elements of SIMULATION_INIT is also 1.
+#
+#    The maximum rank of arrays in STATE_DATA is 3.
+#    The maximum rank of arrays in STATE_PROFILES is 6.
+#
+#    These limits could be relaxed in a future version of the software.
+#
+#  Conventions and Common Practice:
+#  --------------------------------
+#
+#    -- item lists (L) are part of the Machine_Description.
+#       The Machine_Description section can be loaded from a namelist.
+#
+#    -- "basic" species lists (thermal plasma species, beam fast ion species,
+#       RF minority fast ion species, and fusion product fast ion species) are
+#       part of the Shot_Configuration.  In addition there are some derived
+#       species lists (consisting e.g. of a union of the basic lists) that
+#       are generated and placed in the Simulation_Init section.
+#       The Shot_Configuration section can be loaded from a namelist.
+#
+#    -- grids (G) are part of the Simulation_Init; these indicate the
+#       resolution of the physics model components in the simulation.
+#
+#    The Header section only contains header information for generated
+#    f90 source files.
+#
+#    The Components section lists SWIM physics components; every data 
+#    element (excepting constants) belongs to a physics component.
+#
+#    The Constants section can contain data of types R & I only.
+#
+#    Machine_Description can contain data of types L,R,I,N,F,C*nn.
+#    Shot_Configuration can contain data of types S,R,I,N,F,C*nn.
+#    Simulation_Init can contain data of types S,G,L,R,I,N,F,C*nn.
+#    State_Data can contain data of types R,I,N,F,C*nn.
+#    State_Profiles can only contain arrays of type R.
+#
+#  Each state element belongs to a specific component.
+#  Within each section, each declaration of an element shall have been 
+#  preceded by an component designation.
+#=========================================================================
+Section: Header
+
+# the non-blank lines are inserted in the .f90 output...
+
+  use swim_global_data_mod, only: rspec, swim_err_out_file, swim_error
+  implicit NONE
+
+#=========================================================================
+Section: Components
+
+  PLASMA  ! Thermal plasma parameters; fluid profile advance
+  EQ      ! MHD equilibrium
+
+  NBI     ! Neutral beam
+  IC      ! Ion cyclotron heating
+  LH      ! Lower Hybrid heating and current drive
+  EC      ! Electron cyclotron heating and current drive
+
+  PEL     ! Pellet injection
+
+  RUNAWAY ! Runaway electrons
+
+  FUS     ! Fusion product fast ions
+
+  RAD     ! Radiated Power & impurity transport
+  GAS     ! Neutral Gas sources & transport
+
+  LMHD    ! Linear MHD stability
+
+  RIPPLE  ! TF field ripple
+
+  ANOM    ! Anomalous transport
+
+#=========================================================================
+
+Section: Constants
+
+# (parameters in the plasma state definition module; not part of 
+# the plasma_state type definition itself).
+#
+# all are scalars; time invariant; no component; not saved in file
+#
+#   <type>  <name> = <value>
+
+  R  ps_me  = 9.1094e-31_rspec        ! electron mass, kg
+  R  ps_mp  = 1.6726e-27_rspec        ! proton mass, kg
+  R  ps_xe  = 1.6022e-19_rspec        ! Joule/ptcl-eV (also, electron charge)
+
+  R  ps_epslon  = 1.0e-34_rspec       ! small number
+  R  ps_epsinv  = 1.0e+34_rspec       ! large number
+
+  R  ps_pi       = 3.1415926535897931_rspec   ! pi
+  R  ps_twopi    = 6.2831853071795862_rspec   ! 2*pi
+  R  ps_zero     = 0.0_rspec                  ! Zero
+  R  ps_one      = 1.0_rspec                  ! one
+  R  ps_two      = 2.0_rspec                  ! two
+  R  ps_three    = 3.0_rspec                  ! three
+  R  ps_half     = 0.5_rspec                  ! one-half
+  R  ps_onethird = 0.3333333333333333_rspec   ! one-third
+  R  ps_twothird = 0.6666666666666667_rspec   ! two-third
+  R  ps_mu0      = 1.2566e-6_rspec            ! mu0
+
+# the following species type codes should not be modified...
+#    ps_tokamakium (a hybrid model impurity with time and radially varying
+#    charge and mass) is not used in SWIM, but is used in some codes that
+#    can write state data for use by SWIM-- so the definition is retained.
+
+  I  ps_electron  = -1
+  I  ps_therm_ion = 1
+  I  ps_impurity  = 2
+  I  ps_tokamakium = 3
+  I  ps_beam_ion  = 4
+  I  ps_rf_minority = 5
+  I  ps_fusion_ion = 6
+
+# index to electrons in many species lists:
+
+  I  ps_elec_index = 0
+
+# the following "ccw" definitions are used in generated code -- do not remove!
+
+  I  ps_ccw_select = 1  ! used as indicator of counter-clockwise oriented theta
+  I  ps_ccw_reverse= 2  ! used as indicator of clockwise oriented theta
+
+# the following interpolation type codes are used in generated code -- do
+# not remove!
+
+  I  ps_stepdv  = -3    ! step function *dV in plasma state object
+  I  ps_stepda  = -2    ! step function *dA in plasma state object
+  I  ps_stepfun = -1    ! step function
+  I  ps_pclin   =  0    ! piecewise linear function
+  I  ps_hermite =  1    ! Hermite cubic interpolant
+  I  ps_spline  =  2    ! Cubic spline interpolant
+
+# the following spline boundary condition controls are used in the generated
+# code -- do not remove!
+
+  I  ps_bc_dflt = -1    ! Default boundary condition: "not a knot" for splines
+  I  ps_bc_grad00 = 0   ! d/drho -> 0 as rho -> 0
+
+  I  ps_bc_xxx = 99     ! This indicates Hermite item with all explicit nodal
+                        ! derivitaves as input
+
+# the following initialization code is used in generated code -- do not remove!
+# this needs to be a large negative number
+
+  I  ps_unInit = -123456789  ! value for un-initialized integer scalars
+
+# the following are type codes for ps_list_window views of state data
+# do not remove
+
+  I  ps_components = 1
+  I  ps_array_dims = 2
+  I  ps_species_lists = 3
+  I  ps_data_sets = 4
+  I  ps_profile_sets = 5
+  I  ps_data = 6
+  I  ps_profiles = 7
+  I  ps_item_lists = 8
+  I  ps_grid_dims = 9
+  I  ps_machine_descr = 10
+  I  ps_shot_config = 11
+  I  ps_sim_control = 12
+  I  ps_enum_dims = 13
+
+# the following are used for tracking component status -- do not remove --
+# for lock variables (changes allowed; changes generate warnings; no
+# changes allowed).
+
+  I  ps_unlocked = 0
+  I  ps_monitor  = 1
+  I  ps_locked   = 2
+
+# the following values are used for hash computation in a component list
+#  (e.g. in an array integer cclist(ps_ccount) -- cf plasma_state_hash_code).
+
+  I   ps_noCheck =  0  ! skip hash checks
+  I   ps_chkAll  =  1  ! check profiles & dimensions & scalars
+  I   ps_chkProfs=  2  ! check profiles & dimensions; skip scalars
+
+# the following are defined to support the LMHD component
+
+  I   ps_stable =  0   ! constant indicating a stable linear MHD mode
+
+  I   ps_normal =  0   ! LMHD code exit status: normal
+  I   ps_eqfail =  1   ! LMHD code exit status: equilibrium refinement failed
+  I   ps_mapfail = 2   ! LMHD code exit status: mapper failed
+
+      ! >2 may indicate various failures peculiar to each LMHD code itself
+
+# the following is the maximum size of 1d static arrays in namelist
+# declarations -- this is also an effective upper limit of species lists
+# and item lists dimension sizes...
+
+  I   ps_max_static = 500
+
+# the following is the maximum size of any dimension of 2d static arrays
+# in namelist declarations -- upper limit e.g. on number of ICRF antennas
+# and the number of (R,Z) points describing their geometries.
+
+  I   ps_max_static_2d = 128
+
+#=========================================================================
+Section: Machine_Description
+
+#
+#  quantities that are fixed for a given tokamak-revision (cf tokamak_id)
+#  Values in this section can be read from a "machine description namelist".
+#
+
+component: PLASMA
+
+   N  tokamak_id     ! Tokamak (Machine Description) ID
+        ! <tokid>_<revid> within a 32 character string.
+
+component: EQ
+
+   F  geometry            ! path to file(s) vac. vessel & coil descr.
+
+#  Axisymmetric limiter:
+#  this defines the boundary of the vacuum region, for codes that 
+#  require an axisymmetric boundary.
+
+   I|ENUM  num_rzlim     ! number of points, axisymmetric (R,Z) limiter
+   !  dimension for rlim & zlim -- closed axisymmetric piecewise linear
+   !  contour describing axisymmetric limiter or vacuum vessel wall
+
+   !  expect rlim(1)=rlim(num_rzlim) and zlim(1)=zlim(num_rzlim)
+
+   R|units=m  rlim(num_rzlim)  ! R points in closed (R,Z) contour sequence
+   R|units=m  zlim(num_rzlim)  ! Z points in closed (R,Z) contour sequence
+
+#  The axisymmetric limiter data is included in the EQ component, as 
+#  usually it historically comes from an EFIT G-eqdsk file.
+
+#  Also part of the machine description: a definition of an [R,Z]
+#  rectangle that encloses the entire space of interest for modeling 
+#  the tokamak device...
+
+group:  EQ_RZbox|units=m
+  R  R_min_box           ! R_min of bounding box
+  R  R_max_box           ! R_max of bounding box
+  R  Z_min_box           ! Z_min of bounding box
+  R  Z_max_box           ! Z_max of bounding box
+end_group
+
+#  Coil/circuit description -- for free boundary simulation --
+
+   L|pf_circuits  circuit_name(ncircuits)  ! Number & names of circuits 
+      ! connecting coils affecting poloidal field-- axisymmetric coils,
+      ! or eddy currents represented as cancelling coil pairs
+
+   L|pf_coils     coil_name(ncoils)  ! Number & name of axisymmetric coils
+
+   N  coil_in_circuit(ncoils)        ! circuit to which each coil belongs
+      ! (each must exactly match a name in the circuit_name(...) list).
+
+#  Coil geometry.  Each coil winding is a rectangle or parallelagram that
+#  can be oriented arbitrarily in space.
+
+#  for coil j, {Rloc_coil(j),Zloc_coil(j)} is the corner, "lower left" corner
+#  if the tilt angles are small; {Hsize_coil(j),Vsize_coil(j)} are the coil
+#  dimensions, the actual lengths of coil (rectangle or parallelagram) sides.
+
+#  If Ang_Href_coil(j)=Ang_Vref_coil(j)=0.0, the coil is a rectangle alligned
+#  with the {R,Z} axes.
+
+#  If Ang_Href_coil(j)=Ang_Vref_coil(j)<>0.0, the coil is still a rectangle,
+#  but tilted.
+
+#  If Ang_Href_coil(j)<>Ang_Vref_coil(j), the coil shape is a parallelagram.
+
+#  There are no enforced limit on Ang_Href_coil or Ang_Vref_coil values, but,
+#  it is recommended that all values be kept well within the range
+#  (-90 degrees to +90 degrees).
+
+   R|units=m  Rloc_coil(ncoils)      ! R location of coil, lower left corner
+   R|units=m  Zloc_coil(ncoils)      ! Z location of coil, lower left corner
+
+   R|units=m  Hsize_coil(ncoils)     ! (Rotatable) Horizontal coil base size
+   R|units=degrees Ang_Href_coil(ncoils) ! angle w.r.t. horizontal of coil base
+      ! zero means, base is alligned horizontally
+      ! +10 (degrees) means, tilted up to the right;
+      ! -10 (degrees) means, tilted down to the right
+
+   R|units=m  Vsize_coil(ncoils)     ! (Rotatable) Vertical coil size
+   R|units=degrees Ang_Vref_coil(ncoils) ! angle w.r.t. vertical of coil sides
+      ! zero means, walls are alligned vertically
+      ! +10 (degrees) means, tilted up and to left 10 degrees from vertical
+      ! -10 (degrees) means, tilted up and to right, 10 degrees from vertical
+
+#  Example: a parallelagram coil j with (R,Z) positions of corners (A,B,C,D)
+#    A at (1.00,0.00)   B at (1.00+sqrt(3)*0.10,0.10)
+#                       C at (1.00+sqrt(3)*0.10,0.20)   D at (1.00,0.10)
+#  is described by {Rloc_coil(j)=1.00, Zloc_coil(j)=0.00, 
+#                      Hsize_coil(j)=0.20, Vsize_coil(j)=0.10,
+#                         Ang_Href_coil(j)=30.0, Ang_Vref_coil(j)=0.0}
+
+   I  Nturns(ncoils)  ! SIGNED number of conductor turns wrapped in each coil
+      ! + means, a positive current flows counter-clockwise viewed from above;
+      ! - means, a positive current flows clockwise viewed from above;
+
+   I  VRep_coil_count(ncoils) ! replication count, vertical coil stack
+      ! default: 1
+   R|units=m Vrep_coil_spacing(ncoils) ! replicated coil separation
+      ! (only meaningful for coils {k} with VRep_coil_count(k) > 1).
+
+#  Coil resistance
+
+   R|units=ohms/turn  coil_resispt(ncoils)  ! coil resistance per turn
+      ! total resistance (ohms) of coil j: abs(Nturns(j))*coil_resispt(j)
+
+component: NBI
+
+# neutral beams
+   L|neutral_beams nbi_src_name(nbeam)  ! number & name of neutral beams
+
+   N     beam_type(nbeam)   ! beam type:
+      ! "standard", H/D/T beam using standard full-half-third energy 
+      !     injection fractions; energy dependence of standard beam energy 
+      !     fractions are defined as part of the machine description
+      ! "negative_ion", H/D/T beam 100% injected at full energy
+      ! "Helium" for Helium or He3 beam, energy fraction is 100% full energy.
+      ! "Impurity" for injection of one of: {Ne,Ar,Xe,Kr}: 100% full energy.
+
+      # it is presently assumed that a single set of "standard" injection 
+      # energy fractions will suffice for all beams on each device; if an 
+      # experiment comes along with two beam sets each with different energy 
+      # fraction characteristics, a 2nd set of energy fractions can be added
+      # to the state specification.
+      #   SEE: H_EINJ_STANDARD, H_FFULL_STANDARD, H_FHALF_STANDARD
+      #   SEE: D_EINJ_STANDARD, D_FFULL_STANDARD, D_FHALF_STANDARD
+      #   SEE: T_EINJ_STANDARD, T_FFULL_STANDARD, T_FHALF_STANDARD
+      #         ...below
+
+      #--------------------------------
+      # machine description state elements {sRtcen, Lbsctan, Zbsc, Phibsc,
+      # Lbscap, Zbap} fully specify the centerline location for each 
+      # neutral beam... 
+      #--------------------------------
+
+   R|units=m       sRtcen(nbeam)    ! signed tangency radius
+      ! This is the major radius of tangency of the neutral beam centerlines--
+      ! i.e. the distance of closest approach of each beam centerline to the
+      ! machine axis, in meters.
+      ! Sign convention: + for beams which impart angular momentum in the
+      ! counter-clockwise direction around the torus as viewed from above.
+
+   R|units=m       Lbsctan(nbeam)    ! distance, source to tangency point
+      ! This is the length of the centerline from the center of the neutral
+      ! beam's original ion source to the centerline tangency point, |sRtcen|
+      ! from the machine axis.  The length is given in meters.
+
+   R|units=m       Zbsc(nbeam)       ! elevation of beam source
+      ! Elevation of beam centerline at source (+ above) (- below) 
+      ! machine midplane as defined by Z=0 in the equilibrium specification
+      ! (the default, 0.0, centers beam source in the machine midplane).
+
+   R|units=degrees       Phibsc(nbeam)     ! toroidal location of beam source
+      ! Angle of location of beam centerline at source, with respect to some
+      ! reference Phi=0 vertical plane.  Phi is assumed to increase in the
+      ! counter-clockwise direction of the torus when viewed from above, i.e.
+      ! (R,phi,Z) form a right handed coordinate system.  The setting of 
+      ! Phibsc does not affect beam heating in axisymmetric simulations.
+
+   R|units=m       Lbscap(nbeam)     ! distance, source to aperture
+      ! Distance of beam centerline from source to aperture into vacuum vessel
+
+   R|units=m       Zbap(nbeam)       ! elevation of beam centerline at aperture
+      ! At a distance (Lbscap) from the beam source, the beam centerline 
+      ! passes above (+) or below (-) machine midplane as defined by Z=0 
+      ! in the equilibrium specification.  If defaulted, the centerline
+      ! is centered on the midplane (Z=0) when it crosses the plane of the
+      ! aperture.  If both Zbap(...) and Zbsc(...) are defaulted, the 
+      ! entire beam centerline lies in the midplane.
+      ! Note that Z at the beam centerline tangency radius is:
+      !           Ztan = Zbsc + (Lbsctan/Lbscap)*(Zbap-Zbsc)
+
+      #--------------------------------
+      # Characteristics of beam source
+      # "Horizontal" means "parallel to the midplane, normal to the beam
+      # centerline" which is uniquely defined as long as there is a
+      # horizontal component to the beam centerline direction (which 
+      # is assumed to be the case and is the case for all known tokamak
+      # neutral beams).  Then, "vertical" means normal to the beam 
+      # centerline and normal to "horizontal" as just defined.
+      #--------------------------------
+
+   N     nbshape(nbeam)    ! shape keyword for beam source grid
+      ! For beam j, nbshape(j)="Rectangle" indicates a rectangular shaped 
+      ! source; nbshape(j)="Circle" indicates a circular shaped source.  
+      ! (The keyword must be spelled correctly but upper or lower case
+      ! letters may be used interchangeably).  The plane of 
+      ! the source is assumed perpendicular to the beam centerline.
+
+   R|units=m       b_halfwidth(nbeam)  ! beam half-width at source
+      ! If nbshape(j)="Rectangle" this is the horizontal half-width of 
+      ! the source rectangle for beam j; if nbshape(j)="circle" it is 
+      ! the radius of the circular source for beam j, in meters.
+
+   R|units=m       b_halfHeight(nbeam) ! beam half-height at source
+      ! If nbshape(j)="Rectangle" this is the vertical half-height of the 
+      ! beam at its source grid.  This quantity ignored for 
+      ! nbshape(j)="circle".
+
+   R|units=m       b_Hfocal_length(nbeam)  ! horizontal focal length
+      ! for nbshape(j)="circle" sources this is the only focal length.
+
+   R|units=m       b_Vfocal_length(nbeam)  ! vertical focal length
+      ! used for nbshape(j)="Rectangle" sources only.
+
+      # divergences D defined as follows:
+      #   for alpha the (small) angle by which a beam particle velocity 
+      #   deviates from being parallel to the beam centerline, the
+      #   probability distribution is given by
+      #      P(alpha) = exp(-alpha**2/D**2)
+      # thus at alpha1 = D, P(alpha1) = (1/e)*P(0).
+
+   R|units=degrees   b_Hdivergence(nbeam)  ! horizontal divergence (D) of beam
+      ! for nbshape(j)="circle" sources this is the ONLY divergence.
+      ! --> definition of D (b_Hdivergence(...) given in DEGREES):
+      ! for alpha the random angle of deviation from the direction of
+      ! aiming, P(alpha) ~ exp(-alpha**2/D**2); P(D) = (1/e)*P(0)
+      ! I.e. D is the angle of deviation from the aiming angle, in 
+      ! either direction, for a (1/e) reduction in probability of 
+      ! launch of a beam particle.
+
+   R|units=degrees   b_Vdivergence(nbeam)  ! vertical divergence (D) of beam
+      ! used for nbshape(j)="Rectangle" sources ONLY.
+      ! --> definition of D (b_Vdivergence(...) given in DEGREES):
+      ! for alpha the random angle of deviation from the direction of
+      ! aiming, P(alpha) ~ exp(-alpha**2/D**2); P(D) = (1/e)*P(0)
+      ! I.e. D is the angle of deviation from the aiming angle, in 
+      ! either direction, for a (1/e) reduction in probability of 
+      ! launch of a beam particle.
+
+      #--------------------------------
+      # Size and shape of beam aperture into vacuum vessel:
+      # If offsets are zero, the aperture is assumed to be symmetric around 
+      # the beam centerline, in a plane normal to the beam centerline.
+      # 
+      # Elevation of aperture and distance of aperture from beam source
+      # are part of the beam centerline definition (above).
+      #
+      # The comments in the beam source description on the meaning of
+      # "horizontal" and "vertical" apply here as well.
+      #--------------------------------
+
+   N     nbap_shape(nbeam)    ! shape keyword for beam aperture
+      ! For beam j, nbap_shape(j)="Rectangle" indicates a rectangular 
+      ! aperture; nbap_shape(j)="Circle" indicates a circular aperture.
+      ! The beam centerline is assumed to pass through the center of the
+      ! aperture.
+
+   R|units=m         ap_halfwidth(nbeam)  ! aperture half-width
+      ! for nbap_shape(j)="rectangle", this is the horizontal size 
+      ! specification; for nbap_shape(j)="circle", ap_halfwidth(j) is 
+      ! the radius.
+
+   R|units=m         ap_halfheight(nbeam) ! aperture half-height
+      ! for nbap_shape(j)="rectangle", this is the vertical size 
+      ! specification; this quantity ignored for nbap_shape(j)="circle".
+
+   R|units=m         ap_horiz_offset(nbeam) ! horizontal offset of aperture
+      ! opening relative to beam centerline; positive value means shift of 
+      ! aperture away from machine axis i.e. to make a beam with a larger 
+      ! tangency radius
+
+   R|units=m         ap_vert_offset(nbeam)  ! vertical offset of aperture
+      ! opening relative to beam centerline: positive value means the 
+      ! aperture opening is shifted upward relative to the beam centerline
+
+   N     nbap2_shape(nbeam)    ! keyword for optional 2nd aperture
+      ! For beam j, nbap2_shape= blank or 'None': no 2nd aperture
+      ! Other possible values:  "Rectangle"; "Circle".
+      ! The beam centerline is assumed to pass through the center of the
+      ! aperture.
+
+   R|units=m       Lbscap2(nbeam)     ! distance, source to 2nd aperture
+      ! Distance of beam centerline from source to center of 2nd aperture
+      ! into vacuum vessel.
+
+   R|units=m         ap2_halfwidth(nbeam)  ! 2nd aperture half-width
+      ! for nbap_shape(j)="rectangle", this is the horizontal size 
+      ! specification; for nbap_shape(j)="circle", ap_halfwidth(j) is 
+      ! the radius; ignored if there is no 2nd aperture.
+
+   R|units=m         ap2_halfheight(nbeam) ! aperture half-height
+      ! for nbap_shape(j)="rectangle", this is the vertical size 
+      ! specification; this quantity ignored for nbap_shape(j)="circle", or
+      ! if there is no 2nd aperture.
+
+   R|units=m         ap2_horiz_offset(nbeam) ! horizontal offset, 2nd aperture
+      ! opening relative to beam centerline; positive value means shift of 
+      ! aperture away from machine axis i.e. to make a beam with a larger 
+      ! tangency radius
+
+   R|units=m         ap2_vert_offset(nbeam)  ! vertical offset, 2nd aperture
+      ! opening relative to beam centerline: positive value means the 
+      ! aperture opening is shifted upward relative to the beam centerline
+
+   R|units=keV       Einj_min(nbeam)      ! minimum injection energy
+      ! minimum energy of the full energy fractional component of each beam
+
+   R|units=keV       Einj_max(nbeam)      ! maximum injection energy
+      ! maximum energy of the full energy fractional component of each beam
+
+      ! Some codes use 1.5*maxval(Einj_max) as an upper limit on a lab frame
+      ! energy grid for beam ions slowing down distribution functions.
+
+# beam energy fraction tables
+#   these are injection current fractions:
+#     FFULL refers to fraction of beam current at full nominal injection energy
+#     FHALF refers to fraction of beam current at 1/2 nominal injection energy
+#     FTHIRD = 1-FFULL-FHALF = fraction at 1/3 nominal beam energy
+#       (only FFULL and FHALF are specified)
+#
+#   If Jb is the beam current, the relationship between injection energy
+#   (kvolt_nbi) and injection power (power_nbi) satisfies:
+#      power_nbi = Jb*kvolt_nbi*(FFULL + FHALF/2 + FTHIRD/3)
+
+   I|ENUM n_H_einj_standard  ! no. pts in H beam energy fractions table
+   I|ENUM n_D_einj_standard  ! no. pts in D beam energy fractions table
+   I|ENUM n_T_einj_standard  ! no. pts in T beam energy fractions table
+
+#   (note He beams are all full energy: He(2) and He(3) molecules do not form
+#   in the neutral beam throat).
+
+#   (negative-ion based neutral beams also inject only at full energy).
+
+   R|units=keV H_einj_standard(n_H_einj_standard)  ! H beam table energies
+               ! for full-half-third energy beam current fractions data
+
+   R|units=- H_ffull_standard(n_H_einj_standard) ! H beam full energy fractions
+   R|units=- H_fhalf_standard(n_H_einj_standard) ! H beam half energy fractions
+
+
+   R|units=keV D_einj_standard(n_D_einj_standard)  ! D beam table energies
+               ! for full-half-third energy beam current fractions data
+
+   R|units=- D_ffull_standard(n_D_einj_standard) ! D beam full energy fractions
+   R|units=- D_fhalf_standard(n_D_einj_standard) ! D beam half energy fractions
+
+
+   R|units=keV T_einj_standard(n_T_einj_standard)  ! T beam table energies
+               ! for full-half-third energy beam current fractions data
+
+   R|units=- T_ffull_standard(n_T_einj_standard) ! T beam full energy fractions
+   R|units=- T_fhalf_standard(n_T_einj_standard) ! T beam half energy fractions
+   
+#-------------------------------------------
+# RF antennas
+#-------------------------------------------
+
+#-------------------------
+component: IC
+   L|icrf_source   icrf_src_name(nicrf_src)  ! number & name of ICRF sources
+
+   F ant_model(nicrf_src)  ! antenna model filenames (1 per antenna source)
+
+# the following is provisional...
+# refinements are expected
+
+   I|ENUM nrz_antgeo(nicrf_src) ! number of (R,Z) points, antenna geometries
+
+   R|units=m R_antgeo(nrz_antgeo(),nicrf_src)  ! antenna geo: R pts
+   R|units=m Z_antgeo(nrz_antgeo(),nicrf_src)  ! antenna geo: Z pts
+
+   R|units=m dx_fshield(nicrf_src) ! distance, antenna to Faraday shield
+
+#-------------------------
+component: EC
+   L|ecrf_source   ecrf_src_name(necrf_src)  ! number & name of ECRF sources
+
+   R|units=m   R_EC_launch(necrf_src)      ! R of center of launcher
+   R|units=m   Z_EC_launch(necrf_src)      ! Z of center of launcher
+   R|units=degrees  Phi_EC_launch(necrf_src) ! Phi of center of launcher
+                       ! this may be left at zero for axisymmetric simulations.
+
+
+   R|units=m  EC_PRINC_WIDTH_HOR(necrf_src)   ! principal beam width in horizontal direction
+   R|units=m  EC_PRINC_WIDTH_VERT(necrf_src)  ! principal beam width in vertical direction
+   R|units=m  EC_PRINC_CURV_HOR(necrf_src)    ! principal curvature in horizontal direction
+   R|units=m  EC_PRINC_CURV_VERT(necrf_src)   ! principal curvature in vertical direction
+
+
+   R|units=degrees  EC_Half_Power_Angle(necrf_src) ! Divergence of EC beam
+                       ! beam at half-power, this half-angle away from
+                       ! direction of beam centerline which is started
+                       ! at the launcher (treated as a point source);
+                       ! See EC_theta_aim(necrf_src) & EC_phi_aim(necrf_src)
+                       ! in the shot configuration section.
+
+   R|units=-   EC_Beam_Elongation(necrf_src) ! EC beam ellipticity
+                       ! The conical EC beam shape can be elongated
+                       ! "vertically" (elongation > 1) or "horizontally"
+                       ! (elongation < 1).  Here "vertical" means in the
+                       ! direction normal to the plane contaiing the beam
+                       ! centerline and the +phi unit vector; "horizontal"
+                       ! means normal to the plane of the beam centerline
+                       ! and the "vertical" direction.  If this quantity is
+                       ! defaulted to zero, it is reset to 1.0 exactly, i.e.
+                       ! for a beam with circular cross section.
+
+# possible future additions:
+#   -- finite radius of beam at launcher (instead of point source).
+#   -- tilt control to allow elongation in direction other than horizontal
+#      or vertical as defined in the EC_Beam_Elongation comments.
+
+#-------------------------
+component: LH
+   L|lhrf_source   lhrf_src_name(nlhrf_src)     ! number & name of LHRF sources
+  
+#------------------------------------------------------------------------
+component: RIPPLE
+   I ntf_coils     ! number of TF coils
+                   ! the number of toroidal field (TF) coils is also the
+                   ! number of periods in the main TF ripple field
+
+   I ntf_coil2     ! number of TF coils involved in inducing 2nd component
+                   ! of TF ripple field (typically ntf_coil2 = ntf_coils/2).
+                   ! (This 2nd TF ripple field is sometimes introduced in
+                   ! tokamak experiments to study the effects of TF ripple
+                   ! induced fast ion loss).
+
+#=========================================================================
+Section: Shot_Configuration
+
+#  quantities that characterize a tokamak shot, and that are generally
+#  fixed for the duration of the shot (though perhaps with some exceptions).
+#  These may however vary from shot to shot for the same tokamak device.
+#  Values in this section can be read from a "shot configuration namelist".
+
+component: PLASMA
+
+   I shot_number     ! integer shot number
+
+#------------------------------------------------------------------
+# Species lists:  for each species list designation, 5 plasma state 
+# element arrays are defined.  E.g. for species list "s" these are:
+#
+#   N  s_name(0:nspec_th)  ! C*32 names or labels of species
+#   I  s_type(0:nspec_th)  ! type codes for species, e.g. ps_electron
+#   R  qatom_s(0:nspec_th) ! atomic nucleus charge (C) for species
+#   R  q_s(0:nspec_th)     ! actual charge (C) for species
+#   R  m_s(0:nspec_th)     ! mass of species (kg)
+#
+# for ions that are not fully stripped, q_s(j) < qatom_s(j).
+# Integer atomic numbers are qatom_s(j)/ps_xe
+# Integer charge numbers are q_s(j)/ps_xe
+#
+# Similar element arrays are generated for each species list, e.g.
+# snbi_name, snbi_type, qatom_snbi, q_snbi, m_snbi for "snbi".
+#
+# Many other plasma state elements contain species list indices.
+#
+# Contents of these arrays have to be initialized!  The plasma_state_mod
+# module contains some tools for assisting with this; there is a test
+# program "plasma_state_test" which shows an example of use of these
+# tools to initialize species lists:
+#
+# plasma_state_mod.f90 methods PS_SPECIES_CONVERT, PS_LABEL_SPECIES,
+# PS_MERGE_SPECIES_LISTS, and PS_NEUTRAL_SPECIES_LIST are provided
+# to aid with initialization of species lists.
+#
+# The following species lists are considered part of shot configuration:
+#  S -- thermal species (includes electrons and all impurities & charge states)
+#  RFMIN -- RF minority species
+#  SFUS -- fusion product species
+#
+# In addition the quantity NBION(1:nbeam) gives the injected species for
+# each neutral beam from which the list SNBI, beam injected species, is
+# constructed.  PS_LABEL_SPECIES will execute this construction.
+#
+# The following species lists are derived from the above lists (with 
+# some options) and so are considered part of the simulation initialization,
+# rather than shot configuration:
+#  ALL -- S//SNBI//RFMIN//SFUS concatenated into a single list
+#  SA -- S abridged: 2 impurities + fully stripped light ions only.
+#  ALLA -- SA//SNBI//RFMIN//SFUS concatenated.
+#  SGAS -- recycling neutral gas species (non-impurities, e.g. H,D,T,He3,He4).
+#  SIMP0 -- list of impurity neutral species (atoms).
+#
+# Derived quantities (index mappings) are also placed in the simulation
+# control section.
+#------------------------------------------------------------------
+# Main thermal plasma species list:
+	
+   S|thermal_specie  S(0:nspec_th)   ! thermal species list
+       ! index 0 for electrons
+#
+# The S list includes all impurities and all charge states.
+#------------------------------------------------------------------
+#  fast ion species...
+
+component: NBI
+   N  nbion(nbeam)       ! name of species injected by each beam.
+      ! Possible values are: "H", "D", "T", "He3", and "He4" at present.
+      ! DMC Apr 2010: added: "Ne", "Ar", "Kr", "Xe"
+      ! Each beam can inject one species.  Multiple beams (or usually
+      ! all beams) can inject the same species.
+      ! the SNBI species list will be constructed from nbion elements;
+      ! in many experiments this will consist only of the single element "D".
+
+   N  nbion_trace(nbeam) ! (if non-blank) beam trace element
+      ! Possible values same as nbion; nbion(ib).ne.nbion_trace(ib) enforced.
+      ! This allows a second trace element to be injected with any neutral
+      ! beam-- as in trace tritium beam experiments, or, heating beams doped
+      ! with a noble gas species.  See: power_nbi_trace(...)
+
+component: FUS
+   S|fusion_ion   SFUS(nspec_fusion)    ! fusion product ion species
+
+#------------------------------
+component: IC
+   S|RF_minority  RFMIN(nspec_rfmin)    ! ICRF minority species
+
+#------------------------------
+# ICRF antenna description -- input n_phi spectrum
+# (frequency may vary in time for some shots)
+
+   R|units=Hz freq_ic(nicrf_src)        ! frequency on each ICRF source
+
+# units changed, MHz -> Hz in vsn2.012 !!
+
+#  each antenna has n_straps
+   I|ENUM n_straps(nicrf_src)           ! number of straps in the antenna
+   R|units=m R_ant(nicrf_src)           ! major radius of antenna
+   R|units=m Z_ant(nicrf_src)           ! height of antenna 
+   R|units=m Z_mid_ant(nicrf_src)       ! center of antenna relative to TF coil midplane
+   ! machine midplane as defined by Z=0 in the equilibrium specification
+   ! same reference as used for beams
+   ! default of 0.0 could be used, but ant. is often offset
+
+   I|ENUM num_nphi_vac(nicrf_src)       ! number of non-zero n_phi values
+                                        ! counting both positive and negative
+                                        ! n_phi values for the retained vacuum
+                                        ! spectrum--will typicall be a few hundred
+                                        ! or less and is a super set of num_phi
+
+# the current spectrum for the vacuum values (both real and imaginary
+# is stored in the dim(num_nphi_vac, nicrf) arrays
+   R|units=Amps/m Real_ant_coef(num_nphi_vac(),nicrf_src)  ! real part of Fourier Coef
+   R|units=Amps/m Imag_ant_coef(num_nphi_vac(),nicrf_src)  ! imag part of Fourier Coef
+
+# the following reflect the number of modes that will actually be used
+   I|ENUM:nphi  num_nphi(nicrf_src)     ! number of non-zero n_phi values
+                                        ! counting both positive and negative
+                                        ! n_phi values
+
+   I nphi(num_nphi(),nicrf_src)         ! n_phi wave spectrum from antenna
+   R|units=- wt_nphi(num_nphi(),nicrf_src)  ! vacuum spectrum n_phi weight
+                                        ! power_ic(iant)*wt_nphi(ind,iant)
+                                        ! gives "vacuum" power @nphi(ind,iant)
+                                        ! "ind" covers range 1:num_nphi(iant).
+                                        ! see also wt_nphi_abs(...)
+
+#------------------------------------------------------------------
+# field orientation set here -- it can vary from shot to shot for the
+# same machine...
+
+component: EQ
+
+group:  EQ_Bsigns
+  I  kccw_Bphi = 0       ! B_phi orientation: +1 means CCW viewed from above
+                         ! -1 means clockwise (CW) viewed from above.
+  I  kccw_Jphi = 0       ! J_phi orientation: +1 means CCW viewed from above
+end_group
+
+component: GAS
+   L|gas_source    gs_name(ngsc0)  ! number & name of edge neutral gas sources
+
+   N  gas_atom(ngsc0)      ! name of species introduced by each gas source
+      ! Possible values are: "H", "D", "T", "He3", and "He4" at present.
+      ! Each must correspond to an actual species in the SGAS list.
+
+   I  is_recycling(ngsc0)  ! 0/1; =1 to for recycling sources
+      ! i.e. sources proportional to ion outfluxes
+
+component: RAD
+   L|impurity_source  xs_name(nxs) ! number & name of impurity sources
+
+#-------------------------------
+component: EC
+
+# the EC power is assumed always time dependent and is in the state data
+# section.  On many experiments the EC quantities here are fixed for the
+# duration of a shot, although there are plans or proposals to make
+# these quantities time dependently adjustable:
+
+  R|units=Hz freq_ec(necrf_src)     ! frequency of EC source
+
+# Note: freq_ec moved from State_Data to Shot_Configuration *and* units
+# were changed from MHz to Hz in vsn 2.012 !!
+
+  R|units=degrees  EC_theta_aim(necrf_src)  ! poloidal aiming angle
+                   ! = angle from +Z direction:
+                   !   0 degrees-> straight up;
+                   ! +/-  45 degrees-> on a cone in an upward direction
+                   ! +/-  90 degrees-> in a horizontal direction...
+                   ! +/- 135 degrees-> on a cone in a downward direction
+                   ! +/- 180 degrees-> straight down
+                   ! (for values other than 0,+/- 180, see alse EC_phi_aim).
+
+  R|units=degrees  EC_phi_aim(necrf_src)    ! toroidal aiming angle
+                   !   0 degrees-> component of beam in +R direction
+                   !  90 degrees-> component of beam in +phi direction
+                   ! 180 degrees-> component of beam in -R direction
+                   ! 270 degrees or -90 degrees-> component in -phi direction
+                   !     An EC beam with a component in the +phi direction
+                   !     will push electrons in the +phi direction, counter
+                   !     clockwise (CCW) around the machine axis as viewed
+                   !     from above; and hence drive current in a clockwise
+                   !     (CW) direction.  See shot configuration variable
+                   !     kCCW_Jphi for orientation of main plasma current.
+                   ! See also EC_theta_aim(...).
+
+
+  R|units=-   EC_Omode_Fraction(necrf_src)  ! O-mode fraction of EC source
+                  ! Power(O-mode)/(Power(O-mode)+Power(X-mode))
+
+#-------------------------------
+component: LH
+
+# in some experiments this may vary in time...
+
+  R|units=Hz freq_lh(nlhrf_src)     ! frequency on each LHRF source
+# units changed, MHz -> Hz in vsn2.012 !!
+
+  I|ENUM nspectrumlh_src(nlhrf_src)                  ! number of spectrum peaks
+
+  R|units=- aminlh(nspectrumlh_src(),nlhrf_src)      ! parallel mode number, center of the spectrum peak
+
+  R|units=- amaxlh(nspectrumlh_src(),nlhrf_src)      !  width of the spectrum peak
+
+  R|units=- atorminlh(nspectrumlh_src(),nlhrf_src)   ! toroidal mode number left of lumps
+
+  R|units=- atormaxlh(nspectrumlh_src(),nlhrf_src)   ! toroidal mode number right of lumps
+
+  R|units=- apolminlh(nspectrumlh_src(),nlhrf_src)   ! poloidal mode number left of lumps
+
+  R|units=- apolmaxlh(nspectrumlh_src(),nlhrf_src)   ! poloidal mode number right of lumps
+
+  R|units=- fracpslh(nspectrumlh_src(),nlhrf_src)    ! fraction of power on each peak (the sum over all peaks must be 1)
+
+  I i_npoloidal                                      ! need description
+
+  R|units=- rhopsi0lh(nlhrf_src)   ! need description
+
+  R|units=- thegrilh(nlhrf_src)    ! need description
+
+  R|units=- hegrilh(nlhrf_src)     ! need description
+
+  I nthinlh(nlhrf_src)             ! need description
+
+  I nnkparlh(nspectrumlh_src(),nlhrf_src)            ! need description
+
+  I nnktorlh(nspectrumlh_src(),nlhrf_src)            ! need description
+
+  I nnkpollh(nspectrumlh_src(),nlhrf_src)            ! need description
+
+#=========================================================================
+Section: Simulation_Init
+
+#  Quantities that generally do not vary in time, which control the 
+#  simulation of a tokamak shot.
+
+#  NOTE: some quantities, i.e. grids, may be reset occasionally in the
+#  course of a simulation.  Such actions require affected profiles to 
+#  be regridded by interpolation.
+
+component: PLASMA
+
+  N      RunID               ! Run ID
+                             ! one word, no imbedded blanks; <= 32 characters
+
+  C*80   Global_label        ! Run Label
+                             ! imbedded blanks allowed; <= 80 characters
+
+  C*80   PLASMA_Code_Info    ! Information: code managing PLASMA component
+                             ! (advance of specie temperatures & densities etc)
+
+  C*80   VSUR_Data_Info      ! information on source of surface voltage data
+  C*80   CUR_Data_Info       ! information on source of plasma current data
+  C*80   TF_Data_Info        ! information on source of toroidal field data
+
+  C*80   Ts_Data_Info        ! information on source of Temperature data
+  C*80   ns_Data_Info        ! information on source of Density data
+  C*80   ZEFF_Data_Info      ! information on source of Zeff data
+  C*80   vtor_Data_Info      ! information on source of toroidal velocity data
+  C*80   vpol_Data_Info      ! information on source of poloidal velocity data
+
+component: EQ
+
+  C*80   EQ_Code_Info        ! Information: code implementing EQ component
+  C*80   EQ_Data_Info        ! Information: source of EQ input data
+
+component: NBI
+
+  C*80   NBI_Code_Info       ! Information: code implementing NBI component
+  C*80   NBI_Data_Info       ! information on source of beam power & voltage data
+
+component: IC
+
+  C*80   IC_Code_Info        ! Information: code implementing IC component
+  C*80   IC_Data_Info        ! information on source of ICRF power data
+
+component: EC
+
+  C*80   EC_Code_Info        ! Information: code implementing EC component
+  C*80   EC_Data_Info        ! information on source of ECRF power data
+
+component: LH
+
+  C*80   LH_Code_Info        ! Information: code implementing LH component
+  C*80   LH_Data_Info        ! Information on source of LHRF power data
+
+component: PEL
+
+  C*80   PEL_Code_Info       ! Information: code implementing PELLET component
+  C*80   PEL_Data_Info       ! Information: on source of pellet injection
+
+component: RUNAWAY
+
+  C*80   RUNAWAY_Code_Info   ! Information: code implementing RUNAWAY component
+
+component: FUS
+
+  C*80   FUS_Code_Info       ! Information: code implementing FUS component
+
+component: RAD
+
+  C*80   RAD_Code_Info       ! Information: code implementing RAD component
+  C*80   RAD_Data_Info       ! Information on source of radiated power data
+
+component: GAS
+
+  C*80   GAS_Code_Info       ! Information: code implementing GAS component
+
+component: ANOM
+
+  C*80   ANOM_Code_Info      ! Information: code implementing ANOM component
+
+# Note: for LMHD there is separate labeling allowing for different codes
+#       for different types of instabilities
+
+component: PLASMA
+
+group:  TIME_RANGE|units=sec
+  R  tinit     ! start time of simulation
+  R  tfinal    ! stop time of simulation (may be adjustable)
+end_group
+
+#---------------------------------------------------------------
+# Beam injected fast ion species list
+#  This will be constructed from the set of species associated with each
+#  actual neutral beam (1:nbeam) defined in the machine description and
+#  with species nbion(1:nbeam) specified in the shot configuration.
+
+component:  NBI
+   S|beam_ion     SNBI(nspec_beam)      ! beam ion species
+                     ! this species list to be constructed from nbion(1:nbeam)
+                     ! and augmented optionally by nbion_trace(1:nbeam)
+
+   I  trace_flag(nbeam)   ! trace element flag 
+                 ! 0 means, beam has no trace element;
+                 ! 1 means, trace element, matching injection energy fractions
+                 ! 2 means, trace element injected at 100% full energy
+                 !   (1 will be set if the trace element is an isotope of
+                 !   of the beam's main injection specie; 2 if not).
+
+component: PLASMA
+#---------------------------------------------------------------
+# Controls on derived species lists:
+#  "IS" declaration: hint to associate these integers with species lists...
+#
+   IS  Z0max = 2  ! maximum Z of non-impurity species
+                  ! (default is 2: Helium).  Ion species with Z <= Z0max
+                  ! are considered "non-impurities" and are present in
+                  ! SGAS, a list of recycling neutral gas species.
+
+group: Zimp_sa
+   IS  Zimp1 = 2  ! lower limit on Z of impurity in reduced species list SA;
+                  ! by default the lowest available Z impurity is chosen.
+                  ! After the SA list is defined, this value is reset to
+                  ! match the lower Z impurity selected for the SA list.
+   IS  Zimp2 = 1000  ! upper limit on Z of impurity in SA species list;
+                  ! by default the highest Z impurity available is chosen.
+                  ! After the SA list is defined, this value is reset to
+                  ! match the higher Z impurity selected for the SA list.
+end_group
+
+# Derived species lists (use PS_MERGE_SPECIES_LISTS):
+# list ALL is not affected by the controls {Z0max,Zimp1,Zimp2}
+
+   S|specie  ALL(0:nspec_all)        ! all species
+       ! index 0 for electrons
+       ! this list is the union of lists "s", "snbi", "rfmin", and "sfus"
+
+   I all_index(0:nspec_all)          ! species index in original lists
+       ! ion species j in "all" corresponds to ion species:
+       !   all_index(j) in "s" if all_type(j) = ps_electron, ps_therm_ion, or
+       !                                        ps_impurity
+       !   all_index(j) in "snbi" if all_type(j) = ps_beam_ion
+       !   all_index(j) in "rfmin" if all_type(j) = ps_rf_minority
+       !   all_index(j) in "sfus" if all_type(j) = ps_fusion_ion
+
+# these abridged lists contains fully stripped light ions Z<=Z0max
+# and 2 model impurity ions, Z>Z0max, Z constrained to be within range
+# Zimp1 to Zimp2, enabling precise match to Zeff and 
+# quasineutrality with the unabridgded list "S".  Z0max defaults to 2
+# but can be adjusted within the range {1:3}.  Zimp1 and Zimp2 default
+# to values so that the lowest and highest Z impurities are selected from 
+# S for use in SA, or it will be picked by user's choice.
+
+   S|thermal_specie  SA(0:nspec_tha)  ! thermal species abridged 
+       ! (index 0 for electrons)
+
+   I sa_index(0:nspec_all)            ! species index in original lists
+       ! sa_index(j)=-1 indicates that element (j) of the "SA" list is
+       !   derived from a composite of ions in the "S" list (using Zeff
+       !   and quasineutrality equations).
+       ! otherwise sa_index(j) gives the index of the species in "S"
+       ! For example, if index 2 corresponds to Deuterium ions in "SA", then
+       ! sa_index(2) gives the index in "S" for Deuterium ions.
+       ! For non-impurities usually sa_index(j)=j but this could be altered
+       ! if He3+1 or He4+1 (less than fully stripped He ions) are present in 
+       ! the model.
+
+# SA combined with fast species
+
+   S|specie  ALLA(0:nspec_alla)       ! all species abridged 
+       ! (index 0 for electrons)
+       # ("alla" includes fast ion species)
+
+   I alla_index(0:nspec_alla)         ! species index in original lists
+       ! alla_index(j)=-1 indicates that element (j) of the "alla" list is
+       !   derived from a composite of ions in the "s" list (using Zeff
+       !   and quasineutrality equations).
+       ! otherwise for thermal ions alla_index(j) gives the index of the 
+       ! species in "S".  For example, if index 2 corresponds to Deuterium 
+       ! thermal ions in "alla", then alla_index(2) gives the index in "S"
+       ! for Deuterium thermal ions.  For non-thermal ions, ion species j
+       ! corresponds to species index:
+       !   alla_index(j) in "SNBI" if all_type(j) = ps_beam_ion
+       !   alla_index(j) in "RFMIN" if all_type(j) = ps_rf_minority
+       !   alla_index(j) in "SFUS" if all_type(j) = ps_fusion_ion
+
+# pointers from "S" into abridged list (also into the alla list).
+   I s_to_sa(0:nspec_th)  ! address in sa species list
+       ! if species s(j) is in list SA, s_to_sa(j) gives its address in SA.
+       ! if species s(j) is NOT in list SA, s_to_sa(j)=-1.
+
+# elements (0:nspec_th) of s are also the first (0:nspec_th) elements of the
+# combined list "ALL".
+
+# elements (0:nspec_tha) of sa are also the first (0:nspec_tha) elements of the
+# combined list "ALLA".
+
+   I  snbi_to_all(nspec_beam)   ! map snbi index to "all" list
+   I  snbi_to_alla(nspec_beam)  ! map snbi index to "alla" list
+
+   I  sfus_to_all(nspec_fusion)   ! map sfus index to "all" list
+   I  sfus_to_alla(nspec_fusion)  ! map sfus index to "alla" list
+
+   I  rfmin_to_all(nspec_rfmin)   ! map rfmin index to "all" list
+   I  rfmin_to_alla(nspec_rfmin)  ! map rfmin index to "alla" list
+
+# sublist of thermal specie elements Z > Z0max (impurities)
+#  (all charge states)
+
+   S|impurity_atoms SIMPI(nspec_impi)   ! impurity ion species in simulation
+   I  simpi_to_s(nspec_impi)            ! map simpi index to "s" list
+
+#------------------------------------------------------------------
+#  neutral gas model species
+
+component: GAS
+   S|neutral_gas  SGAS(nspec_gas)  ! atomic neutral species in plasma core
+   I  sgas_to_s(nspec_gas)              ! map sgas index to "s" list
+
+   S|impurity_atoms SIMP0(nspec_imp0)   ! atomic impurity species in simulation
+   I  simp0_to_s(nspec_imp0)            ! map simp0 index to "s" list
+
+   I  sc0_to_sgas(ngsc0)    ! index map from neutral source to neutral species
+                            ! (computed from GAS_ATOM(ngsc0)).
+                            ! this indicates the species injected by the source
+                            ! although charge exchange induces a source/sink
+                            ! profile of additional species proportional to
+                            ! each source.
+
+#  neutral species all have atomic number Z <= Z0max.
+#---------------------------------------------------------------
+component: PLASMA
+  G   rho(nrho)           ! rho grid (PLASMA)
+
+  L|TR_categories  trcat(ntrcat)  ! Application defined list of 
+      ! transport categories (possible examples: NC for neoclassical,
+      ! TURB for turbulent, SAW for sawtooth induced, ...); used to
+      ! dimension profile data provided to quantify transport rates
+      ! according to underlying physics 
+
+  C*256 trmodels(ntrcat)  ! short description or ID of transport models
+
+component: EQ
+
+  G   rho_eq(nrho_eq)     ! rho grid (EQ)
+  G|CCW   th_eq(nth_eq)   ! theta grid (EQ)
+  
+  G   R_grid(nR)          ! R grid
+  G   Z_grid(nZ)          ! Z grid
+
+  G   rho_eq_geo(nrho_eq_geo)  ! rho grid (EQ flux surface averages)
+      ! this grid is built from rho_eq: nrho_eq_geo = 2*nrho_eq - 1
+      ! rho_eq_geo(1:nrho_eq_geo:2) = rho_eq(1:nrho_eq)
+      ! rho_eq_geo(2:nrho_eq_geo:2) = 
+      !        (rho_eq(1:nrho_eq-1)+rho_eq(2:nrho_eq))/2
+      ! i.e. a doubly fine grid for metric flux surface averages stored
+      ! as piecewise linear radidal profiles.
+
+  L|PS_moments  psmom_num(npsmom)  ! Pfirsch-Schlutter moments
+      ! if call to compute PS moments occurs and this has not been
+      ! initialized, npsmom=16 will be set, and psmom_num(1)='1',
+      ! psmom_num(2)='2', ..., psmom_num(16)='16'
+
+  I  nmom = 16  ! number of Fourier (R,Z) moments 
+                ! requested for Fourier Spline representation
+          !   R(x,th) = R0(x) + sum x*(xRj(x)*cos(j*th) + xRj~(x)*sin(j*th))
+          !   Z(x,th) = Z0(x) + sum x*(xZj~(x)*cos(j*th) + xZj(x)*sin(j*th))
+
+  L|EQ_moments  eqmom_num(neqmom)  ! Equilibrium moments 
+      ! neqmom = nmom; eqmom_num(1)='1', eqmom_num(2)='2', etc...
+
+
+component:  NBI
+  G  rho_nbi(nrho_nbi)            ! rho grid -- NBI
+
+component:  FUS
+  G  rho_fus(nrho_fus)    ! rho grid -- Fusion products model
+
+component:  IC
+  G  rho_icrf(nrho_icrf)  ! rho grid (RF)
+
+  R|units=- fracmin(nspec_rfmin) 
+    ! minority density fraction if kdens_rfmin="fraction"
+    ! if so, it must have non-zero positive value for each minority ion specie.
+    ! sum(fracmin) << 1 is expected.
+
+group:  ICRF_controls
+  N  kdens_rfmin = "data" ! = "fraction" => nmini(i) = fracmin(i)*ne
+                          ! = any other value (e.g. "data" or "model") then
+                          !   the minority density is set by some other
+                          !   means (e.g. read in from another data source).
+end_group
+
+component:  EC
+  G  rho_ecrf(nrho_ecrf)  ! rho grid -- ECRF
+
+component:  LH
+  G  rho_lhrf(nrho_lhrf)  ! rho grid -- LHRF
+
+component: PEL
+  G  rho_pel(nrho_pel)    ! rho grid -- PEL
+
+component:  RUNAWAY
+  G  rho_rw(nrho_rw)      ! rho grid -- RUNAWAY electrons
+
+component:  RAD
+  G  rho_rad(nrho_rad)    ! rho grid (RAD)
+  G  rho_mist(nrho_mist)  ! rho grid (PLASMA) impurity-driven sources
+
+component: GAS
+  G  rho_gas(nrho_gas)    ! rho grid (GAS -- neutral gas model)
+
+component: LMHD
+  G  rho_lmhd(nrho_lmhd)  ! rho grid (LMHD component)
+
+# modes & codes for LHMD component (the numbers can be zero)
+
+  L|toroidal_modes Tor_mode_label(mmodes)  ! Toroidal modes to monitor
+
+  I   Tor_mode_No(mmodes)      ! (from input) Toroidal modes monitored
+              ! set at initialization, would not vary in time
+              ! likely just: 1,2,3,...,mmodes
+
+  L|Newcomb_codes  Newcomb_code(nnewcomb)  ! name(s) of Newcomb code(s) used
+  L|Delta_W_codes  DeltaW_code(ndelta_w)   ! name(s) of delta(W) code(s) used
+  L|Balloon_codes  Balloon_code(nballoon)  ! name(s) of Ballooning code(s) used
+
+  N  Newcomb_mapper(nnewcomb)  ! mapper code used for each Newcomb code
+  N  DeltaW_mapper(ndelta_W)   ! mapper code used for each delta(W) code
+  N  Balloon_mapper(nballoon)  ! mapper code used for each ballooning code
+
+  N  LMHD_eq_code        ! name of MHD equilibrium refinement code used
+
+component: RIPPLE
+  G  R_ripple(nR_rip)    ! R grid for TF ripple field(s)
+  G  Z_ripple(nZ_rip)    ! Z grid for TF ripple field(s)
+
+component: ANOM
+  G  rho_anomth(nrho_anomth)  ! rho grid (1d anomalous data for 1d
+                              ! transport models)
+
+  G  rho_anom(nrho_anom)    ! rho grid (1d anomalous transport profiles)
+  G  E_anom(nefi_anom)      ! (optional) energy grid (1d profiles)
+                            !   for separated variation of fast ion 
+                            !   anomalous transport with fast ion energy
+
+  G  rho_anom2(nrho_anom2)  ! rho grid (2d anomalous transport profiles)
+  G  E_anom2(nefi_anom2)    ! energy grid (2d anomalous transport profiles)
+
+                            ! for Db(E,rho), separate profiles for various 
+                            ! pitch related limiting orbit topologies:
+                            !   deeply trapped
+                            !   barely trapped
+                            !   barely passing  co/ctr
+                            !   vpll/v -> 1 limit  co/ctr
+
+  I|ENUM  nky_anomth       ! number of points, ky grid ( anomalous data over ky spectrum)
+  I|ENUM  nky_mmm          ! number of points, ky grid for MMM model
+
+# derived coil data...
+
+component: EQ
+
+  I  icircuit_coil(ncoils)  ! index of circuit to which each coil belongs
+       ! (derived from machine description): coil j, named coil_name(j),
+       ! belongs to the circuit named circuit_name(icircuit_coil(j)).
+
+#=========================================================================
+Section: State_Data
+
+#  non-profile data that varies in time through a simulation
+
+#-------------------------------
+component: PLASMA
+
+group:  TIME_STEP|units=sec
+  R  t0        ! time at beginning of IPS macro timestep
+  R  t1        ! time at end of IPS macro timestep
+end_group
+
+#  grid motion...
+
+  R|units=1/sec  eldot  ! [d(Philim)/dt]/[2*Philim]
+
+# line-averaged electron density
+
+  R|units=#/m^2 nebar  ! line-averaged electron density
+
+#-----------
+# In the following integer arrays a value of 1 indicates use of experimental
+# data for the entire profile; 0 means all or part is modeled or predicted.
+
+  I ns_is_input(0:nspec_th)    ! specie density measurement flag
+  I Ts_is_input(0:nspec_th)    ! specie temperature measurement flag
+  I vtor_is_input(0:nspec_th)  ! specie outer midplane toroidal velocit flag
+  I vpol_is_input(0:nspec_th)  ! specie outer midplane poloidal velocit flag
+
+#-----------
+# predictive transport equations: boundary conditions / locations
+# note that in some applications the boundary is set inward from rho=1,
+# meaning that the data at rho>= rho_bdy is taken as input.  It will
+# be possible to set rho_bdy=0 to denote that the entire profile as 
+# input and need not be predicted...
+
+group: Temperature_BCs|units=KeV
+  R Te_bdy  ! Electron temperature at/beyond boundary
+  R Ti_bdy  ! Ion temperature at/beyond boundary
+end_group
+
+  R|units=rad/sec  omegat_bdy  ! toroidal angular velocity at/beyond boundary
+
+  R|units=m^-3 ns_bdy(0:nspec_th)  ! specie densities at/beyond boundary
+
+group: rho_bdy_solve|units=-
+  R rho_bdy_Te   ! location beyond which Te is known
+  R rho_bdy_Ti   ! location beyond which Ti is known
+  R rho_bdy_omegat  ! location beyond which angular velocity is known
+end_group
+
+  R|units=- rho_bdy_ns(0:nspec_th) ! locations beyond which densities are known
+  
+#-----------
+# neutral gas source magnitudes: nb GASFL and RECYC were removed; see SC0
+# and gs_name(ngsc0); more general mechanism for listing and describing
+# edge neutral sources which result in core plasma transport and charge
+# exchange loss...
+#-----------
+
+group:  surface_voltage|units=Volts
+  R  vsur                ! toroidal voltage at surface
+end_group
+
+#-------------------------------
+# these variables control locking of section data
+# NOTE: the code generator uses these names: do not change!
+#       the locks can optionally be used to enforce time invariance 
+#       of section data
+
+group:  lock_variables
+  I  lock_machine_descr = 0  ! Machine_Description section lock
+  I  lock_shot_config = 0    ! Shot_Configuration section lock
+  I  lock_sim_init = 0       ! Simulation_Init section lock
+
+end_group
+#-------------------------------
+component: GAS
+  R|units=#/sec  sc0(ngsc0)  ! edge neutral sources (atoms/sec)
+                             ! these numbers normalize numerous GAS profiles
+
+  R|units=KeV   e0_av(ngsc0) ! average energy of neutral sources, "(3/2)*T0"
+                             ! [in reference frame of (vphi0_av)]; some models
+                             ! impose a minimum value such as 0.005 KeV.  The
+                             ! value can effect penetration of neutrals and
+                             ! depth of edge-driven charge exchange loss, but
+                             ! (depending on plasma parameters) the effect 
+                             ! is often weak.
+
+  R|units=m/sec vphi0_av(ngsc0) ! average toroidal velocity of neutral source
+                             ! (some models may assume this is zero).
+
+  R|units=m^-3  dn0out       ! Hydrogenic neutral density in scrape off region
+                  ! This is a simplified 0d specification of neutral density
+                  ! beyond the plasma boundary, that can be used to deplete
+                  ! fast ion orbits that go beyond the boundary via charge
+                  ! exchange, in some models.
+
+component: RAD
+  R|units=#/sec    xs(nxs)   ! impurity source magnitude (atoms/sec)
+                             ! these numbers normalize "sii_xs" source profiles
+
+component: NBI
+
+  R|units=W  power_nbi(nbeam)     ! power on each beam source
+  R|units=keV kvolt_nbi(nbeam)    ! energy of each beam source **keV**
+  R|units=-  frac_full(nbeam)     ! fraction of beam current at full voltage
+  R|units=-  frac_half(nbeam)     ! fraction of beam current at half voltage
+             ! 1-frac_full(ib)-frac_half(ib) = fraction at (1/3) voltage
+
+  R|units=W  power_nbi_trace(nbeam)  ! power injected as trace element (if any)
+             ! total power on beam ib is power_nbi(ib) + power_nbi_trace(ib)
+
+  R|units=m^-3  nbeami_bdy(nspec_beam) ! beam ion densities at/beyond boundary
+
+component: FUS
+
+###  R|units=m^-3  nmini_bdy(nspec_beam)  ! RF minority ion densities at/beyond boundary
+  R|units=m^-3  nmini_bdy(nspec_rfmin)    ! RF minority ion densities at/beyond boundary
+
+#-------------------------------
+component: IC
+
+  R|units=W  power_ic(nicrf_src)     ! power on each ICRF source
+
+  F  dist_fun(0:nspec_alla)          ! distribution function filenames
+  F  ql_operator(0:nspec_alla)       ! quasilinear operator filenames
+
+  I  isThermal(nspec_rfmin)          ! =1 if minority specie is thermalized
+                                     !    =0: never set; =2: non-thermal.
+
+# net absorption
+  R|units=W picrf_abs(nicrf_src)     ! RF power absorbed inside plasma
+# absorption spectrum
+  R|units=- wt_nphi_abs(num_nphi(),nicrf_src)  ! absorbed spectrum n_phi weight
+                                     ! power_ic(iant)*wt_nphi_abs(ind,iant)
+                                     ! gives power in toroidal mode
+                                     !       nphi(ind,iant)
+                                     ! "ind" covers range 1:num_nphi(iant).
+                                     ! see vacuum spectrum wt_nphi(...)
+
+# scalar powers -- loss term & spectrum
+
+  R|units=W picrf_ext(nicrf_src)     ! RF power deposited outside plasma
+  R|units=- wt_nphi_ext(num_nphi(),nicrf_src) 
+                                     ! fraction of power deposited outside 
+                                     ! plasma vs. nphi, antenna #.
+
+####  R|units=m^-3  nfusi_bdy(nspec_beam)  ! fusion ion densities at/beyond boundary
+  R|units=m^-3  nfusi_bdy(nspec_fusion)  ! fusion ion densities at/beyond boundary
+
+#-------------------------------
+component: EC
+
+  R|units=W  power_ec(necrf_src)     ! power on each ECRF source
+
+#-------------------------------
+component: LH
+
+  R|units=W  power_lh(nlhrf_src)     ! power on each LHRF source
+
+#-------------------------------
+component: EQ
+
+group:  EQ_files
+  F  eqdsk_file          ! EFIT G-eqdsk file: psi(R,Z), g(psi), etc.
+end_group
+
+group:  EQ_RZlcfs|units=m
+  R  R_min_lcfs          ! R_min of last closed flux surface
+  R  R_max_lcfs          ! R_max of last closed flux surface
+  R  Z_min_lcfs          ! Z_min of last closed flux surface
+  R  Z_max_lcfs          ! Z_max of last closed flux surface
+end_group
+
+group:  EQ_RZaxis|units=m
+  R  R_axis              ! R of magnetic axis
+  R  Z_axis              ! Z of magnetic axis
+end_group
+
+group:  EQ_Blcfs|units=T
+  R  B_min_lcfs          ! |B|_min of last closed flux surface
+  R  B_max_lcfs          ! |B|_max of last closed flux surface
+end_group
+
+group:  EQ_Baxis|units=T
+  R  B_axis              ! |B| at magnetic axis
+  R  B_axis_vac          ! vacuum B field at axis
+end_group
+
+  R|units=Wb/rad   Psi_to_machine_axis   
+                         ! delta(Psi) from magnetic axis to machine axis
+                         ! subtract this from Psi(R,Z) to get a Psi value
+                         ! that approaches zero as R-> zero: Psi ~ R*A_phi
+                         ! (as in the EFIT free boundary representation).
+
+                         ! Note: prescribed boundary code runs (e.g. 
+                         ! traditional TRANSP runs) cannot know this
+                         ! number; so Plasma States created from such run
+                         ! data will leave this at zero.  Plasma States
+                         ! using free boundary MHD equilibrium information
+                         ! will always have a non-zero value here.
+
+# coil information...
+
+  R|units=amps/turn coil_apt(ncircuits) ! SIGNED circuit current
+     ! amps/turn within each coil attached to the indicated circult:
+     ! SIGN: + means current flows counter-clockwise, viewed from above, for
+     !       a coil (j) with Nturns(j) > 0; direction opposite if Nturns(j) < 0
+     !       - means the reverse.
+     ! The SIGNED current in coil (j) is Nturns(j)*coil_apt(icircuit_coil(j));
+     ! a positive current flows counter-clockwise viewed from above.
+     ! Any element of Nturns(...) and any element of coil_apt(...) can be 
+     ! either positive or negative.
+
+#-------------------------------
+component: LMHD
+
+group:  LMHD_flags
+  I   MHD_eq_status    ! 0: OK; =1: MHD equilibrium refinement failed
+      ! if this is non-zero, the entire LMHD calculation is abandoned!!
+
+  I   LMHD_status      ! 0: OK; =1: at least one code error occurred.
+end_group
+
+#  following status codes use: ps_normal, ps_eqfail, ps_mapfail; higher
+#  numbers for other types of failure
+
+  I   Newcomb_status(nnewcomb)  ! completion status: Newcomb codes
+  I   DeltaW_status(ndelta_W)   ! completion status: Delta(W) codes
+  I   Balloon_status(nballoon)  ! completion status: Ballooning codes
+
+  ! ** see also: balstab profile, below **
+  I   Balloon_stable(nballoon)  ! 0: stable everywhere; =1: unstable somewhere
+  I   Mercier_stable(nballoon)  ! 0: stable everywhere; =1: unstable somewhere
+  I   Tornum_balcrit(nballoon)  ! critical toroidal mode number for ballooning
+                                ! unstable cases (-1 if could not be found).
+
+  I   Newcomb_stable(mmodes,nnewcomb)   ! 0: stable; 1: unstable;
+              ! element (i,j) indicates if toroidal mode number
+              ! Tor_mode_No(i) is stable or unstable according to
+              ! the code Newcomb_code(j)
+
+  I   DeltaW_stable(mmodes,ndelta_W)    ! 0: stable; 1: unstable;
+              ! element (i,j) indicates if toroidal mode number
+              ! Tor_mode_No(i) is stable or unstable according to
+              ! the code DeltaW_code(j)
+
+  R|units=-  gamma_lmhd(mmodes,ndelta_W)    ! ideal growth rate
+              ! from a delta-W linear MHD code, normalized to the
+              ! Alfven time Rq/V_a where:
+              !    R -- major radius of magnetic axis
+              !    V_a -- alfven speed at magnetic axis
+              !    q = qmin  (minimum q anywhere in equilibrium)
+
+#-------------------------------
+component: ANOM
+
+  I   nmdifb = 0    ! type of fast ion diffusivity
+                    ! =4: 2D fast ion diffusivity from ufiles
+                    ! =6: fast ion diffusivity from dep code
+
+  R|units=m^-3   nmodel_bdy      ! model density, boundary value
+
+  R|units=keV    tmodel_bdy      ! model temperature, boundary value
+
+  R|units=-      interchange_R   ! norm rho of the location of the interchange mode from TGLF model
+
+#=========================================================================
+Section: State_Profiles
+
+#  All items in this section are profiles, defined over grids, and stored 
+#  as such in the state (with interpolation capabilities).  All elements 
+#  are of type R.
+#
+#  The grids are defined in the section Simulation_Init.
+#
+#  Profile arrays can use dimensions declared in preceding G, S, and L
+#  definitions.  The G dimensions used must be owned by the same 
+#  physics component as owns the profile itself (no such restriction
+#  applies to S and L dimensions).
+#
+#  Individual G and L dimensions of profile arrays take the form (<dimname>).
+#  Individual S dimensions take either this form or the form (0:<dimname>) to
+#  accommodate species lists with index 0 for electrons and index > 0 for ions,
+#  a convention used in several species lists.
+#
+#  The profile declarations have two forms, each with two variants.
+#  Standalone profiles (with no "S" or "L" dimension) can be members 
+#  of a group and receive their units specification from the group 
+#  designator.
+#
+#  Group designators have syntax:
+#
+#    group: <group_name>|units=<units_label>
+#
+#  and are terminated by:
+#
+#    end_group
+#
+#  Standalone profiles are declared between the "group" and "end_group"
+#  specifications, as:
+#
+#    R|<profile-type>   <name>(<dimension>[,...])
+#
+#      --or--
+#
+#    R|alias=<short-name>|<profile-type>   <name>(<dimension>[,...])
+#
+#  Standalone profiles are not required to be in groups; grouping is
+#  intended to facilitate comparitive plots when examining output.
+#
+#  The "alias" specification is optional, and allows an abbreviation for
+#  the object to be specified.  If omitted, the object name <name> itself
+#  is used.
+#
+#  Profiles with an additional "S" or "L" dimension or dimensions form
+#  their own groups and must have their own units specifiers:
+#
+#    R|units=<units_label>|<profile-type> <name>(<dimension>,<dimension>[,...])
+#
+#  The variant is:
+#
+#    R|units=<units_label>|alias=<short-name>|<profile-type> <name>(<dims...>)
+#
+#  with an alias specified.  As with the standalone profiles, if the alias
+#  field is omitted, <name> is used, followed by "_", followed by a suffix
+#  for each non-coordinate dimension (i.e. species, antenna index dimensions).
+#
+#  ***NOTE dimension ordering constraint:
+#       ALL grid dimensions must precede ALL "S" and "L" dimensions
+#       This is necessary to facilitate generated interpolation capability.
+#
+#  <profile-type> defines the interpolation method for the data:
+#
+#    step -- zonal step function, data size is 1 less than grid size
+#       NOTE: the symbol "~" is used to denote the reduction-by-one of
+#             grid array dimensions due to step function representation
+#             I.e. "~nrho" denotes "nrho - 1".
+#       step*dV indicates data stored with volume element factored in
+#               e.g. data stored with units like Watts (per zone).
+#               Only 1d data vs. a rho grid can have this designation.
+#       step*dA indicates data stored with area element factored in
+#               e.g. data stored with units like Amps (per zone).
+#               Only 1d data vs. a rho grid can have this designation.
+#       step*<profile-name> indicates data to be weighted by the
+#               indicated profile during rezoning operations.
+#               Only 1d data vs. a rho grid can have this designation.
+#
+#    pclin -- piecewise linear, data is at grid points
+#
+#    Hermite_explicit -- C1 piecewise cubic; nodal derivatives provided
+#                        by component
+#    Hermite -- C1 piecewise cubic, data at grid points, default bdy 
+#                        conditions, nodal derivatives by Akima method.
+#    Hermite_00 -- C1 piecewise cubic, data at grid points,
+#                        boundary condition d/drho -> 0 as rho -> 0, nodal
+#                        derivatives by Akima method.
+#
+#    Spline -- C2 piecewise cubic, data at grid points, default bdy conds.
+#    Spline_00 -- C2 piecewise cubic, data at grid points,
+#                  boundary condition d/drho -> 0 as rho -> 0
+#-------------------------------
+component: PLASMA
+
+#------------------
+#  thermal species density, temperature, <vpar> separate for each species
+  R|units=m^-3|alias=n|step  ns(~nrho,0:nspec_th)    ! thermal specie density
+
+  R|units=keV|alias=T|step*ns  Ts(~nrho,0:nspec_th)  ! thermal specie temperature
+  R|units=m/sec|alias=vpll_|step*ns v_pars(~nrho,0:nspec_th) !thermal specie <vpll>
+  R|units=m/sec|alias=vper_|step*ns v_pers(~nrho,0:nspec_th) !thermal specie <vper>
+
+#------------------
+#  velocity components on outer half midplane flux surface intercepts
+
+  R|units=m/sec|step*ns vtor_omp(~nrho,0:nspec_th)  ! toroidal velocity, outer half midplane
+  R|units=m/sec|step*ns vpol_omp(~nrho,0:nspec_th)  ! poloidal velocity, outer half midplane
+  R|units=m/sec|step*ns vtor_inmp(~nrho,0:nspec_th) ! toroidal velocity, inner half midplane
+  R|units=m/sec|step*ns vpol_inmp(~nrho,0:nspec_th) ! poloidal velocity, inner half midplane
+
+#------------------
+
+  R|units=Volts|pclin	V_loop(nrho)		     ! loop voltage
+
+group: Zeff_group|units=-
+  R|step*ns(:,ps_elec_index)  Zeff(~nrho)    ! Zeff (sum[nj*Zj**2]/ne)
+  R|step*ns(:,ps_elec_index)  Zeff_th(~nrho) ! Thermal ion contribution to Zeff
+  R|step*ns(:,ps_elec_index)  Zeff_fi(~nrho) ! Fast ion contribution to Zeff
+end_group
+
+  R|units=-|step*ns(:,ps_elec_index) Fi_depletion(~nrho)
+                        ! fast ion depletion: sum[nj*Zj/ne]
+
+#------------------
+#  total ion density; summed average ion temperature and toroidal angular
+#  velocity (consistency with ns,Ts,v_pars should be maintained by the
+#  application using the plasma state objects).
+
+  R|units=m^-3|step  ni(~nrho)              ! total thermal ion density
+                                            ! should match sum ns(:,1:nspec_th)
+
+  R|units=keV|step*ni Ti(~nrho)             ! ion temperature
+                                            ! single profile for all thermal
+                                            ! ion species; should be consistent
+                                            ! with ns & Ts
+
+  R|units=rad/sec|step*ni  omegat(~nrho)    ! ion toroidal angular velocity
+                                            ! single profile for all thermal
+                                            ! ion species; should be consistent
+                                            ! with ns & v_pars.
+
+#------------------
+
+  R|units=keV|pclin  Epot(nrho)             ! radial electrostatic potential
+                                            ! at zone bdys
+
+#------------------
+
+  R|units=-|Spline_00  iota(nrho)           ! iota profile (1/q)
+  R|units=ohm*m|Hermite eta_parallel(nrho)  ! parallel electrical resistivity
+
+  R|units=A|step*dA   curr_ohmic(~nrho)     ! Ohmic current
+                      ! i.e. inductive current driven by toroidal loop voltage
+                      ! in the toroidal direction, Amps/zone:  sum of:
+                      ! curr_ohmic + curr_bootstrap + RF driven currents +
+                      ! fast ion driven currents + runaway electron current +
+                      ! diamagnetic current => curt (total enclosed toroidal
+                      ! current) in the EQ component.
+
+  R|units=A|step*dA   curr_bootstrap(~nrho) ! Neoclassical bootstrap current
+
+  R|units=W|step*dV   pohme(~nrho)          ! Ohmic heating of electrons
+
+  R|units=W|step*dV   qie(~nrho)            ! Ion->Electron heat coupling
+                                       ! +: power flow from ions to electrons
+                                       ! -: power flow from electrons to ions
+
+group: compression|units=W
+  R|step*dV   qcomp_e(~nrho)   ! Compressional electron heating
+  R|step*dV   qcomp_i(~nrho)   ! Compressional ion heating
+end_group
+
+group: rotation_dissipation|units=W
+  R|step*dV   qrot_conv(~nrho) ! rotational energy dissipation (convective)
+  R|step*dV   qrot_diff(~nrho) ! rotational energy dissipation (diffusive)
+end_group
+
+#-------------------------------
+# residuals 
+#
+group: residual|units=Norm
+  R|step*dV res_te(~nrho)   ! residuals for electron transport eqn
+  R|step*dV res_ti(~nrho)   ! residuals for ion transport eqn
+end_group
+
+R|units=Norm|step*dV res_tq(~nrho)    ! rediduals for angular momentum transport eqn
+
+R|units=Norm|step*dV res_sn(~nrho,0:nspec_th)  ! residuals for particle transport eqn
+
+
+#-------------------------------
+#  transport
+#
+#    dVol*div[energy flux]
+#  these are watts/zone -- like source profiles:
+group: transport|units=W
+  R|step*dV   pe_trans(~nrho)    ! electron transport (loss) power
+  R|step*dV   pi_trans(~nrho)    ! ion transport (loss) power
+end_group
+
+#    dVol*div[momentum flux]
+#  Nt*m/zone -- like the torque profiles:
+
+  R|units=Nt*m|step*dV  tq_trans(~nrho)  ! angular momentum transport (loss)
+                                         ! toroidal angular momentum
+
+#    dVol*div[particle flux]
+#  (#/sec)/zone -- like particle source profiles:
+
+  R|units=#/sec|step*dV sn_trans(~nrho,0:nspec_th) ! particle transport (loss)
+                                         ! electrons & thermal ion species
+
+#
+#  transport divergence profiles, by physics category
+
+  R|step*dV|units=W  pe_transcat(~nrho,ntrcat) ! electron transport
+  R|step*dV|units=W  pi_transcat(~nrho,ntrcat) ! ion transport
+  R|step*dV|units=Nt*m  tq_transcat(~nrho,ntrcat) ! toroidal angular momentum transport
+  R|step*dV|units=#/sec  sn_transcat(~nrho,0:nspec_th,ntrcat) ! species transport
+
+#  Here are the particle, energy, and momentum fluxes @ rho(j+1):
+#    surf(j+1) = surface area of surface -- mapped to PLASMA grid
+#    GAMMA(j,specie) = sum(sn_trans(1:j,specie))  particles/sec
+#    PE(j) = sum(pe_trans(1:j))  Watts (electron thermal energy)/sec
+#    PI(j) = sum(pi_trans(1:j))  Watts (ion thermal energy)/sec
+#    MO(j) = sum(tq_trans(1:j))  Nt*m  (angular momentum)/sec
+#
+#  The transport is decomposed into diffusive and advective parts:
+#     [Here EQ's surf is presumed mapped to PLASMA grid, and,
+#      <1/dr> = grho1(j+1)/drho, and, 
+#      ns(j+1/2,k) = w*ns(j,k)+(1-w)*ns(j+1,k)) -- no upwind diff => w=0.5
+#      d(ns(j+1/2,k)) = ns(j+1,k)-ns(j,k)
+#
+#      ne(j+1/2)=0.5*(ns(j,0)+ns(j+1,0))
+#      ni(j+1/2)=0.5*(ni(j)+ni(j+1))
+#
+#      nTe(j+1/2) = ne(j+1/2)*[w*Ts(j,0) + (1-w)*Ts(j+1,0)]
+#      nTi(j+1/2) = ni(j+1/2)*[w*Ti(j) + (1-w)Ti*(j+1)]
+#      nd(Te(j+1/2)) = ne(j+1/2)*(Ts(j+1,0) - Ts(j,0))
+#      nd(Ti(j+1/2)) = ni(j+1/2)*(Ti(j+1) - Ti(j))
+#
+#        (for j+1 = nrho, the boundary value is substituted)
+#
+#  units conversion factor kk = 1.0d3*ps_xe = Jles/(ptcl*KeV)
+#
+#  for plasma specie k:
+#    GAMMA(j,k) = surf(j+1)*(vn_trans(j+1,k)*ns(j+1/2,k) + 
+#                            diff_trans(j+1,k)*<1/dr>*d(ns(j+1/2,k)))
+#
+#  for electron thermal energy:
+#    PE(j) = surf(j+1)*(vee_trans(j+1)*kk*nTe(j+1/2) + 
+#                            chie_trans(j+1)*<1/dr>*kk*nd(Te(j+1/2)))
+#
+#  Note, by definition of vee_trans, the advected power is 
+#  surf(j)*vee_trans(j)*kk*nTe(j+1/2) (no factor of 1.5 or 2.5!)
+#
+#  for ion thermal energy:
+#    PI(j) = surf(j+1)*(vie_trans(j+1)*kk*nTi(j+1/2) + 
+#                            chii_trans(j+1)*<1/dr>*kk*nd(Ti(j+1/2)))
+#
+#  Note, by definition of vie_trans, the advected power is 
+#  surf(j)*vie_trans(j)*kk*nTi(j+1/2) (no factor of 1.5 or 2.5!)
+#
+#  (the angular momentum transport is similarly partitioned).
+#
+#  Note: the upwind differencting factors upwind_pfrac_*(...) correspond
+#        to (1-w) in the notation above... profiles added in vsn2.031
+#
+
+group: radial_velocity|units=m/sec
+  R|pclin   vee_trans(nrho)   ! electron energy radial velocity
+  R|pclin   vie_trans(nrho)   ! ion energy radial velocity
+  R|pclin   vmo_trans(nrho)   ! angular momentum radial velocity
+end_group
+
+  R|units=m/sec|pclin   vn_trans(nrho,0:nspec_th)    ! specie radial velocity
+
+group: diffusivity|units=m^2/sec
+  R|pclin chie_trans(nrho)  ! electron thermal diffusivity
+  R|pclin chii_trans(nrho)  ! ion thermal diffusivity
+  R|pclin chimo_trans(nrho) ! angular momentum diffusivity
+end_group
+
+  R|units=m^2/sec|pclin diff_trans(nrho,0:nspec_th)  ! specie ptcl diffusivity
+
+#  in upwind fractions, a value of 0.5 at boundary (j) means no upwind biasing;
+#  equal weight to zones (j-1) and (j); a value of > 0.5 favors the forward or
+#  outer zone (j); a value of < 0.5 favors the inner zone (j-1); all values are
+#  between 0 and 1.  The value at the axial boundary (1) has no weight in the
+#  transport equations; it is suggested to set it equal to the value at the
+#  first non-singular boundary surface at index (2).
+
+group: upwind_forward_fractions|units=-
+  R|pclin upwind_pfrac_Te(nrho)  ! Te (electron energy advection) forward upwind fraction
+  R|pclin upwind_pfrac_Ti(nrho)  ! Ti (ion energy advection) forward upwind fraction
+  R|pclin upwind_pfrac_omega(nrho) ! omega (ang. velocity) forward upwind fraction
+end_group
+
+  R|units=-|pclin upwind_pfrac_ns(nrho,0:nspec_th)  ! specie density forward upwind fractions
+
+# diffusivities and velocities from transport models, by physics category;
+# transport integrators may apply modifications to obtain net total transport
+# in a given step, for reasons of numerical stability and behavior
+
+  R|units=m/sec|pclin vee_transcat(nrho,ntrcat) ! Electron energy radial velocity
+  R|units=m/sec|pclin vie_transcat(nrho,ntrcat) ! Ion energy radial velocity
+  R|units=m/sec|pclin vmo_transcat(nrho,ntrcat) ! Angular momentum radial velocity
+
+  R|units=m/sec|pclin vn_transcat(nrho,0:nspec_th,ntrcat) ! specie radial velocity
+
+  R|units=m^2/sec|pclin chie_transcat(nrho,ntrcat) ! Electron energy diffusivity
+  R|units=m^2/sec|pclin chii_transcat(nrho,ntrcat) ! Ion energy diffusivity
+  R|units=m^2/sec|pclin chimo_transcat(nrho,ntrcat) ! Angular momentum diffusivity
+
+  R|units=m^2/sec|pclin diff_transcat(nrho,0:nspec_th,ntrcat) ! specie diffusivity
+
+#-------------------------------
+component: EQ
+
+# these quantities from the equilibrium, available as splines...
+
+  R|units=m|Hermite_explicit R_geo(nrho_eq,nth_eq) ! flux surfaces R(rho,theta)
+  R|units=m|Hermite_explicit Z_geo(nrho_eq,nth_eq) ! flux surfaces Z(rho,theta)
+
+# basic metric quantities
+  R|units=m^3|Spline_00  vol(nrho_eq)  ! enclosed volume
+  R|units=m^2|Spline_00 area(nrho_eq)  ! enclosed area
+  R|units=m^2|Spline surf(nrho_eq)  ! area of flux surfaces
+  R|units=m|Spline Lpol(nrho_eq)    ! poloidal path length
+
+# equilibrium profiles
+  R|units=Pa|Spline_00       P_eq(nrho_eq)      ! equilibrium scalar pressure
+  R|units=-|Spline           q_eq(nrho_eq)      ! equilibrium q profile
+  R|units=T*m|Spline_00      g_eq(nrho_eq)      ! equilibrium R*|B_phi|
+             ! By convention this profile is always positive; direction
+             ! of B_phi is taken from element kccw_Bphi:
+             !     B_phi = kccw_Bphi*g/R
+
+  R|units=Wb|Spline_00       phit(nrho_eq)      ! toroidal flux vs. rho
+             ! By convention, this profile always positive; 0 on axis.
+             ! See kccw_Bphi for specification of direction of toroidal field.
+
+  R|units=Wb/rad|Spline_00   psipol(nrho_eq)    ! poloidal flux vs. rho
+             ! By convention, this profile always positive; 0 on axis.
+             !    -- see kccw_Jphi; see also psi_to_machine_axis
+             ! for specification of direction (sign) of toroidal current and
+             ! hence the poloidal magnetic field.
+
+  R|units=A*T/m^2|Hermite_00     jdotb(nrho_eq)            ! <J.B>
+	     ! Parallel current * mod(B) -- note sign convention:
+             !   Local positive values indicate local current flow
+             !   in the direction of the main toroidal current; i.e. actually
+             !   kccw_Jphi * kccw_Bphi * <J.B> is stored.  So, even if the
+             !   main toroidal current and the toroidal field are anti-parallel,
+             !   jdotb is generally positive, but there can be localized regions
+             !   of negative values, usually near the plasma edge.
+
+             ! From a parallel Ampere's Law expression, <J.B> can be expressed
+             ! as a combination of derivatives of toroidal current and toroidal
+             ! field functions curt(rho) and g(rho):
+
+             ! <J.B> = 2pi*[g*d(curt)/drho-curt*dg/drho]/(dVol/drho)
+
+  R|units=A|Spline_00   curt(nrho_eq)    ! total enclosed toroidal current
+             ! this includes <j.B> contributions and <j x B> contributions and
+             ! is related to the poloidal field:
+
+             ! mu0*I(rho) = rho*phit(nrho_eq)/(q(rho)*2*pi*pi) 
+             !                   * grho2r2i(rho) * (dVol/drho)
+
+             ! (From Ampere's Law, mu0*I_phi = loop integral (B_pol*dl)
+             !            = loop integral (dl * grad(psi)/R)
+             !            = rho*phit(nrho_eq)/(q(rho)*pi) *
+             !                            loop integral (dl * grad(rho)/R)
+             !  (2*pi) * loop integral (dl * grad(rho)/rho)
+             !    = loop integral (dl * 2*pi*R/grad(rho) * grad(rho)**2/R**2)
+             !    = grho2r2i(rho) * dVol/drho
+             !      derivation depends on the definition of the radial coord.:
+             !         rho = sqrt(phit(rho)/phit(rho=1))
+
+             ! curt(nrho_eq) gives the total current, >0 by convention;
+             !   see kccw_Jphi, +/-1, for direction of toroidal current.
+
+  R|units=m|Hermite_explicit  R0_momeq(nrho_eq) ! R0 of flux surface 
+             ! Fourier Spline representation
+  R|units=m|Hermite_explicit  Z0_momeq(nrho_eq) ! Z0 of flux surface
+             ! Fourier Spline representation
+
+  R|units=m|Hermite_explicit  xRjcos_momeq(nrho_eq,neqmom) ! scaled R cos moments
+             ! Fourier Spline representation
+  R|units=m|Hermite_explicit  xRjsin_momeq(nrho_eq,neqmom) ! scaled R sin moments
+             ! Fourier Spline representation
+
+  R|units=m|Hermite_explicit  xZjcos_momeq(nrho_eq,neqmom) ! scaled Z cos moments
+             ! Fourier Spline representation
+  R|units=m|Hermite_explicit  xZjsin_momeq(nrho_eq,neqmom) ! scaled Z sin moments
+             ! Fourier Spline representation
+
+# profiles vs. (R,Z)
+  R|units=Wb/rad|Spline  PsiRZ(nR,nZ)    ! Psi(R,Z)
+             ! Note on Psi(rho) and Psi(R,Z) both: convention is to set 
+             ! Psi=0 at the magnetic axis and increasing towards the plasma 
+             ! boundary.  Direction of poloidal field is taken from element 
+             ! kccw_Jphi:
+             !
+             !     BR = kccw_Jphi*(1/R)*d(Psi/dZ)
+             !     BZ =-kccw_Jphi*(1/R)*d(Psi/dR)
+             !
+             ! see also: Psi_to_machine_axis.
+
+  R|units=T|Hermite      BphiRZ(nR,nZ)  ! Toroidal field
+  R|units=T|Hermite      BRRZ(nR,nZ)    ! R component of poloidal field
+  R|units=T|Hermite      BZRZ(nR,nZ)    ! Z component of poloidal field
+
+#-------------
+#  more in EQ component:
+# commonly used metric flux surface averages
+
+  R|units=m^-2|pclin gr2i(nrho_eq_geo) ! <R^-2>
+  R|units=m^-4|pclin grho2r2i(nrho_eq_geo)  ! <|grad(rho)|^2/R^2>
+
+# more metric flux surface averages
+  R|units=m^-1|pclin grho1(nrho_eq_geo)   ! <|grad(rho)|>
+  R|units=m^-2|pclin grho2(nrho_eq_geo)   ! <|grad(rho)|^2>
+
+  R|units=m|pclin   gr1(nrho_eq_geo)   ! <R>
+  R|units=m^2|pclin gr2(nrho_eq_geo)   ! <R^2>
+  R|units=m^-2|pclin gri(nrho_eq_geo)  ! <1/R>
+  R|units=m^-3|pclin gr3i(nrho_eq_geo) ! <R^-3>
+
+  R|units=m^-5|pclin grho2r3i(nrho_eq_geo)  ! <|grad(rho)|^2/R^3>
+  R|units=-|pclin gr2rho2(nrho_eq_geo)      ! <R^2*|grad(rho)|^2>
+  R|units=-|pclin grirhoi(nrho_eq_geo)      ! <1/(R*|grad(rho)|)>
+
+# flux surface averages combining metric and magnetic field
+  R|units=T*m^2|pclin  gbr2(nrho_eq_geo)     ! <|B|*R^2>
+  R|units=T|pclin      gb1(nrho_eq_geo)      ! <|B|>
+  R|units=T^2|pclin    gb2(nrho_eq_geo)      ! <B^2>
+  R|units=T^-2|pclin   gb2i(nrho_eq_geo)     ! <1/B^2>
+  R|units=T^-2*m^-2|pclin grho2b2i(nrho_eq_geo)  ! <|grad(rho)|^2/B^2>
+
+# field metrics useful for NCLASS // neoclassical model
+  R|units=m^-1|pclin   gamma_nc(nrho_eq_geo)    ! NC gamma
+                        ! 2pi/int(0 to 2pi)[dtheta*(B/B.grad(theta))]
+  R|units=T^2*m^-2|pclin   ngradb2_av(nrho_eq_geo)  ! <(B.grad(B)/|B|)^2>
+                            ! average of square of grad(B) along field line
+  R|units=m^-2|pclin    psmom_nc(nrho_eq_geo,npsmom)  ! PS moments
+                        ! (1:npsmom) Pfirsch-Schlutter moments (NCLASS)
+   ! convergence check: sum[j=1:infinity](psmom_nc(:,j))= gb2(:)*ngradb2_av(:)
+
+  R|units=-|pclin       psmom_errck(nrho_eq_geo) ! PS moments sum convergence
+   !|ngradb2_av(:)-sum[j=1:npsmom]psmom_nc(:,j)/gb2(:)|/maxval(|ngradb2_av(:)|)
+
+# NC field average expressions with sqrt(0) singularity
+
+  R|units=-|pclin  gncfh(nrho_eq_geo)   ! <H^-2*(1-SQRT(1-H)*(1+H/2))>; H=B/Bmax
+  R|units=T^-2|pclin  gncfb2h(nrho_eq_geo) ! <(B^-2)*((1-H)^0.5-(1/3)*(1-H)^1.5)>; H=B/Bmax
+# 
+#  Flux surface geometry characterization profiles derived from equilibrium
+#
+group: midplane|units=m
+  R|pclin  Z_midp(nrho_eq_geo) ! flux surface midplane elevation
+  R|pclin  R_midp_in(nrho_eq_geo)  ! R (high field side) midplane intercept
+  R|pclin  R_midp_out(nrho_eq_geo) ! R (low field side) midplane intercept
+end_group
+#
+#  Flux surface (R,Z) extrema -- note Rmin & Rmax are slightly different than
+#    R_midp_in and R_midp_out because the latter are constrained to lie in the
+#    same Z plane
+#
+group: RZminmax|units=m
+  R|pclin  R_surfMax(nrho_eq_geo)  ! max R on flux surface
+  R|pclin  R_surfMin(nrho_eq_geo)  ! min R on flux surface
+  R|pclin  Z_surfMax(nrho_eq_geo)  ! max Z on flux surface
+  R|pclin  Z_surfMin(nrho_eq_geo)  ! min Z on flux surface
+end_group
+#
+#  B field extrema
+#
+group: Bminmax|units=T
+  R|pclin  B_surfMax(nrho_eq_geo)  ! max mod(B) on flux surface
+  R|pclin  B_surfMin(nrho_eq_geo)  ! min mod(B) on flux surface
+end_group
+#
+#  minor & major radius from R_surfMin/Max
+#
+group: Rmajmin|units=m
+  R|pclin  Rmajor_mean(nrho_eq_geo)  ! Rmajor_mean = (R_Surfmax+R_surfmin)/2
+  R|pclin  rMinor_mean(nrho_eq_geo)  ! rMinor_mean = (R_Surfmax-R_surfmin)/2
+end_group
+#
+#  Shape moments: elongation, triangularity...
+#
+group: surfShape|units=-
+  R|pclin  elong(nrho_eq_geo)  ! elongation (b/a)
+                   ! (Zmax-Zmin)/(Rmax-Rmin) on each surface
+  R|pclin  triang(nrho_eq_geo) ! triangularity (symmetrized)
+                   ! ((Rmin+Rmax)/2 - min(R(Zmax),R(Zmin)))/((Rmax-Rmin)/2)
+  R|pclin  triangU(nrho_eq_geo)  ! upper triangularity
+                   ! ((Rmin+Rmax)/2 - R(Zmax))/((Rmax-Rmin)/2)
+  R|pclin  triangL(nrho_eq_geo)  ! lower triangularity
+                   ! ((Rmin+Rmax)/2 - R(Zmin))/((Rmax-Rmin)/2)
+  R|pclin  squareUO(nrho_eq_geo)  ! upper outer squareness
+                   !   upper half of plasma, large major radius side
+                   !   definition per C. T. Holcomb et al,
+                   !     Physics of Plasmas 15, 056116 (2009)
+  R|pclin  squareLO(nrho_eq_geo)  ! lower outer squareness
+                   !   lower half of plasma, large major radius side
+                   !   definition per C. T. Holcomb et al,
+                   !     Physics of Plasmas 15, 056116 (2009)
+end_group
+
+group: triang_Miller|units=-
+  R|pclin  triang_miller_U(nrho_eq_geo)  ! Miller upper triangularity
+                   ! Sin(aCos((R(Zmax)-Rmajor_mean)/rMinor_mean)-pi/2).
+  R|pclin  triang_miller_L(nrho_eq_geo)  ! Miller lower triangularity
+                   ! Sin(aCos((R(Zmin)-Rmajor_mean)/rMinor_mean)-pi/2).
+end_group
+
+#-------------------------------
+component:  IC
+
+# power and driven current -- no particle sources; perhaps momentum 
+# sources will be added later.
+
+  R|units=W|alias=picrf_nphi_|step*dV   picrf_nphi_srcs(~nrho_icrf,num_nphi(),nicrf_src,0:nspec_alla)
+                           ! direct ICRF power deposition
+                           ! contribution from each n_phi on each antenna
+
+  R|units=W|alias=picrfs_|step*dV   picrf_srcs(~nrho_icrf,nicrf_src,0:nspec_alla)
+                           ! direct ICRF power deposition
+                           ! (sum over nphi)
+
+  R|units=W|alias=picrf_|step*dV    picrf_totals(~nrho_icrf,0:nspec_alla)
+                           ! direct ICRF power deposition
+                           ! (sum over IC sources & nphi)
+
+  R|step*dV|units=W   picth(~nrho_icrf)  ! direct thermal ion heating by ICRF
+                           ! (sum over thermal ion species & IC sources)
+
+# direct IC current drive
+
+  R|units=A|step*dA   cdicrf_nphi(~nrho_icrf,num_nphi(),nicrf_src)
+                           ! ICRF current drive
+                           ! contribution from each n_phi on each antenna
+
+  R|units=A|step*dA   cdicrf(~nrho_icrf,nicrf_src)
+                           ! ICRF current drive
+                           ! (summed over nphi)
+
+  R|units=A|step*dA   curich(~nrho_icrf)  ! total driven current (all IC srcs)
+
+group: minority_heating|units=W
+  R|step*dV   pmine(~nrho_icrf)   ! electron heating by minority ions
+  R|step*dV   pmini(~nrho_icrf)   ! thermal ion heating by minority ions
+  R|step*dV   pminth(~nrho_icrf)  ! (de)thermalization of minority ions
+end_group
+
+# minority species-- density, <Eperp>, <Epll>.
+
+  R|units=m^-3|alias=n|step  nmini(~nrho_icrf,nspec_rfmin)
+                ! minority species density
+  R|units=keV|alias=eperp_|step*nmini eperp_mini(~nrho_icrf,nspec_rfmin)
+                ! minority species <Eperp>, lab frame
+  R|units=keV|alias=epll_|step*nmini  epll_mini(~nrho_icrf,nspec_rfmin)
+                ! minority species <Epll>, lab frame
+
+# current drive via minority
+
+  R|step*dA|units=A   curmino(~nrho_icrf) ! minority ion driven cur (shielded).
+
+#-------------------------------
+component: NBI
+
+# beam species-- density, <Eperp>, <Epll>.
+
+  R|units=m^-3|alias=n|step  nbeami(~nrho_nbi,nspec_beam)
+                ! beam species density
+  R|units=keV|alias=eperp_|step*nbeami eperp_beami(~nrho_nbi,nspec_beam)
+                ! beam species <Eperp>, lab frame
+  R|units=keV|alias=epll_|step*nbeami  epll_beami(~nrho_nbi,nspec_beam)
+                ! beam species <Epll>, lab frame
+
+  R|units=C|step*nbeami qbeami(~nrho_nbi,nspec_beam)
+                ! average beam ion charge
+                ! Note, although H & He beam ions will be fully stripped,
+                ! Impurity beams (Ne, Xe, Ar, Kr) may not be...
+                !   <state>%q_snbi(1:<state>%nspec_beam) will contain the
+                !   density weighted volume average charge over the 
+                !   profile: ps_xe for H beams, 2*ps_xe for He beams...
+
+# power, momentum, and particle fueling sources; current drive
+# beam (deposition) halo terms.
+
+#  power and momentum sources: see also the halo terms, below...
+
+group: beam_heating|units=W
+  R|step*dV   pbe(~nrho_nbi)   ! electron heating by all beam ions
+  R|step*dV   pbi(~nrho_nbi)   ! thermal ion heating by all beam ions
+  R|step*dV   pbth(~nrho_nbi)  ! thermalization of beam ions
+end_group
+
+group: beam_torque|units=Nt*m
+  R|step*dV   tqbe(~nrho_nbi)   ! collisional beam torque to electrons
+  R|step*dV   tqbi(~nrho_nbi)   ! collisional beam torque to thermal ions
+  R|step*dV   tqbjxb(~nrho_nbi) ! JxB beam torque
+  R|step*dV   tqbth(~nrho_nbi)  ! momentum in thermalization of beam ions
+end_group
+
+#  individual thermal specie particle sources (beam fueling)
+
+  R|step*dV|units=#/sec   sbsce(~nrho_nbi,0:nspec_tha)
+      ! net source, thermal ions & electrons
+      ! ...cold electron deposition; ion thermalization;
+      ! corrections for charge exchange (beam deposition halo, mainly),
+      ! halo recapture
+
+      ! for thermal ions:
+      !    sbsce = sbtherm - sb0halo + sb0halo_recap
+      !    (caution: sbtherm is defined over beam species list;
+      !     sbsce over thermal species list;
+      !     sb0halo & sb0halo_recap over the neutral gas species list).
+
+      ! for electrons:
+      !    sbsce = sbedep + sbehalo
+      
+#  beam source function terms:
+
+  R|step*dV|units=#/sec sbedep(~nrho_nbi)  ! beam deposition cold electron sce
+      ! there is also a contribution due to recapture of charge-exchanged
+      ! fast neutrals from partially slowed down beam ions.
+
+  R|step*dV|units=#/sec sbtherm(~nrho_nbi,nspec_beam) ! beam ion thermalization
+      ! source of slowed down, thermalized beam ions
+
+  R|step*dV|units=#/sec sb0halo(~nrho_nbi,nspec_gas) ! beam dep cx sink
+      ! thermal neutrals created by fast neutral deposition and/or recapture
+      ! of fast neutrals
+      ! psc_halo =~ (3/2)*Ti*(sb0halo_recap-sb0halo)*1.602e-16
+
+  R|step*dV|units=#/sec sbehalo(~nrho_nbi)  ! cold electron sce due to
+      ! recapture of beam halo charge exchange thermal neutrals
+      ! = sum Z(i)*sb0halo_recap(i), if electrons do not go into
+      !   an impurity charge state spectrum.
+
+  R|step*dV|units=#/sec sb0halo_recap(~nrho_nbi,nspec_gas) 
+                                                       ! cx neutral recapture
+      ! recapture of thermal neutrals -- ion source
+      ! psc_halo =~ (3/2)*Ti*(sb0halo_recap-sb0halo)*1.602e-16
+      !   (cross species CX source/sink contributions may occur)
+
+      ! note: electron recapture, cold source = sum (Z(i)*sb0halo_recap(:,i))
+      !   where Z(i) is the number of electrons carried by a neutral atom
+      !   of species (i).  => this is to be included in sbsce(:,0).
+
+#  => Recommendation: transport codes to use sbsce(:,:) for particle sources.
+
+#  The beam halo: much of beam deposition is by charge exchange with the
+#  thermal ion target population.  This involves (a) a thermal ion sink 
+#  (ptcl,momentum,energy) at the fast ion deposition point; (b) ionization 
+#  recapture of halo thermal neutrals that were created at deposition;
+#  (c) charge exchange power and momentum source/sink (without corresponding
+#  particle sink) driven by subsequent charge exchange btw thermal ions and 
+#  thermal neutrals prior to ionization recapture.
+#
+#  for power: pb0_halo = (a) psc_halo = (b) - (a);  pcx_halo = (c) 
+#  for momentum, similarly: tqb0_halo, tqsc_halo, tqcx_halo.
+#
+#  (psc_halo + pcx_halo) enters the ion power balance equation
+#  (tqsc_halo + tqcx_halo) enters the momentum balance equation
+#    
+group: beam_halo_power|units=W
+  R|step*dV   pb0_halo(~nrho_nbi) ! power in halo neutral source  
+                                  !  (loss from thermal ions)
+  R|step*dV   psc_halo(~nrho_nbi) ! beam halo power: recapture - pb0_halo
+                                  !  (net source/sink to thermal ions)
+                                  !  (associated particle source/sink exists)
+  R|step*dV   pcx_halo(~nrho_nbi) ! beam halo driven CX power
+                                  !  (>0 means local source)
+                                  !  (no associated particle source/sink)
+end_group
+
+group: beam_halo_torque|units=Nt*m
+  R|step*dV   tqb0_halo(~nrho_nbi) ! torque of halo neutral source
+                                   !  (loss from thermal ions)
+  R|step*dV   tqsc_halo(~nrho_nbi) ! beam halo torque: recapture - tqb0_halo
+                                   !  (net source/sink to thermal ions)
+                                   !  (associated particle source/sink exists)
+  R|step*dV   tqcx_halo(~nrho_nbi) ! beam halo driven CX momentum torque
+                                   !  (positive value = momentum source)
+                                   !  (no associated particle source/sink)
+end_group
+
+#  flux surface averaged neutral densities, average neutral energies, and
+#  average toroidal angular velocities of the "thermal" halo created by beam
+#  deposition.  (Fast neutrals due to the original neutral beam or due to
+#  charge exchange of partially slowed down fast ions are not counted here).
+
+#  these are "fluid moments" of likely highly non-Maxwellian neutral atom
+#  populations, flux surface averaged.
+
+  R|units=m^-3|step         n0_halo(~nrho_nbi,nspec_gas)
+                               ! halo thermal neutral density
+  R|units=keV|step*n0_halo  T0_halo(~nrho_nbi,nspec_gas) 
+                               ! halo neutral temperature (2/3)<E0>
+  R|units=rad/sec|step*n0_halo  omeg0_halo(~nrho_nbi,nspec_gas) 
+                                   ! halo neutral toroidal angular velocity
+
+#  current drive
+
+  R|step*dA|units=A   curbeam(~nrho_nbi)   ! beam ion driven current (shielded)
+
+#  Ionization rates of thermal neutrals, by beam ions
+#    multiply by neutral density to get neutral sink or ion source density
+
+  R|step|units=1/sec       rate_sinb0x(~nrho_nbi,nspec_gas) 
+                                ! sink rate due to CX with beam ions (total)
+  R|step|units=1/sec       rate_sinb0xs(~nrho_nbi,nspec_gas,nspec_beam) 
+                                ! sink rate due to CX with beam ions
+  R|step|units=1/sec       rate_sinb0i(~nrho_nbi,nspec_gas)
+                                ! sink rate due to ionization by beam ions
+
+#-------------------------------
+component: FUS
+
+# fusion product species-- density, <Eperp>, <Epll>.
+
+  R|units=m^-3|alias=n|step  nfusi(~nrho_fus,nspec_fusion)
+                ! fusion ion density
+  R|units=keV|alias=eperp_|step*nfusi eperp_fusi(~nrho_fus,nspec_fusion)
+                ! fusion ion <Eperp>, lab frame
+  R|units=keV|alias=epll_|step*nfusi  epll_fusi(~nrho_fus,nspec_fusion)
+                ! fusion ion <Epll>, lab frame
+
+# heating by fusion ions
+#  (at present no separate profiles for momentum sources or charge exchange
+#  source/sink powers as these are expected to be negligible).
+
+group: fusion_heating|units=W
+  R|step*dV   pfuse(~nrho_fus)   ! electron heating by all fusion ions
+  R|step*dV   pfusi(~nrho_fus)   ! thermal ion heating by all fusion ions
+  R|step*dV   pfusth(~nrho_fus)  ! thermalization of fusion ions
+end_group
+
+  R|step*dV|units=#/sec   sfsce(~nrho_fus,0:nspec_tha)
+      ! net thermalization source of fusion ions
+      ! sources due to fusion ions:  fusion ion thermalization;
+      ! corrections due to charge exchange effects (usually small).
+
+# thermalization of fusion ions (ash accumulation rate-- no CX correction)
+  R|step*dV|units=#/sec   sftherm(~nrho_fus,nspec_fusion)
+                   ! fusion ion thermalization
+
+# driven current (probably small...)
+  R|step*dA|units=A   curfusn(~nrho_fus) ! fusion ion driven current (shielded)
+
+#  Ionization rates of thermal neutrals, by fusion ions
+#    multiply by neutral density to get neutral sink or ion source density
+
+  R|step|units=1/sec       rate_sinf0x(~nrho_fus,nspec_gas) 
+                                ! sink rate due to CX with fusion ions (total)
+  R|step|units=1/sec       rate_sinf0xs(~nrho_fus,nspec_gas,nspec_fusion) 
+                                ! sink rate due to CX with fusion ions
+  R|step|units=1/sec       rate_sinf0i(~nrho_fus,nspec_gas)
+                                ! sink rate due to ionization by fusion ions
+
+#-------------------------------
+#  pellets
+
+component: PEL
+
+  R|step*dV|units=#/sec   spsce(~nrho_pel,0:nspec_tha)
+      ! net source, thermal ions & electrons
+
+#-------------------------------
+#  fast electrons
+
+component: RUNAWAY
+
+  R|step*dA|units=A   cur_rw(~nrho_rw)   ! current carried by fast electrons
+  R|step*dA|units=A/Volt dcur_rw_dVloop(~nrho_rw) ! sensitivity to loop volts
+
+  R|units=m^-3|step   nrw(~nrho_rw)      ! runaway electron density
+     ! nrw/ne << 1 is assumed
+
+  R|units=keV|step*nrw  eperp_rw(~nrho_rw)  ! runaway electron <Eperp>
+  R|units=keV|step*nrw  epll_rw(~nrho_rw)   ! runaway electron <Epll>
+
+#-------------------------------
+component:  RAD
+
+group: radiated_powers|units=W
+  R|step*dV  prad(~nrho_rad)    ! total radiated power
+  R|step*dV  prad_cy(~nrho_rad) ! cyclotron radiation contribution
+  R|step*dV  prad_br(~nrho_rad) ! bremsstrahlung contribution
+  R|step*dV  prad_li(~nrho_rad) ! line radiation contribution
+end_group
+
+#  specie source/sinks & due to each impurity source at edge
+
+  R|step*dV|units=(#/sec)/(#/sec) sii_xs(~nrho_mist,0:nspec_th,nxs)
+                     ! species source/sinks driven by xs(1:nxs)
+
+#-------------------------------
+component: GAS
+
+#  data, related to edge neutral sources, for the core plasma energy balance
+#  momentum balance and particle balance equations:
+
+  R|step*dV|units=W/(#/sec)     qioniz(~nrho_gas,ngsc0)
+                            ! ionization power per unit influx (sc0)
+
+  R|step*dV|units=W/(#/sec)/keV  qqcx(~nrho_gas,ngsc0)
+                            ! cx power per unit influx per (T0-Ti)
+
+  R|step*dV|units=Nt*m/(#/sec)     tqioniz(~nrho_gas,ngsc0)
+                            ! ionization torque per unit influx (sc0)
+
+  R|step*dV|units=Nt*m/(#/sec)/(rad/sec)  tqqcx(~nrho_gas,ngsc0)
+                            ! cx torque per unit influx per (omeg0-omegi)
+
+  R|step*qqcx|units=keV  T0cx(~nrho_gas,ngsc0)
+                            ! effective neutral temperature for CX power
+                            ! (use with qqcx)
+
+  R|step*tqqcx|units=rad/sec  omeg0cx(~nrho_gas,ngsc0)
+                            ! effective neutral angular velocity for CX torque
+                            ! (use with tqqcx)
+
+  R|step*dV|units=(#/sec)/(#/sec)  sprof0(~nrho_gas,nspec_gas,ngsc0)
+                            ! gas species source/sinks per unit species influx
+                            ! due to charge exchange, single species neutral 
+                            ! source (sc0(i)) leads to multi species ion sce.
+
+                            ! remark (Jan. 2009):
+                            ! charge exchange can affect impurity charge
+                            ! states -- may need to add profiles to track
+                            ! this interaction, in the future...
+
+  R|step*dV|units=(#/sec)/(#/sec)  sprof0e(~nrho_gas,ngsc0)
+                            ! electron source per unit neutral species influx
+
+#  unit neutral densities, and, (2/3) average energies, and average toroidal
+#  angular velocities for each gas species due to each edge source.  Note these
+#  are fluid moments of kinetic populations that may be highly non-Maxwellian:
+
+  R|step|units=(m^-3)/(#/sec)    n0norm(~nrho_gas,nspec_gas,ngsc0)
+                            ! neutral density per unit gas influx (sc0)
+                            ! for each neutral specie due to each source
+
+  R|step*n0norm|units=keV        T0sc0(~nrho_gas,nspec_gas,ngsc0)
+                            ! neutral temperature (2/3)<E0>
+                            ! in co-rotating frame for each neutral specie 
+                            ! due each neutral influx (sc0)
+
+  R|step*n0norm|units=(rad/sec)  omeg0sc0(~nrho_gas,nspec_gas,ngsc0)
+                            ! toroidal angular velocity
+                            ! for each neutral specie due to each influx (sc0).
+
+# recombination neutral source
+# some (all?) models implement this with H-isotopes only...
+#
+# in ion specie density equations the source is: s0reco_recap - s0reco
+# in electron density equation the source is: s0reco_e
+
+  R|step*dV|units=#/sec s0reco(~nrho_gas,nspec_gas) ! recombination neutral sce
+      ! psc_reco =~ (3/2)*Ti*(s0reco_recap-s0reco)*1.602e-16
+
+      ! note: electron sink = sum (Z(i)*s0reco(:,i))
+      !   where Z(i) is the number of electrons carried by a neutral atom
+      !   of species (i).
+
+  R|step*dV|units=#/sec s0reco_recap(~nrho_gas,nspec_gas) 
+                                             ! recombination neutrals recapture
+      ! recapture of recombination source thermal neutrals -- ion source
+      ! psc_reco =~ (3/2)*Ti*(sb0reco_recap-sb0reco)*1.602e-16
+
+  R|step*dV|units=#/sec s0reco_e(~nrho_gas)
+      ! net electron source associated with recombination:
+      !   sum[-Z(i)*s0reco(:,i) + Z(i)*s0reco_recap(:,i)]
+
+group: reco_power|units=W
+
+#   (psc_reco + pcx_reco) in power balance equation
+
+  R|step*dV   p0_reco(~nrho_gas)  ! power in recombination neutral source  
+                                  !  (loss from thermal ions)
+  R|step*dV   psc_reco(~nrho_gas) ! reco power: recapture - p0_reco
+                                  !  (net source/sink to thermal ions)
+                                  !  (associated particle source/sink exists)
+  R|step*dV   pcx_reco(~nrho_gas) ! reco driven CX power
+                                  !  (>0 => local source to thermal ions)
+                                  !  (no associated particle source/sink)
+end_group
+
+group: reco_torque|units=Nt*m
+
+#   (tqsc_reco + tqcx_reco) in momentum balance equation
+
+  R|step*dV   tq0_reco(~nrho_gas)  ! torque of recombination neutral source
+                                   !  (momentum loss from thermal ions)
+  R|step*dV   tqsc_reco(~nrho_gas) ! reco torque: recapture - tq0_reco
+                                   !  (net source/sink to thermal ions)
+                                   !  (associated particle source/sink exists)
+  R|step*dV   tqcx_reco(~nrho_gas) ! reco driven CX momentum torque
+                                   !  (positive value = momentum source)
+                                   !  (no associated particle source/sink)
+end_group
+
+#  flux surface averaged neutral densities, average neutral energies, and
+#  average toroidal angular velocities of neutrals created by electron ion
+#  recombination
+
+#  these are "fluid moments" of likely highly non-Maxwellian neutral atom
+#  populations, flux surface averaged.
+
+  R|units=m^-3|step         n0_reco(~nrho_gas,nspec_gas)
+                               ! reco thermal neutral density
+  R|units=keV|step*n0_reco  T0_reco(~nrho_gas,nspec_gas) 
+                               ! reco neutral temperature (2/3)<E0>
+  R|units=rad/sec|step*n0_reco  omeg0_reco(~nrho_gas,nspec_gas) 
+                                   ! reco neutral toroidal angular velocity
+
+
+#-------------------------------
+component:  EC
+
+  R|step*dV|units=W   peech(~nrho_ecrf)  ! electron heating by ECH
+  R|step*dA|units=A   curech(~nrho_ecrf) ! ECH current drive
+
+  R|step*dV|units=W   peech_src(~nrho_ecrf,necrf_src)  ! ECH heating (by antenna)
+  R|step*dA|units=A   curech_src(~nrho_ecrf,necrf_src) ! ECH current drive (by antenna)
+
+#-------------------------------
+component:  LH
+
+group: lower_hybrid_heating|units=W
+  R|step*dV   pelh(~nrho_lhrf)  ! electron heating by LH
+  R|step*dV   pilh(~nrho_lhrf)  ! ion heating by LH
+end_group
+
+  R|step*dV|units=W   pelh_src(~nrho_lhrf,nlhrf_src)  ! LH electron heating by antenna
+  R|step*dV|units=W   pilh_src(~nrho_lhrf,nlhrf_src)  ! LH ion heating by antenna
+
+  R|step*dA|units=A   curlh(~nrho_lhrf) ! LH current drive
+
+  R|step*dA|units=A   curlh_src(~nrho_lhrf,nlhrf_src) ! LH current drive (by antenna)
+
+#-------------------------------
+component: LMHD
+
+  R|units=-|pclin balstab(nrho_lmhd)  ! Ballooning/Mercier stability indicator
+    !   = 0.0: stable;
+    !   = 1.0: Ballooning unstable; 
+    !   = 2.0: Mercier unstable
+    !   = 3.0: Both Ballooning and Mercier unstable
+    !      (note a floating point profile is used; interpolation to another
+    !      grid would yield non-integer values that if non-zero would indicate
+    !      instability in the vicinity).
+
+#-------------------------------
+component: RIPPLE
+
+group: ripple_fields|units=-
+
+  R|pclin  tfrip_log(nR_rip,nZ_rip)   ! TF ripple: log((Bmax-Bmin)/(Bmax+Bmin))
+                                      ! This field is likely time invariant,
+                                      ! an attribute of the tokamak TF coils.
+               
+  R|pclin  tfrip2_log(nR_rip,nZ_rip)  ! 2nd component of TF ripple
+                                      !   log((Bmax-Bmin)/(Bmax+Bmin))
+                                      ! This field is sometimes introduced 
+                                      ! time dependently in experiments.
+end_group
+
+#-------------------------------
+component: ANOM
+
+# fast ions 1d model
+group: anom_diffus|units=m^2/sec
+  R|pclin  difb_nbi(nrho_anom)        ! beam ion anomalous diffusivity
+  R|pclin  difb_fusi(nrho_anom)       ! fusion ion anomalous diffusivity
+  R|pclin  difb_rfmi(nrho_anom)       ! RF minority ion anomalous diffusivity
+end_group
+
+group: anom_veloc|units=m/sec
+  R|pclin  velb_nbi(nrho_anom)        ! beam ion anom. radial velocity
+  R|pclin  velb_fusi(nrho_anom)       ! fusion ion anom. radial velocity
+  R|pclin  velb_rfmi(nrho_anom)       ! RF minority ion anom. radial velocity
+end_group
+
+ R|pclin|units=- anom_evar(nefi_anom)  ! anomalous transport energy variation
+                  ! =1 to use transport profiles as given; O(1) expected.
+                  ! if undefined, use transport profiles as given.
+
+# fast ions higher dimensionality model
+
+ R|units=m^2/sec|pclin  fidiff_dtrap(nefi_anom2,nrho_anom2,nspec_fusion)
+                            ! fusion ion diffusivity: deeply trapped orbits
+ R|units=m^2/sec|pclin  fidiff_btrap(nefi_anom2,nrho_anom2,nspec_fusion)
+                            ! fusion ion diffusivity: barely trapped orbits
+ R|units=m^2/sec|pclin  fidiff_bpass_co(nefi_anom2,nrho_anom2,nspec_fusion)
+                            ! fusion ion diffusivity: co barely passing orbits
+ R|units=m^2/sec|pclin  fidiff_dpass_co(nefi_anom2,nrho_anom2,nspec_fusion)
+                            ! fusion ion diffusivity: co passing |vpll/v| -> 1
+ R|units=m^2/sec|pclin  fidiff_bpass_ctr(nefi_anom2,nrho_anom2,nspec_fusion)
+                            ! fusion ion diffusivity: ctr barely passing orbits
+ R|units=m^2/sec|pclin  fidiff_dpass_ctr(nefi_anom2,nrho_anom2,nspec_fusion)
+                            ! fusion ion diffusivity: ctr passing |vpll/v| -> 1
+
+ R|units=m^2/sec|pclin  bidiff_dtrap(nefi_anom2,nrho_anom2,nspec_beam)
+                            ! beam ion diffusivity: deeply trapped orbits
+ R|units=m^2/sec|pclin  bidiff_btrap(nefi_anom2,nrho_anom2,nspec_beam)
+                            ! beam ion diffusivity: barely trapped orbits
+ R|units=m^2/sec|pclin  bidiff_bpass_co(nefi_anom2,nrho_anom2,nspec_beam)
+                            ! beam ion diffusivity: co barely passing orbits
+ R|units=m^2/sec|pclin  bidiff_dpass_co(nefi_anom2,nrho_anom2,nspec_beam)
+                            ! beam ion diffusivity: co passing |vpll/v| -> 1
+ R|units=m^2/sec|pclin  bidiff_bpass_ctr(nefi_anom2,nrho_anom2,nspec_beam)
+                            ! beam ion diffusivity: ctr barely passing orbits
+ R|units=m^2/sec|pclin  bidiff_dpass_ctr(nefi_anom2,nrho_anom2,nspec_beam)
+                            ! beam ion diffusivity: ctr passing |vpll/v| -> 1
+
+# thermal ions...
+
+# anomalous sources
+ R|units=W|step*dV  pe_anom(~nrho_anomth)  ! anomalous electron heating
+ R|units=W|step*dV  pi_anom(~nrho_anomth)  ! anomalous ion heating
+ R|units=Nt*m|step*dV  tq_anom(~nrho_anomth) ! anomalous torque
+ R|units=#/sec|step*dV sc_anom(~nrho_anomth,0:nspec_th) ! anomalous sources
+
+# anomalous radial velocities
+ R|units=m/sec|pclin  velte_anom(nrho_anomth) ! Te-equation, advective velocity term
+ R|units=m/sec|pclin  velti_anom(nrho_anomth) ! Ti-equation, advective velocity term
+ R|units=m/sec|pclin  velpphi_anom(nrho_anomth) ! momentum-equation, advective velocity term
+ R|units=m/sec|pclin  velns_anom(nrho_anomth,0:nspec_th) ! density-equations, advective velocity term
+
+# anomalous radial diffusivities
+ R|units=m^2/sec|pclin  chie_anom(nrho_anomth) ! Te-equation, diffusivity term
+ R|units=m^2/sec|pclin  chii_anom(nrho_anomth) ! Ti-equation, diffusivity term
+ R|units=m^2/sec|pclin  chiphi_anom(nrho_anomth) ! momentum-equation, diffusivity term
+ R|units=m^2/sec|pclin  difns_anom(nrho_anomth,0:nspec_th) ! density-equations, diffusivity term
+
+# anomalous model outputs from TGLF model
+ R|units=-|pclin kyspectrum_tglf(nrho_anomth,nky_anomth)   ! ky-spectrum from TGLF model
+ R|units=GB|pclin growthrate_tglf(nrho_anomth,nky_anomth)  ! growthrate from TGLF model
+ R|units=GB|pclin freq_tglf(nrho_anomth,nky_anomth)        ! frequency from TGLF model 
+ R|units=GB|pclin ne_ky_tglf(nrho_anomth,nky_anomth)       ! electron density fluctuation spectrum
+ R|units=GB|pclin ni_ky_tglf(nrho_anomth,nky_anomth)       ! ion density fluctuation spectrum
+ R|units=GB|pclin nz_ky_tglf(nrho_anomth,nky_anomth)       ! impurity density fluctuation spectrum
+ R|units=GB|pclin te_ky_tglf(nrho_anomth,nky_anomth)       ! electron density fluctuation spectrum
+ R|units=GB|pclin ti_ky_tglf(nrho_anomth,nky_anomth)       ! ion density fluctuation spectrum
+ R|units=GB|pclin tz_ky_tglf(nrho_anomth,nky_anomth)       ! impurity density fluctuation spectrum
+ R|units=GB|pclin neflux_ky_tglf(nrho_anomth,nky_anomth)   ! electron density flux spectrum
+ R|units=GB|pclin niflux_ky_tglf(nrho_anomth,nky_anomth)   ! ion density flux spectrum
+ R|units=GB|pclin nzflux_ky_tglf(nrho_anomth,nky_anomth)   ! impurity density flux spectrum
+ R|units=GB|pclin teflux_ky_tglf(nrho_anomth,nky_anomth)   ! electron density flux spectrum
+ R|units=GB|pclin tiflux_ky_tglf(nrho_anomth,nky_anomth)   ! ion density flux spectrum
+ R|units=GB|pclin tzflux_ky_tglf(nrho_anomth,nky_anomth)   ! impurity density flux spectrum
+ R|units=GB|pclin pot_ky_tglf(nrho_anomth,nky_anomth)      ! potential fluctuation spectrum
+ R|units=GB|pclin phiflux_ky_tglf(nrho_anomth,nky_anomth)  ! momentum fluctuation spectrum
+ R|units=GB|pclin growthrate_max_tglf(nrho_anomth)         ! maximum growthrate from TGLF model
+ R|units=GB|pclin freq_max_tglf(nrho_anomth)               ! frequency corresponding maximum growthrate from TGLF model
+
+# anomalous radial velocities from TGLF model
+ R|units=m/sec|pclin velte_tglf(nrho_anomth)             ! Te-equation, advective velocity term from TGLF model
+ R|units=m/sec|pclin velti_tglf(nrho_anomth)             ! Ti-equation, advective velocity term from TGLF model
+ R|units=m/sec|pclin velpphi_tglf(nrho_anomth)           ! momentum-equation, advective velocity term from TGLF model
+ R|units=m/sec|pclin velns_tglf(nrho_anomth,0:nspec_th)  ! density-equations, advective velocity term from TGLF model
+
+#flux gradients
+ R|units=1/(m*s)|pclin dQedGrdte_tglf(nrho_anomth)  ! Te flux gradient term from TGLF model
+ R|units=1/(m*s)|pclin dQedGrdti_tglf(nrho_anomth)  ! Te flux gradient term from TGLF model
+ R|units=1/(m*s)|pclin dQidGrdte_tglf(nrho_anomth)  ! Ti flux gradient term from TGLF model
+ R|units=1/(m*s)|pclin dQidGrdti_tglf(nrho_anomth)  ! Ti flux gradient term from TGLF model
+
+#TGLF model
+ R|units=m^2/s|pclin chie_tglf(nrho_anomth)                ! Te-equation, diffusivity from TGLF model
+ R|units=m^2/s|pclin chii_tglf(nrho_anomth)                ! Ti-equation, diffusivity from TGLF model
+ R|units=m^2/s|pclin chiphi_tglf(nrho_anomth)              ! momentum-equation, diffusivity from TGLF model
+ R|units=m^2/s|pclin difns_tglf(nrho_anomth,0:nspec_th)    ! density-equations, diffusivity from TGLF model
+
+# ExB flow shear rate
+ R|units=GB|pclin omega_exb(nrho_anomth)   ! ExB flow shear rate
+
+# parallel velocity growthrate
+ R|units=GB|pclin growthrate_vpar(nrho_anomth,0:nspec_th)  ! growthrate from parallel velocity shear
+
+# MMM71 model
+ R|units=m^2/sec|pclin  chie_mmm71(nrho_anomth) ! Te-equation, diffusivity term
+ R|units=m^2/sec|pclin  chii_mmm71(nrho_anomth) ! Ti-equation, diffusivity term
+ R|units=m^2/sec|pclin  chiphi_mmm71(nrho_anomth) ! momentum-equation, diffusivity term, toroidal
+ R|units=m^2/sec|pclin  chitheta_mmm71(nrho_anomth) ! momentum-equation, diffusivity term, poloidal
+ R|units=m^2/sec|pclin  difns_mmm71(nrho_anomth,0:nspec_th) ! density-equations, diffusivity term
+ R|units=m^2/sec|pclin  difnz_mmm71(nrho_anomth) ! impurity ion diffusivity term
+ R|units=1/sec|pclin growthrate_mmm71(nrho_anomth,nky_mmm)  ! growthrate from mmm71 model
+ R|units=1/sec|pclin freq_mmm71(nrho_anomth,nky_mmm)        ! frequency from mmm71 model
+
+# anomalous radial velocities from MMM71 model
+ R|units=m/sec|pclin  velte_mmm71(nrho_anomth) ! Te-equation, advective velocity term from MMM71 model
+ R|units=m/sec|pclin  velti_mmm71(nrho_anomth) ! Ti-equation, advective velocity term from MMM71 model
+ R|units=m/sec|pclin  velpphi_mmm71(nrho_anomth) ! momentum-equation, advective velocity term from MMM71 model
+ R|units=m/sec|pclin  velns_mmm71(nrho_anomth,0:nspec_th) ! density-equations, advective velocity term from MMM71 model
+
+# Weiland20 model
+ R|units=m^2/sec|pclin  chie_w19(nrho_anomth) ! Te-equation, diffusivity term
+ R|units=m^2/sec|pclin  chii_w19(nrho_anomth) ! Ti-equation, diffusivity term
+ R|units=m^2/sec|pclin  chiphi_w19(nrho_anomth) ! momentum-equation, diffusivity term
+ R|units=m^2/sec|pclin  difns_w19(nrho_anomth,0:nspec_th) ! density-equations, diffusivity term
+
+#DRBM drift model
+ R|units=m^2/sec|pclin  chie_drbm(nrho_anomth) ! Te-equation, diffusivity term
+ R|units=m^2/sec|pclin  chii_drbm(nrho_anomth) ! Ti-equation, diffusivity term
+ R|units=m^2/sec|pclin  chiphi_drbm(nrho_anomth) ! momentum-equation, diffusivity term
+ R|units=m^2/sec|pclin  difns_drbm(nrho_anomth,0:nspec_th) ! density-equations, diffusivity term
+ R|units=m/s|pclin velni_drbm(nrho_anomth)  ! ion convective velocity
+ R|units=1/sec|pclin growthrate_drbm(nrho_anomth)  ! growthrate from DRBM model
+ R|units=1/sec|pclin freq_drbm(nrho_anomth)        ! frequency from DRBM model
+ R|units=-|pclin kyrhos_drbm(nrho_anomth)       ! ky*rhos at max growth rate for DRBM model
+
+# PALEO model
+ R|units=m^2/sec|pclin chie_paleo(nrho_anomth)    ! Te-equation, diffusivity term PALEO model
+ R|units=m/sec|pclin   velte_paleo(nrho_anomth)   ! Te-equation, convection term from PALEO model
+
+# ETG model
+ R|units=m^2/sec|pclin chie_etg(nrho_anomth)    ! Te-equation, diffusivity term ETG model
+ R|units=-|pclin kyrhos_etg(nrho_anomth)        ! ky*rhos at max growth rate for ETG model
+ R|units=1/sec|pclin growthrate_etg(nrho_anomth)   ! growthrate from ETG model
+ R|units=1/sec|pclin freq_etg(nrho_anomth)         ! frequency from ETG model
+
+# MTM model
+ R|units=m^2/sec|pclin chie_mtm(nrho_anomth)     ! Te-equation, thermal diffusivity term MTM model
+ R|units=-|pclin db_mtm(nrho_anomth)             ! dB/B from MTM model
+ R|units=1/sec|pclin growthrate_mtm(nrho_anomth) ! growthrate from MTM model
+ R|units=1/sec|pclin freq_mtm(nrho_anomth)     ! frequency from MTM model
+ R|units=-|pclin kyrhos_mtm(nrho_anomth)         ! ky*rhos at max growth rate for MTM model
+
+#GLF23 model
+ R|units=GB|pclin growthrate_glf(nrho_anomth)   ! growthrate from GLF23 model
+ R|units=GB|pclin freq_glf(nrho_anomth)         ! frequency from GLF23 model
+
+# anomalous radial velocities from GLF23 model
+ R|units=m/sec|pclin  velte_glf(nrho_anomth) ! Te-equation, advective velocity term from GLF23 model
+ R|units=m/sec|pclin  velti_glf(nrho_anomth) ! Ti-equation, advective velocity term from GLF23 model
+ R|units=m/sec|pclin  velpphi_glf(nrho_anomth) ! momentum-equation, advective velocity term from GLF23 model
+ R|units=m/sec|pclin  velns_glf(nrho_anomth,0:nspec_th) ! density-equations, advective velocity term from GLF23 model
+
+#GLF23 model
+ R|units=m^2/s|pclin chie_glf(nrho_anomth)                ! Te-equation, diffusivity from GLF23 model
+ R|units=m^2/s|pclin chii_glf(nrho_anomth)                ! Ti-equation, diffusivity from GLF23 model
+ R|units=m^2/s|pclin chiphi_glf(nrho_anomth)              ! momentum-equation, diffusivity from GLF23 model
+ R|units=m^2/s|pclin difns_glf(nrho_anomth,0:nspec_th)    ! density-equations, diffusivity from GLF23 model
+
+#GTC_NEO model
+ R|units=m^2/s|pclin chie_gtcneo(nrho_anomth)                ! Te-equation, neoclassical diffusivity from GTC_NEO model
+ R|units=m^2/s|pclin chii_gtcneo(nrho_anomth)                ! Ti-equation, neoclassical diffusivity from GTC_NEO model
+ R|units=m^2/s|pclin chiphi_gtcneo(nrho_anomth)              ! momentum-equation, neoclassical diffusivity from GTC_NEO model
+ R|units=m^2/s|pclin difns_gtcneo(nrho_anomth,0:nspec_th)    ! density-equations, neoclassical diffusivity from GTC_NEO model
+
+# anomalous radial velocities from GTC_NEO model
+ R|units=m/sec|pclin  velte_gtcneo(nrho_anomth) ! Te-equation, advective velocity term from GTC_NEO model
+ R|units=m/sec|pclin  velti_gtcneo(nrho_anomth) ! Ti-equation, advective velocity term from GTC_NEO model
+ R|units=m/sec|pclin  velpphi_gtcneo(nrho_anomth) ! momentum-equation, advective velocity term from GTC_NEO model
+ R|units=m/sec|pclin  velns_gtcneo(nrho_anomth,0:nspec_th) ! density-equations, advective velocity term from GTC_NEO model
+
+#NEO model
+ R|units=m^2/s|pclin chie_neo(nrho_anomth)                ! Te-equation, neoclassical diffusivity from NEO model
+ R|units=m^2/s|pclin chii_neo(nrho_anomth)                ! Ti-equation, neoclassical diffusivity from NEO model
+ R|units=m^2/s|pclin chiphi_neo(nrho_anomth)              ! momentum-equation, neoclassical diffusivity from NEO model
+ R|units=m^2/s|pclin difns_neo(nrho_anomth,0:nspec_th)    ! density-equations, neoclassical diffusivity from NEO model
+
+# anomalous radial velocities from NEO model
+ R|units=m/sec|pclin  velte_neo(nrho_anomth) ! Te-equation, advective velocity term from NEO model
+ R|units=m/sec|pclin  velti_neo(nrho_anomth) ! Ti-equation, advective velocity term from NEO model
+ R|units=m/sec|pclin  velpphi_neo(nrho_anomth) ! momentum-equation, advective velocity term from NEO model
+ R|units=m/sec|pclin  velns_neo(nrho_anomth,0:nspec_th) ! density-equations, advective velocity term from NEO model
+
+# neoclassical diffusivities and velocities from NCLASS model
+ R|units=m^2/s|pclin chie_nclass(nrho_anomth)                ! Te-equation, neoclassical diffusivity from NCLASS model
+ R|units=m^2/s|pclin chii_nclass(nrho_anomth)                ! Ti-equation, neoclassical diffusivity from NCALSS model
+ R|units=m^2/s|pclin difns_nclass(nrho_anomth,0:nspec_th)    ! density-equations, neoclassical diffusivity from NCLASS model
+ R|units=m^2/s|pclin difne_nclass(nrho_anomth)               ! electron-density-equations, neoclassical diffusivity from NCLASS model
+ R|units=m^2/s|pclin difnh_nclass(nrho_anomth)               ! main-hydrogenic-density-equations, neoclassical diffusivity from NCLASS model
+ R|units=m^2/s|pclin difnx_nclass(nrho_anomth)               ! main-impurity-density-equations, neoclassical diffusivity from NCLASS model
+ R|units=m/sec|pclin velte_nclass(nrho_anomth)               ! Te-equation, advective velocity term from NCLASS model
+ R|units=m/sec|pclin velti_nclass(nrho_anomth)               ! Ti-equation, advective velocity term from NCLASS model
+ R|units=m/sec|pclin velns_nclass(nrho_anomth,0:nspec_th)    ! density-equations, advective velocity term from NCLASS model
+ R|units=m/sec|pclin velne_nclass(nrho_anomth)               ! electron-density-equations, advective velocity term from NCLASS model
+ R|units=m/sec|pclin velnh_nclass(nrho_anomth)               ! main-hydrogenic-density-equations, advective velocity term from NCLASS model
+ R|units=m/sec|pclin velnx_nclass(nrho_anomth)               ! main-impurity-density-equations, advective velocity term from NCLASS model
+
+#NTM model
+ R|units=m^2/s|pclin chie_ntm(nrho_anomth)                ! Te-equation, neoclassical diffusivity from NTM model
+ R|units=m^2/s|pclin chii_ntm(nrho_anomth)                ! Ti-equation, neoclassical diffusivity from NTM model
+
+# model profiles for 0d scaling based ad-hoc prediction
+
+ R|units=m^-3|step  nmodel(~nrho_anomth)         ! target density profile
+   ! from experiment or "profile consistency" model
+
+ R|units=keV|step*nmodel   tmodel(~nrho_anomth)  ! target temperature profile
+   ! from experiment or "profile consistency" model
+
+ R|units=-|Hermite  ee_mobility_factor(nrho_anomth) ! chi_e/chi_i
+   ! ratio of electron heat diffusivity to ion heat diffusivity, a model input
+   ! (does not effect relative non-diffusive heat pinch velocities).
+ 
+#=========================================================================

@@ -1,0 +1,58 @@
+;unixfile (geqxpl):  enter file spec or "r":$
+g104403.nstx
+;geqxpl:  data processing control option:$
+n 31
+;geqxpl:  data processing control option:$
+m 71
+;geqxpl:  data processing control option:$
+f 0.99 a
+;xplasma_debug_master: action option:$
+a
+;xplasma_debug_special: plot option:$
+s
+;grsflux:  control option:$
+p
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+s x 2.5 x x
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+n
+;grsflux:  control option:$
+q
+;xplasma_debug_special: plot option:$
+q
+;xplasma_debug_master: action option:$
+p
+;xplasma_debug_profs command option:$
+s psi_rz
+;prof_plot1d option:$
+i
+; GRF3SG:  ENTER OPTION #:$
+5f
+; GRF3SG:  ENTER OPTION #:$
+4
+;prof_plot1d option:$
+q
+;xplasma_debug_profs command option:$
+s g
+;prof_plot1d option:$
+i
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+q
+;prof_plot1d option:$
+q
+;xplasma_debug_profs command option:$
+s p
+;prof_plot1d option:$
+i
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+q
+;prof_plot1d option:$
+q
+;xplasma_debug_profs command option:$
+q
+;xplasma_debug_master: action option:$
+q
+;geqxpl:  write psipqgRZ NetCDF file? (Y/N):$
+n
+;unixfile (geqxpl):  enter file spec or "r":$
+q

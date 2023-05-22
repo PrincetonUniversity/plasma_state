@@ -1,0 +1,146 @@
+$(OBJDIR)/xplasma_calls.o : xplasma_calls.for 
+$(OBJDIR)/eq_module.o : eq_module.f90 
+$(OBJDIR)/eq_save.o : eq_save.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_esia.o : eq_esia.f90 
+$(OBJDIR)/eq_area.o : eq_area.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzmag.o : eqm_rzmag.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rget_binsm.o : eq_rget_binsm.f90 
+$(OBJDIR)/eq_frhochi.o : eq_frhochi.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_gbids.o : eq_gbids.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_inquire_author.o : eq_inquire_author.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzfunf.o : eqm_rzfunf.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_author.o : eq_author.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_clear.o : eqm_clear.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_getdetj.o : eq_getdetj.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_fun.o : eq_fun.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/mcgrid_putobj.o : mcgrid_putobj.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzfun.o : eqm_rzfun.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/mcgrid_define.o : mcgrid_define.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_gflist.o : eq_gflist.f90 
+$(OBJDIR)/mcgrid_getobj.o : mcgrid_getobj.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqxyz_fxcep.o : eqxyz_fxcep.f90 
+$(OBJDIR)/eq_list.o : eq_list.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_get_psi0.o : eq_get_psi0.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_gen_boozer.o : eqm_gen_boozer.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rgetf.o : eq_rgetf.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_bbin.o : eqm_bbin.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_xcyl.o : eq_xcyl.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzgrid.o : eqm_rzgrid.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_getjac.o : eq_getjac.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rget_sm.o : eq_rget_sm.f90 
+$(OBJDIR)/eq_hrz.o : eq_hrz.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_f1d.o : eqm_f1d.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/xplasma1_dummy.o : xplasma1_dummy.f90 
+$(OBJDIR)/eqmom_getall.o : eqmom_getall.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_glimb1.o : eq_glimb1.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_gaxis.o : eq_gaxis.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rzdist.o : eq_rzdist.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_flxint_arr2d.o : eq_flxint_arr2d.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rholim.o : eq_rholim.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_time.o : eqm_time.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/equigs_xpsi.o : equigs_xpsi.f90 
+$(OBJDIR)/eqm_tbdy_grid.o : eqm_tbdy_grid.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzmagb.o : eqm_rzmagb.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_irhofun.o : eqm_irhofun.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/fluxav_get.o : fluxav_get.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_find_intg.o : eq_find_intg.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_inv.o : eq_inv.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rho.o : eqm_rho.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_frhochi.o : eqm_frhochi.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_list.o : eqm_list.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzfun2.o : eqm_rzfun2.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzmag2.o : eqm_rzmag2.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/rdtreq.o : rdtreq.f90 
+$(OBJDIR)/eqm_brz.o : eqm_brz.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rhopsi.o : eq_rhopsi.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_set_units.o : eqm_set_units.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_limcon.o : eq_limcon.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_dbdy.o : eqm_dbdy.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzfunda.o : eqm_rzfunda.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_flabel.o : eqm_flabel.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_geqdsk.o : eq_geqdsk.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_grid.o : eq_grid.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_frz.o : eqm_frz.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_surfgeo.o : eq_surfgeo.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_cbdy_grid.o : eqm_cbdy_grid.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqi_jacheck_maxvar.o : eqi_jacheck_maxvar.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_ngrids.o : eq_ngrids.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_fxcep.o : eq_fxcep.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_psipqgrz.o : eq_psipqgrz.f90 
+$(OBJDIR)/eq_xgetf.o : eq_xgetf.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_time.o : eq_time.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_mark_pmhd.o : eqm_mark_pmhd.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_bset.o : eqm_bset.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_flxint.o : eq_flxint.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_flxint_arr2.o : eq_flxint_arr2.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_free.o : eqm_free.f90 
+$(OBJDIR)/equigs_write.o : equigs_write.f90 
+$(OBJDIR)/eq_glimb.o : eq_glimb.f90 
+$(OBJDIR)/eq_flxint_init.o : eq_flxint_init.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/xmoments_setget.o : xmoments_setget.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rgetff.o : eq_rgetff.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_save_psi0.o : eqm_save_psi0.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_tau_bounce.o : eq_tau_bounce.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rzget.o : eq_rzget.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_gen_q.o : eqm_gen_q.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/itrans_ptr.o : itrans_ptr.f90 
+$(OBJDIR)/eq_hrhochi.o : eq_hrhochi.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_glimrz.o : eq_glimrz.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_uaxis.o : eqm_uaxis.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_restore.o : eq_restore.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_ganum.o : eq_ganum.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rcyl.o : eq_rcyl.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_cbdy.o : eqm_cbdy.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_bdlims.o : eq_bdlims.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_bdfind.o : eq_bdfind.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_flxint_arr2s.o : eq_flxint_arr2s.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_gfnum.o : eq_gfnum.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_nindx.o : eq_nindx.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rhofun.o : eqm_rhofun.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_chi.o : eqm_chi.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_frz.o : eq_frz.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzmag_check.o : eqm_rzmag_check.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_dfast.o : eq_dfast.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/mcgrid_argcheck.o : mcgrid_argcheck.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_xid_mag.o : eq_xid_mag.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_rzordr.o : eqm_rzordr.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_tbdy.o : eqm_tbdy.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_rzlims.o : eq_rzlims.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqm_dbdy_grid.o : eqm_dbdy_grid.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqi_getall.o : eqi_getall.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_volume.o : eq_volume.f90 $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_psmom.o : eq_psmom.f90 
+$(OBJDIR)/c_eq_flxint.o : c_eq_flxint.for 
+$(OBJDIR)/eqrz_bget.o : eqrz_bget.for 
+$(OBJDIR)/eqi_rzxvec.o : eqi_rzxvec.for 
+$(OBJDIR)/eq_bget.o : eq_bget.for 
+$(OBJDIR)/eqxyz_bget.o : eqxyz_bget.for 
+$(OBJDIR)/eqm_r4_hand.o : eqm_r4_hand.for 
+$(OBJDIR)/eq_get_lunerr.o : eq_get_lunerr.for $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqxyz_fget.o : eqxyz_fget.for 
+$(OBJDIR)/c_eqm_rzfunda.o : c_eqm_rzfunda.for 
+$(OBJDIR)/eqrz_ffget.o : eqrz_ffget.for 
+$(OBJDIR)/eqm_select.o : eqm_select.for $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eq_errmsg.o : eq_errmsg.for $(OBJDIR)/eq_module.o 
+$(OBJDIR)/eqrz_bffget.o : eqrz_bffget.for 
+$(OBJDIR)/eqm_msgs.o : eqm_msgs.for $(OBJDIR)/eq_module.o 
+$(OBJDIR)/c_eqm_select.o : c_eqm_select.for 
+$(OBJDIR)/eqm_premsg.o : eqm_premsg.for $(OBJDIR)/eq_module.o 
+$(OBJDIR)/c_eqm_msgs.o : c_eqm_msgs.for 
+$(OBJDIR)/c_eq_ganum.o : c_eq_ganum.for 
+$(OBJDIR)/eq_bffget.o : eq_bffget.for 
+$(OBJDIR)/c_eqm_uaxis.o : c_eqm_uaxis.for 
+$(OBJDIR)/eq_ident.o : eq_ident.for $(OBJDIR)/eq_module.o 
+$(OBJDIR)/c_eq_gfnum.o : c_eq_gfnum.for 
+$(OBJDIR)/c_eqm_rhofun.o : c_eqm_rhofun.for 
+$(OBJDIR)/eq_ffget.o : eq_ffget.for 
+$(OBJDIR)/r4_eq_frhochi.o : r4_eq_frhochi.for 
+$(OBJDIR)/c_eqm_rzfun2.o : c_eqm_rzfun2.for 
+$(OBJDIR)/eq_fget.o : eq_fget.for 
+$(OBJDIR)/c_eq_save.o : c_eq_save.for 
+$(OBJDIR)/eqrz_fget.o : eqrz_fget.for 
+$(OBJDIR)/c_eqm_frhochi.o : c_eqm_frhochi.for 
+$(OBJDIR)/eqxyz_bffget.o : eqxyz_bffget.for 
+$(OBJDIR)/eqxyz_ffget.o : eqxyz_ffget.for 
+$(OBJDIR)/c_eq_restore.o : c_eq_restore.for 
+$(OBJDIR)/c_eqm_irhofun.o : c_eqm_irhofun.for 

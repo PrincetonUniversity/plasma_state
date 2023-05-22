@@ -1,0 +1,29 @@
+; date: 18May2010 username: dmccune
+;ur_cstate_list: command option:$
+p
+;ur_cstate_compare: option select:$
+s
+;ur_cstate_slists option:$
+d
+;ur_cstate_slists option:$
+q
+;ur_cstate_compare: option select:$
+p
+;ur_cstate_sprof option:$
+s ns
+;ur_cstate_sprof: f(rho) plotting option:$
+s
+;ur_cstate_sprof: plot data selection option:$
+s
+;data item name:$
+ne
+;ur_cstate_sprof: f(rho) plotting option:$
+p
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+q
+;ur_cstate_sprof: f(rho) plotting option:$
+q
+;ur_cstate_sprof option:$
+q
+;ur_cstate_compare: option select:$
+*T type "?" to see a menu (ignore the warning message that follows)

@@ -1,0 +1,17 @@
+$(OBJDIR)/cgeq_paths.o : cgeq_paths.f90 
+$(OBJDIR)/geqdsk_mod.o : geqdsk_mod.f90 $(OBJDIR)/cgeq_paths.o 
+$(OBJDIR)/eqi_geq_mds_mod.o : eqi_geq_mds_mod.f90 $(OBJDIR)/geqdsk_mod.o 
+$(OBJDIR)/eqm_mds_fromgeqdsk_mod.o : eqm_mds_fromgeqdsk_mod.f90 
+$(OBJDIR)/geqdsk_subs.o : geqdsk_subs.f90 $(OBJDIR)/cgeq_paths.o 
+$(OBJDIR)/eqi_mds_geq_findrz.o : eqi_mds_geq_findrz.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqi_geq_mds_nlimiter.o : eqi_geq_mds_nlimiter.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqi_mds_qpsi_regen.o : eqi_mds_qpsi_regen.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqm_wr_geqdsk.o : eqm_wr_geqdsk.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqi_geq_mds_psiminr.o : eqi_geq_mds_psiminr.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqi_mds_fromgeqdsk.o : eqi_mds_fromgeqdsk.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqm_geq_mds_curtime.o : eqm_geq_mds_curtime.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqi_mds_fromg_err.o : eqi_mds_fromg_err.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqi_mds_contour.o : eqi_mds_contour.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqi_geq_mds_psimin.o : eqi_geq_mds_psimin.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/eqm_geq_maxgserr.o : eqm_geq_maxgserr.f90 $(OBJDIR)/eqi_geq_mds_mod.o 
+$(OBJDIR)/geq_ckrzc.o : geq_ckrzc.f90 

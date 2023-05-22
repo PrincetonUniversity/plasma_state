@@ -1,0 +1,39 @@
+#--- java code system (not on stellar)
+#test -f /p/beast/java/load_share_2.7.bsh && . /p/beast/java/load_share_2.7.bsh
+#if [ -f $TRANSPROOT/jcodesys/example_jcodesysrc.bsh ]; then
+#    . $TRANSPROOT/jcodesys/example_jcodesysrc.bsh
+#    alias cdj="cd $JCODESYSDIR"
+#fi
+
+#--- For machine regression testing web pages
+#export TESTOUTDIR=$HOME/w3_html/machine
+#export TESTOUTADDRESS="http://w3.pppl.gov/~$USER/machine/"
+
+#--- Production system
+#export TRINF=/p/transpgrid/inf_new
+#export TRINF_OLD=/p/transpgrid/inf
+#export TRINF_NEW=/p/transpgrid/inf_new
+#export ARCDIR=/p/transparch/result
+#export HALTDIR /p/transpgrid/suspended
+
+export L_X11=" -L/usr/lib64 -lX11"
+export L_F2C=" -lf2c"
+
+export L_NAG=" -L$LOCAL/lib -lnag_dummy"
+export L_PGPLOT=" -L$LOCAL/lib -lpgplot_dummy"
+export L_JETPPF=" -L$LOCAL/lib -lnb_dummy"
+
+export ISOLVERDIR=$LOCAL/isolver_data
+export PREACTDIR=/projects/TRANSP/data/preact
+export ADASDIR=/projects/TRANSP/data/adas
+
+# ... not available on stellar yet
+#export L_MDSPLUS=" -L$LOCAL/lib -lmds_dummy"
+#export TRANSPGRID_SERVER=transpgrid.pppl.gov
+#export MDS_TRANSP_SERVER=transpgrid.pppl.gov
+#
+#
+export PATH=/projects/TRANSP/opt/nccmp-1.8.9.0/bin:${PATH}
+
+export L_IMAS=" "
+export LMPI_IMAS=" "

@@ -1,0 +1,35 @@
+$(OBJDIR)/eq_arc_scrunch_mod.o : eq_arc_scrunch_mod.f90 
+$(OBJDIR)/scrscrmod.o : scrscrmod.f90 
+$(OBJDIR)/scramplituddes.o : scramplituddes.f90 $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrmfalsi.o : scrmfalsi.f90 
+$(OBJDIR)/scrclear.o : scrclear.f90 $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrmemory.o : scrmemory.f90 $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrfunct1des.o : scrfunct1des.f90 $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scraborter.o : scraborter.f90 
+$(OBJDIR)/scrfsetup.o : scrfsetup.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrrestartdes.o : scrrestartdes.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrpreset.o : scrpreset.f90 $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/eq_arc_scrunch.o : eq_arc_scrunch.f90 $(OBJDIR)/eq_arc_scrunch_mod.o 
+$(OBJDIR)/scradphase.o : scradphase.f90 
+$(OBJDIR)/scrsetlun.o : scrsetlun.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/screvolvedes.o : screvolvedes.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrdesreg.o : scrdesreg.f90 
+$(OBJDIR)/scryceptcon.o : scryceptcon.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrunch_rz.o : scrunch_rz.f90 
+$(OBJDIR)/scrunch_cleanup.o : scrunch_cleanup.f90 
+$(OBJDIR)/scrxceptcon.o : scrxceptcon.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrmomintrp.o : scrmomintrp.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrgctnorm.o : scrgctnorm.f90 
+$(OBJDIR)/scrfree.o : scrfree.f90 $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scriscrunch.o : scriscrunch.f90 $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scringuessdes.o : scringuessdes.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrdescur.o : scrdescur.f90 $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrfixaraydes.o : scrfixaraydes.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrorderdes.o : scrorderdes.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrdesdbg.o : scrdesdbg.f90 
+$(OBJDIR)/scrphasead.o : scrphasead.f90 
+$(OBJDIR)/scrgetangldes.o : scrgetangldes.f90 $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/eq_arc_fmidplane.o : eq_arc_fmidplane.f90 $(OBJDIR)/eq_arc_scrunch_mod.o 
+$(OBJDIR)/scrprintdes.o : scrprintdes.f90 $(OBJDIR)/scrscrmod.o $(OBJDIR)/scrscrmod.o 
+$(OBJDIR)/scrsincos.o : scrsincos.f90 
+$(OBJDIR)/eq_arc_findarc.o : eq_arc_findarc.f90 $(OBJDIR)/eq_arc_scrunch_mod.o 

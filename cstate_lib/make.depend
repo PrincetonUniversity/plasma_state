@@ -1,0 +1,34 @@
+$(OBJDIR)/cstate_lib_mod.o : cstate_lib_mod.f90 
+$(OBJDIR)/ur_cstate_compare.o : ur_cstate_compare.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_component.o : ur_cstate_component.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_chk_locks.o : cstate_chk_locks.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_list.o : ur_cstate_list.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_ck_grids.o : cstate_ck_grids.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_encode.o : cstate_encode.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_merge.o : cstate_merge.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_nchk.o : ur_cstate_nchk.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_mnlab3.o : ur_cstate_mnlab3.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_ck_listdims.o : cstate_ck_listdims.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_empty_dims.o : cstate_empty_dims.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_extract_dims.o : cstate_extract_dims.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_ilists.o : ur_cstate_ilists.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_sdata.o : ur_cstate_sdata.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_misc_plots.o : ur_cstate_misc_plots.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_grids.o : ur_cstate_grids.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_dcomp_display.o : ur_dcomp_display.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ps_dbg_plot.o : ps_dbg_plot.f90 
+$(OBJDIR)/cstate_ldim_stats.o : cstate_ldim_stats.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_table_out.o : cstate_table_out.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_wlen.o : cstate_wlen.f90 
+$(OBJDIR)/ur_cstate_contents.o : ur_cstate_contents.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_gen_indmap.o : cstate_gen_indmap.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_xplasma_plots.o : ur_cstate_xplasma_plots.f90 
+$(OBJDIR)/ur_cstate_zeff_check.o : ur_cstate_zeff_check.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_find1.o : cstate_find1.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_sprof.o : ur_cstate_sprof.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_quasi_check.o : ur_cstate_quasi_check.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_hash_compare.o : cstate_hash_compare.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_ck_empty.o : cstate_ck_empty.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/ur_cstate_slists.o : ur_cstate_slists.f90 $(OBJDIR)/cstate_lib_mod.o 
+$(OBJDIR)/cstate_main.o : cstate_main.f90 
+$(OBJDIR)/ur_cstate_rcon.o : ur_cstate_rcon.f90 $(OBJDIR)/cstate_lib_mod.o 

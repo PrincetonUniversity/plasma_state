@@ -1,0 +1,457 @@
+ &mdescr
+ 
+   ! name: tokamak_id  units: character
+   ! description: Tokamak (Machine Description) ID
+ 
+   tokamak_id = "TFTR"
+ 
+   ! name: geometry  units: character
+   ! description: path to file(s) vac. vessel & coil descr.
+ 
+   geometry = "TRANSP(TFTR,'TFTR.88 37065Y03'; time0= 3.800000E+00s; delta_t= 0.000000E+00s)"
+ 
+   ! name: num_rzlim  units: integer
+   ! description: number of points, axisymmetric (R,Z) limiter
+ 
+   num_rzlim = 202
+ 
+   ! name: rlim  units: m
+   ! description: R points in closed (R,Z) contour sequence
+ 
+   rlim(1) =  1.65600006,  1.65927719,  1.66253321,  1.66577417,  1.66900609
+   rlim(6) =  1.67223501,  1.67546699,  1.67870827,  1.68196531,  1.68524477
+   rlim(11) =  1.69393925,  1.70340896,  1.71284854,  1.72227853,  1.73171982
+   rlim(16) =  1.74119362,  1.75072163,  1.76032622,  1.77003068,  1.78360895
+   rlim(21) =  1.7988116,  1.81403295,  1.82930717,  1.84466876,  1.86015267
+   rlim(26) =  1.8757942,  1.89162935,  1.90769545,  1.92691809,  1.94754268
+   rlim(31) =  1.96826449,  1.98912476,  2.01016517,  2.03142877,  2.05295984
+   rlim(36) =  2.07480461,  2.09703799,  2.12227661,  2.14762917,  2.17314527
+   rlim(41) =  2.19887634,  2.22487674,  2.25120324,  2.27791634,  2.3050812
+   rlim(46) =  2.3335338,  2.36250318,  2.39157285,  2.4208067,  2.4502703
+   rlim(51) =  2.4800316,  2.5101612,  2.54073272,  2.57182333,  2.60232721
+   rlim(56) =  2.63286928,  2.66360891,  2.69461105,  2.72594051,  2.75766377
+   rlim(61) =  2.7898498,  2.82256771,  2.85397645,  2.8840577,  2.91428414
+   rlim(66) =  2.94470807,  2.97538147,  3.00635705,  3.03768977,  3.06943733
+   rlim(71) =  3.09859572,  3.12539888,  3.15223442,  3.17914651,  3.20618112
+   rlim(76) =  3.23338624,  3.26081169,  3.28851021,  3.31134263,  3.33218825
+   rlim(81) =  3.35301412,  3.37386113,  3.39477085,  3.41578583,  3.43695005
+   rlim(86) =  3.45830875,  3.47213025,  3.48534483,  3.49854764,  3.51176542
+   rlim(91) =  3.52502481,  3.53835239,  3.5517748,  3.56366695,  3.56824556
+   rlim(96) =  3.57280892,  3.57736535,  3.581923,  3.58648987,  3.59107394
+   rlim(101) =  3.59568323,  3.59568323,  3.59107394,  3.58648987,  3.581923
+   rlim(106) =  3.57736535,  3.57280892,  3.56824556,  3.56366695,  3.5517748
+   rlim(111) =  3.53835239,  3.52502481,  3.51176542,  3.49854764,  3.48534483
+   rlim(116) =  3.47213025,  3.45830875,  3.43695005,  3.41578583,  3.39477085
+   rlim(121) =  3.37386113,  3.35301412,  3.33218825,  3.31134263,  3.28851021
+   rlim(126) =  3.26081169,  3.23338624,  3.20618112,  3.17914651,  3.15223442
+   rlim(131) =  3.12539888,  3.09859572,  3.06943733,  3.03768977,  3.00635705
+   rlim(136) =  2.97538147,  2.94470807,  2.91428414,  2.8840577,  2.85397645
+   rlim(141) =  2.82256771,  2.7898498,  2.75766377,  2.72594051,  2.69461105
+   rlim(146) =  2.66360891,  2.63286928,  2.60232721,  2.57182333,  2.54073272
+   rlim(151) =  2.5101612,  2.4800316,  2.4502703,  2.4208067,  2.39157285
+   rlim(156) =  2.36250318,  2.3335338,  2.3050812,  2.27791634,  2.25120324
+   rlim(161) =  2.22487674,  2.19887634,  2.17314527,  2.14762917,  2.12227661
+   rlim(166) =  2.09703799,  2.07480461,  2.05295984,  2.03142877,  2.01016517
+   rlim(171) =  1.98912476,  1.96826449,  1.94754268,  1.92691809,  1.90769545
+   rlim(176) =  1.89162935,  1.8757942,  1.86015267,  1.84466876,  1.82930717
+   rlim(181) =  1.81403295,  1.7988116,  1.78360895,  1.77003068,  1.76032622
+   rlim(186) =  1.75072163,  1.74119362,  1.73171982,  1.72227853,  1.71284854
+   rlim(191) =  1.70340896,  1.69393925,  1.68524477,  1.68196531,  1.67870827
+   rlim(196) =  1.67546699,  1.67223501,  1.66900609,  1.66577417,  1.66253321
+   rlim(201) =  1.65927719,  1.65600006
+ 
+   ! name: zlim  units: m
+   ! description: Z points in closed (R,Z) contour sequence
+ 
+   zlim(1) = -2.12790717d-17, -2.6836319d-2, -5.34997626d-2, -8.00399247d-2
+   zlim(5) = -0.106506012, -0.132947548, -0.159414165, -0.185956958
+   zlim(9) = -0.212628757, -0.239484143, -0.26469185, -0.289507939
+   zlim(13) = -0.314245066, -0.338957074, -0.363698682, -0.388525491
+   zlim(17) = -0.413494345, -0.438663894, -0.464095164, -0.487105029
+   zlim(21) = -0.508969925, -0.5308617, -0.552829529, -0.574922995
+   zlim(25) = -0.597192409, -0.619688501, -0.64246307, -0.665569793
+   zlim(29) = -0.685273166, -0.703369774, -0.721551692, -0.7398551
+   zlim(33) = -0.758316571, -0.776973871, -0.795865855, -0.815033093
+   zlim(37) = -0.834456607, -0.847505679, -0.86061366, -0.873806198
+   zlim(41) = -0.887109878, -0.900552813, -0.914164351, -0.927975768
+   zlim(45) = -0.942020759, -0.950015461, -0.954875257, -0.959751877
+   zlim(49) = -0.964656039, -0.969598743, -0.974591387, -0.979645817
+   zlim(53) = -0.984774382, -0.989990027, -0.987673746, -0.984577767
+   zlim(57) = -0.981461761, -0.978319147, -0.975143351, -0.971927637
+   zlim(61) = -0.968665014, -0.965348475, -0.957448544, -0.945841507
+   zlim(65) = -0.934178444, -0.922439185, -0.910603661, -0.898651541
+   zlim(69) = -0.886561612, -0.87431162, -0.857834555, -0.838065829
+   zlim(73) = -0.818273224, -0.798424153, -0.778484723, -0.758419534
+   zlim(77) = -0.738191834, -0.717762738, -0.692918008, -0.66650219
+   zlim(81) = -0.640111404, -0.613693824, -0.58719678, -0.560566356
+   zlim(85) = -0.533746808, -0.506680814, -0.475692906, -0.444511234
+   zlim(89) = -0.413357333, -0.382168106, -0.350880703, -0.319432396
+   zlim(93) = -0.287760337, -0.255422115, -0.221359285, -0.187409846
+   zlim(97) = -0.153511959, -0.119605035, -8.56294522d-2, -5.15259605d-2
+   zlim(101) = -1.72348295d-2,  1.72348295d-2,  5.15259605d-2,  8.56294522d-2
+   zlim(105) =  0.119605035,  0.153511959,  0.187409846,  0.221359285
+   zlim(109) =  0.255422115,  0.287760337,  0.319432396,  0.350880703
+   zlim(113) =  0.382168106,  0.413357333,  0.444511234,  0.475692906
+   zlim(117) =  0.506680814,  0.533746808,  0.560566356,  0.58719678
+   zlim(121) =  0.613693824,  0.640111404,  0.66650219,  0.692918008
+   zlim(125) =  0.717762738,  0.738191834,  0.758419534,  0.778484723
+   zlim(129) =  0.798424153,  0.818273224,  0.838065829,  0.857834555
+   zlim(133) =  0.87431162,  0.886561612,  0.898651541,  0.910603661
+   zlim(137) =  0.922439185,  0.934178444,  0.945841507,  0.957448544
+   zlim(141) =  0.965348475,  0.968665014,  0.971927637,  0.975143351
+   zlim(145) =  0.978319147,  0.981461761,  0.984577767,  0.987673746
+   zlim(149) =  0.989990027,  0.984774382,  0.979645817,  0.974591387
+   zlim(153) =  0.969598743,  0.964656039,  0.959751877,  0.954875257
+   zlim(157) =  0.950015461,  0.942020759,  0.927975768,  0.914164351
+   zlim(161) =  0.900552813,  0.887109878,  0.873806198,  0.86061366
+   zlim(165) =  0.847505679,  0.834456607,  0.815033093,  0.795865855
+   zlim(169) =  0.776973871,  0.758316571,  0.7398551,  0.721551692
+   zlim(173) =  0.703369774,  0.685273166,  0.665569793,  0.64246307
+   zlim(177) =  0.619688501,  0.597192409,  0.574922995,  0.552829529
+   zlim(181) =  0.5308617,  0.508969925,  0.487105029,  0.464095164
+   zlim(185) =  0.438663894,  0.413494345,  0.388525491,  0.363698682
+   zlim(189) =  0.338957074,  0.314245066,  0.289507939,  0.26469185
+   zlim(193) =  0.239484143,  0.212628757,  0.185956958,  0.159414165
+   zlim(197) =  0.132947548,  0.106506012,  8.00399247d-2,  5.34997626d-2
+   zlim(201) =  2.6836319d-2, -2.12790717d-17
+ 
+   ! name: R_min_box  units: m
+   ! description: R_min of bounding box
+ 
+   R_min_box =  1.57832007
+ 
+   ! name: R_max_box  units: m
+   ! description: R_max of bounding box
+ 
+   R_max_box =  3.67567987
+ 
+   ! name: Z_min_box  units: m
+   ! description: Z_min of bounding box
+ 
+   Z_min_box = -1.069711525
+ 
+   ! name: Z_max_box  units: m
+   ! description: Z_max of bounding box
+ 
+   Z_max_box =  1.069711525
+ 
+   ! name: circuit_name  units: character
+   ! description: Number & names of circuits
+ 
+   ! name: coil_name  units: character
+   ! description: Number & name of axisymmetric coils
+ 
+   ! name: coil_in_circuit  units: character
+   ! description: circuit to which each coil belongs
+ 
+   ! name: Rloc_coil  units: m
+   ! description: R location of coil, lower left corner
+ 
+   ! name: Zloc_coil  units: m
+   ! description: Z location of coil, lower left corner
+ 
+   ! name: Hsize_coil  units: m
+   ! description: (Rotatable) Horizontal coil base size
+ 
+   ! name: Ang_Href_coil  units: degrees
+   ! description: angle w.r.t. horizontal of coil base
+ 
+   ! name: Vsize_coil  units: m
+   ! description: (Rotatable) Vertical coil size
+ 
+   ! name: Ang_Vref_coil  units: degrees
+   ! description: angle w.r.t. vertical of coil sides
+ 
+   ! name: Nturns  units: integer
+   ! description: SIGNED number of conductor turns wrapped in each coil
+ 
+   ! name: VRep_coil_count  units: integer
+   ! description: replication count, vertical coil stack
+ 
+   ! name: Vrep_coil_spacing  units: m
+   ! description: replicated coil separation
+ 
+   ! name: coil_resispt  units: ohms/turn
+   ! description: coil resistance per turn
+ 
+   ! name: nbi_src_name  units: character
+   ! description: number & name of neutral beams
+ 
+   nbi_src_name(1) = "B_001"
+   nbi_src_name(2) = "B_002"
+   nbi_src_name(3) = "B_003"
+   nbi_src_name(4) = "B_004"
+   nbi_src_name(5) = "B_005"
+   nbi_src_name(6) = "B_006"
+   nbi_src_name(7) = "B_007"
+ 
+   ! name: beam_type  units: character
+   ! description: beam type:
+ 
+   beam_type(1) = "Standard"
+   beam_type(2) = "Standard"
+   beam_type(3) = "Standard"
+   beam_type(4) = "Standard"
+   beam_type(5) = "Standard"
+   beam_type(6) = "Standard"
+   beam_type(7) = "Standard"
+ 
+   ! name: sRtcen  units: m
+   ! description: signed tangency radius
+ 
+   sRtcen(1) =  1.7397,  1.9981,  2.2259, -2.2851, -1.8038, -1.9878, -1.7257
+ 
+   ! name: Lbsctan  units: m
+   ! description: distance, source to tangency point
+ 
+   Lbsctan(1) =  13.279,  13.143,  12.999,  12.962,  13.251,  13.148,  13.285
+ 
+   ! name: Zbsc  units: m
+   ! description: elevation of beam source
+ 
+   Zbsc(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: Phibsc  units: degrees
+   ! description: toroidal location of beam source
+ 
+   Phibsc(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: Lbscap  units: m
+   ! description: distance, source to aperture
+ 
+   Lbscap(1) =  5.103,  5.09,  5.103,  5.103,  5.103,  5.09,  5.103
+ 
+   ! name: Zbap  units: m
+   ! description: elevation of beam centerline at aperture
+ 
+   Zbap(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: nbshape  units: character
+   ! description: shape keyword for beam source grid
+ 
+   nbshape(1) = "Rectangle"
+   nbshape(2) = "Rectangle"
+   nbshape(3) = "Rectangle"
+   nbshape(4) = "Rectangle"
+   nbshape(5) = "Rectangle"
+   nbshape(6) = "Rectangle"
+   nbshape(7) = "Rectangle"
+ 
+   ! name: b_halfwidth  units: m
+   ! description: beam half-width at source
+ 
+   b_halfwidth(1) =  6.0d-2,  6.0d-2,  6.0d-2,  6.0d-2,  6.0d-2,  6.0d-2
+   b_halfwidth(7) =  6.0d-2
+ 
+   ! name: b_halfHeight  units: m
+   ! description: beam half-height at source
+ 
+   b_halfHeight(1) =  0.215,  0.215,  0.215,  0.215,  0.215,  0.215,  0.215
+ 
+   ! name: b_Hfocal_length  units: m
+   ! description: horizontal focal length
+ 
+   b_Hfocal_length(1) =  1.0d4,  1.0d4,  1.0d4,  1.0d4,  1.0d4,  1.0d4,  1.0d4
+ 
+   ! name: b_Vfocal_length  units: m
+   ! description: vertical focal length
+ 
+   b_Vfocal_length(1) =  1.0d4,  1.0d4,  1.0d4,  1.0d4,  1.0d4,  1.0d4,  1.0d4
+ 
+   ! name: b_Hdivergence  units: degrees
+   ! description: horizontal divergence (D) of beam
+ 
+   b_Hdivergence(1) =  0.400280634163,  0.400280634163,  0.400280634163
+   b_Hdivergence(4) =  0.400280634163,  0.400280634163,  0.400280634163
+   b_Hdivergence(7) =  0.400280634163
+ 
+   ! name: b_Vdivergence  units: degrees
+   ! description: vertical divergence (D) of beam
+ 
+   b_Vdivergence(1) =  1.10198717098,  1.10198717098,  1.10198717098
+   b_Vdivergence(4) =  1.10198717098,  1.10198717098,  1.10198717098
+   b_Vdivergence(7) =  1.10198717098
+ 
+   ! name: nbap_shape  units: character
+   ! description: shape keyword for beam aperture
+ 
+   nbap_shape(1) = "Rectangle"
+   nbap_shape(2) = "Rectangle"
+   nbap_shape(3) = "Rectangle"
+   nbap_shape(4) = "Rectangle"
+   nbap_shape(5) = "Rectangle"
+   nbap_shape(6) = "Rectangle"
+   nbap_shape(7) = "Rectangle"
+ 
+   ! name: ap_halfwidth  units: m
+   ! description: aperture half-width
+ 
+   ap_halfwidth(1) =  0.11,  0.11,  0.11,  0.11,  0.11,  0.11,  0.11
+ 
+   ! name: ap_halfheight  units: m
+   ! description: aperture half-height
+ 
+   ap_halfheight(1) =  0.3025,  0.3025,  0.3025,  0.3025,  0.3025,  0.3025
+   ap_halfheight(7) =  0.3025
+ 
+   ! name: ap_horiz_offset  units: m
+   ! description: horizontal offset of aperture
+ 
+   ap_horiz_offset(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: ap_vert_offset  units: m
+   ! description: vertical offset of aperture
+ 
+   ap_vert_offset(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: nbap2_shape  units: character
+   ! description: keyword for optional 2nd aperture
+ 
+   nbap2_shape(1) = "None"
+   nbap2_shape(2) = "None"
+   nbap2_shape(3) = "None"
+   nbap2_shape(4) = "None"
+   nbap2_shape(5) = "None"
+   nbap2_shape(6) = "None"
+   nbap2_shape(7) = "None"
+ 
+   ! name: Lbscap2  units: m
+   ! description: distance, source to 2nd aperture
+ 
+   Lbscap2(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: ap2_halfwidth  units: m
+   ! description: 2nd aperture half-width
+ 
+   ap2_halfwidth(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: ap2_halfheight  units: m
+   ! description: aperture half-height
+ 
+   ap2_halfheight(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: ap2_horiz_offset  units: m
+   ! description: horizontal offset, 2nd aperture
+ 
+   ap2_horiz_offset(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: ap2_vert_offset  units: m
+   ! description: vertical offset, 2nd aperture
+ 
+   ap2_vert_offset(1) =  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0
+ 
+   ! name: Einj_min  units: keV
+   ! description: minimum injection energy
+ 
+   Einj_min(1) =  50.0,  50.0,  50.0,  50.0,  50.0,  50.0,  50.0
+ 
+   ! name: Einj_max  units: keV
+   ! description: maximum injection energy
+ 
+   Einj_max(1) =  110.0,  110.0,  110.0,  110.0,  110.0,  110.0,  110.0
+ 
+   ! name: n_H_einj_standard  units: integer
+   ! description: no. pts in H beam energy fractions table
+ 
+   n_H_einj_standard = 0
+ 
+   ! name: n_D_einj_standard  units: integer
+   ! description: no. pts in D beam energy fractions table
+ 
+   n_D_einj_standard = 7
+ 
+   ! name: n_T_einj_standard  units: integer
+   ! description: no. pts in T beam energy fractions table
+ 
+   n_T_einj_standard = 0
+ 
+   ! name: H_einj_standard  units: keV
+   ! description: H beam table energies
+ 
+   ! name: H_ffull_standard  units: -
+   ! description: H beam full energy fractions
+ 
+   ! name: H_fhalf_standard  units: -
+   ! description: H beam half energy fractions
+ 
+   ! name: D_einj_standard  units: keV
+   ! description: D beam table energies
+ 
+   D_einj_standard(1) =  104.26,  104.399014863,  104.99,  105.908614716
+   D_einj_standard(5) =  106.46,  108.216997123,  108.734946098
+ 
+   ! name: D_ffull_standard  units: -
+   ! description: D beam full energy fractions
+ 
+   D_ffull_standard(1) =  0.444499999285,  0.444121959886,  0.44251999259
+   D_ffull_standard(4) =  0.440054335327,  0.438563020609,  0.433820009232
+   D_ffull_standard(7) =  0.432429143858
+ 
+   ! name: D_fhalf_standard  units: -
+   ! description: D beam half energy fractions
+ 
+   D_fhalf_standard(1) =  0.290529996157,  0.290719020334,  0.291489988565
+   D_fhalf_standard(4) =  0.292671802342,  0.293390005827,  0.295679986477
+   D_fhalf_standard(7) =  0.296348922482
+ 
+   ! name: T_einj_standard  units: keV
+   ! description: T beam table energies
+ 
+   ! name: T_ffull_standard  units: -
+   ! description: T beam full energy fractions
+ 
+   ! name: T_fhalf_standard  units: -
+   ! description: T beam half energy fractions
+ 
+   ! name: icrf_src_name  units: character
+   ! description: number & name of ICRF sources
+ 
+   ! name: ant_model  units: character
+   ! description: antenna model filenames (1 per antenna source)
+ 
+   ! name: nrz_antgeo  units: integer
+   ! description: number of (R,Z) points, antenna geometries
+ 
+   ! name: max_nrz_antgeo  units: integer
+   ! description: Maximum size of variable length enumeration: NRZ_ANTGEO
+ 
+   max_nrz_antgeo = 0
+ 
+   ! name: R_antgeo  units: m
+   ! description: antenna geo: R pts
+ 
+   ! name: Z_antgeo  units: m
+   ! description: antenna geo: Z pts
+ 
+   ! name: dx_fshield  units: m
+   ! description: distance, antenna to Faraday shield
+ 
+   ! name: ecrf_src_name  units: character
+   ! description: number & name of ECRF sources
+ 
+   ! name: R_EC_launch  units: m
+   ! description: R of center of launcher
+ 
+   ! name: Z_EC_launch  units: m
+   ! description: Z of center of launcher
+ 
+   ! name: Phi_EC_launch  units: degrees
+   ! description: Phi of center of launcher
+ 
+   ! name: EC_Half_Power_Angle  units: degrees
+   ! description: Divergence of EC beam
+ 
+   ! name: EC_Beam_Elongation  units: -
+   ! description: EC beam ellipticity
+ 
+   ! name: lhrf_src_name  units: character
+   ! description: number & name of LHRF sources
+ 
+   ! name: ntf_coils  units: integer
+   ! description: number of TF coils
+ 
+ 
+   ! name: ntf_coil2  units: integer
+   ! description: number of TF coils involved in inducing 2nd component
+ 
+ /

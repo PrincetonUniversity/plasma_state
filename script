@@ -1,0 +1,11 @@
+#!/bin/bash
+
+dirs=("ccps_lib" "ccps_test" "convert_state" "cstate" "cstate_lib" "genxpl" "geq2ps" "geqdsk_mds" "geq_plot" "geq_test" "geqxpl" "geqxpl2" "grab_xplasma" "hash_test" "mdescr" "nscrunch" "old_xplasma" "plasma_state" "plasma_state_kernel" "plasma_state_test" "plasma_state.und" "plot_xplasma" "portlib" "ps2geq" "ps2jso" "ps2xplasma" "ps_adas_test" "ps_bloat" "ps_comput" "ps_physconst" "ps_portlib" "ps_smlib" "ps_xplasma2" "scrdescur_test" "test_descur" "test_xplasma" "update_state" "xplasma2" "xplasma2_test" "xplasma_debug")
+
+for d in ${dirs[*]}; do
+    echo ${d}
+    cd ${d}
+    git mv ${d}_makefile.mk makefile
+    git mv ${d}_depend.mk make.depend
+    cd ../
+done

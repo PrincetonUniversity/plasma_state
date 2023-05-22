@@ -1,0 +1,125 @@
+;xplasma_debug_master: action option:$
+p
+;xplasma_debug_profs command option:$
+s g
+;prof_plot1d option:$
+i
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+q
+;prof_plot1d option:$
+q
+;xplasma_debug_profs command option:$
+s psi_rz
+;prof_plot1d option:$
+i
+; GRF3SG:  ENTER OPTION #:$
+5
+; SUB:CONCTR >> ENTER OPTION #:$
+3
+; SUB:CONRDF >> ENTER NEW XMIN:$
+0 3.2
+; SUB:CONRDF >> ENTER NEW YMIN:$
+-1.6 1.6
+; SUB:CONRDF >> ENTER NEW CMIN:$
+x x
+; SUB:CONRDF >> ENTER "Y" FOR LOG-SPACING OF CONTOURS:$
+n
+; SUB:CONRDF >> ENTER MAX # OF CONTOURS YOU WANT TO SEE:$
+18
+; SUB:CONCTR >> ENTER NEW X AXIS TYPE:$
+1
+; SUB:CONCTR >> ENTER NEW Y AXIS TYPE:$
+1
+; SUB:CONCTR >> ENTER OPTION #:$
+4
+; GRF3SG:  ENTER OPTION #:$
+4
+;prof_plot1d option:$
+q
+;xplasma_debug_profs command option:$
+q
+;xplasma_debug_master: action option:$
+a
+;xplasma_debug_special: plot option:$
+s
+;grsflux:  control option:$
+x 0 1.3
+;grsflux:  control option:$
+p
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+s x 4 x x
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+q
+;grsflux:  control option:$
+q
+;xplasma_debug_special: plot option:$
+d
+;xplasma_dmap_test option:$
+l
+;enter #pts in bdy & limiter contours:$
+,
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+n
+;xplasma_dmap_test option:$
+m
+; new Rmin: $
+0 4
+; new Zmin: $
+-2 2
+;xplasma_dmap_test option:$
+n 200 200
+;xplasma_dmap_test option:$
+p
+; GRF3SG:  ENTER OPTION #:$
+5f
+; GRF3SG:  ENTER OPTION #:$
+4
+; GRF3SG:  ENTER OPTION #:$
+5f
+; GRF3SG:  ENTER OPTION #:$
+4
+;xplasma_dmap_test option:$
+q
+;xplasma_debug_special: plot option:$
+m
+;xplasma_imap_test option:$
+p
+;xplasma_imap_test plot option:$
+p
+; GRF3SG:  ENTER OPTION #:$
+5f
+; GRF3SG:  ENTER OPTION #:$
+q
+; GRF3SG:  ENTER OPTION #:$
+q
+;xplasma_imap_test plot option:$
+q
+;xplasma_imap_test option:$
+q
+;xplasma_debug_special: plot option:$
+q
+;xplasma_debug_master: action option:$
+p
+;xplasma_debug_profs command option:$
+s br_rz
+;prof_plot1d option:$
+i
+; GRF3SG:  ENTER OPTION #:$
+5f
+; GRF3SG:  ENTER OPTION #:$
+4
+;prof_plot1d option:$
+q
+;xplasma_debug_profs command option:$
+s bz_rz
+;prof_plot1d option:$
+i
+; GRF3SG:  ENTER OPTION #:$
+5f
+; GRF3SG:  ENTER OPTION #:$
+4
+;prof_plot1d option:$
+q
+;xplasma_debug_profs command option:$
+q
+;xplasma_debug_master: action option:$

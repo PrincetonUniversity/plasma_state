@@ -1,0 +1,89 @@
+;xplasma_debug_master: action option:$
+p
+;xplasma_debug_profs command option:$
+s g
+;prof_plot1d option:$
+i
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+q
+;prof_plot1d option:$
+q
+;xplasma_debug_profs command option:$
+s psi_rz
+;prof_plot1d option:$
+i
+; GRF3SG:  ENTER OPTION #:$
+5
+; SUB:CONCTR >> ENTER OPTION #:$
+3
+; SUB:CONRDF >> ENTER NEW XMIN:$
+1.2 4.8
+; SUB:CONRDF >> ENTER NEW YMIN:$
+x x
+; SUB:CONRDF >> ENTER NEW CMIN:$
+x
+; SUB:CONRDF >> ENTER NEW CMAX:$
+x
+; SUB:CONRDF >> ENTER "Y" FOR LOG-SPACING OF CONTOURS:$
+n
+; SUB:CONRDF >> ENTER MAX # OF CONTOURS YOU WANT TO SEE:$
+18
+; SUB:CONCTR >> ENTER NEW X AXIS TYPE:$
+1
+; SUB:CONCTR >> ENTER NEW Y AXIS TYPE:$
+1
+; SUB:CONCTR >> ENTER OPTION #:$
+4
+; GRF3SG:  ENTER OPTION #:$
+4
+;prof_plot1d option:$
+q
+;xplasma_debug_profs command option:$
+q
+;xplasma_debug_master: action option:$
+a
+;xplasma_debug_special: plot option:$
+d
+;xplasma_dmap_test option:$
+t
+; select distance mode 1/2/3: $
+2
+;xplasma_dmap_test option:$
+m
+; new Rmin: $
+0 5
+; new Zmin: $
+-2.5 2.5
+;xplasma_dmap_test option:$
+n
+; new nR:$
+200 200
+;xplasma_dmap_test option:$
+p
+; GRF3SG:  ENTER OPTION #:$
+5f
+; GRF3SG:  ENTER OPTION #:$
+4
+;xplasma_dmap_test option:$
+q
+;xplasma_debug_special: plot option:$
+m
+;xplasma_imap_test option:$
+p
+;xplasma_imap_test plot option:$
+p
+; GRF3SG:  ENTER OPTION #:$
+5f
+; GRF3SG:  ENTER OPTION #:$
+4
+; GRF3SG:  ENTER OPTION #:$
+5f
+; GRF3SG:  ENTER OPTION #:$
+4
+;xplasma_imap_test plot option:$
+q
+;xplasma_imap_test option:$
+q
+;xplasma_debug_special: plot option:$
+q
+;xplasma_debug_master: action option:$

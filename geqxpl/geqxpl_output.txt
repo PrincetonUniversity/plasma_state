@@ -1,0 +1,57 @@
+ @FILENAME=nstx_geqdsk.ind
+  
+  G-EQdsk data accepted, maximum rel. GS error:  1.176120997592009E-02
+  
+  Bphi is clockwise viewed from above (nsnccwb = -1)
+  
+  Jphi is counter-clockwise viewed from above (nsnccwi = 1)
+  
+  
+  =========================== 
+  %eqdbg_plot -- f90 rewrite. 
+  =========================== 
+  
+ [ GFLIB/SGLIB -- output to plot screen or file ]
+  -----------------------------------------------------------
+  PSI_RZ                            by: F77_USER
+     label: Poloidal Flux
+     units: Wb/rad
+     profile rank:  2
+     interpolation: C1 Akima Hermite.
+     grids: __RGRID, __ZGRID
+     coordinates: __R_COORD, __Z_COORD
+     dimensions: 129 x 129
+     Associated profile: PSI
+     profile definition counter:  20
+     ------------------
+  
+  cpu time for interpolation:  5.199127197265652E-02
+  -----------------------------------------------------------
+  -----------------------------------------------------------
+  G                                 by: F77_USER
+     label: R*B_phi (toroidal field function)
+     units: T*m
+     profile rank:  1
+     interpolation: cubic spline.
+     grids: __RHO
+     coordinates: __RHO_COORD
+     dimensions: 31
+     (no associated profile)
+     profile definition counter:  8
+     ------------------
+  
+  -----------------------------------------------------------
+  -----------------------------------------------------------
+  P                                 by: F77_USER
+     label: MHD equilibrium pressure
+     units: Pa
+     profile rank:  1
+     interpolation: C1 Akima Hermite.
+     grids: __RHO
+     coordinates: __RHO_COORD
+     dimensions: 31
+     (no associated profile)
+     profile definition counter:  10
+     ------------------
+  
+  -----------------------------------------------------------

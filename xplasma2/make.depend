@@ -1,0 +1,78 @@
+$(OBJDIR)/eqi_geq_axis_data.o : eqi_geq_axis_data.f90 
+$(OBJDIR)/eqi_geq_mod.o : eqi_geq_mod.f90 $(OBJDIR)/geqdsk_nomds_mod.o 
+$(OBJDIR)/eqi_intg_module.o : eqi_intg_module.f90 $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/eqi_rzbox_module.o : eqi_rzbox_module.f90 $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/eqi_vtaub_mod.o : eqi_vtaub_mod.f90 
+$(OBJDIR)/geqdsk_aux.o : geqdsk_aux.f90 
+$(OBJDIR)/geqdsk_index_mod.o : geqdsk_index_mod.f90 
+$(OBJDIR)/geqdsk_nomds_aux.o : geqdsk_nomds_aux.f90 
+$(OBJDIR)/geqdsk_nomds_mod.o : geqdsk_nomds_mod.f90 $(OBJDIR)/geqdsk_nomds_aux.o 
+$(OBJDIR)/xdistrib_mod.o : xdistrib_mod.f90 
+$(OBJDIR)/xplasma2_calls.o : xplasma2_calls.f90 
+$(OBJDIR)/xplasma_avg1dmod.o : xplasma_avg1dmod.f90 $(OBJDIR)/xplasma_profs.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/xplasma_ctran.o : xplasma_ctran.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/xplasma_definitions.o : xplasma_definitions.f90 $(OBJDIR)/xplasma_obj.o $(OBJDIR)/xplasma_ctran.o $(OBJDIR)/xplasma_sol.o $(OBJDIR)/xplasma_flxint.o $(OBJDIR)/xplasma_rzgeo.o $(OBJDIR)/xplasma_nclass.o $(OBJDIR)/xplasma_mcgrid.o $(OBJDIR)/xplasma_profs.o $(OBJDIR)/xplasma_avg1dmod.o $(OBJDIR)/xplasma_fromgeq.o 
+$(OBJDIR)/xplasma_flxint.o : xplasma_flxint.f90 $(OBJDIR)/eqi_intg_module.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/xplasma_fromgeq.o : xplasma_fromgeq.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/xplasma_mcgrid.o : xplasma_mcgrid.f90 $(OBJDIR)/xplasma_flxint.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/xplasma_nclass.o : xplasma_nclass.f90 $(OBJDIR)/xplasma_ctran.o $(OBJDIR)/xplasma_rzgeo.o $(OBJDIR)/xplasma_flxint.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/xplasma_obj.o : xplasma_obj.f90 
+$(OBJDIR)/xplasma_obj_instance_mod.o : xplasma_obj_instance_mod.f90 $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/xplasma_obj_instance.o : xplasma_obj_instance.f90 $(OBJDIR)/xplasma_obj_instance_mod.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/xplasma_profs.o : xplasma_profs.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_flxint.o $(OBJDIR)/xplasma_rzgeo.o $(OBJDIR)/xplasma_sol.o $(OBJDIR)/xplasma_ctran.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/xplasma_rzgeo.o : xplasma_rzgeo.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_sol.o $(OBJDIR)/xplasma_flxint.o $(OBJDIR)/xplasma_ctran.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/xplasma_sol.o : xplasma_sol.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_ctran.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/geqdsk_lunmsg.o : geqdsk_lunmsg.f90 $(OBJDIR)/geqdsk_aux.o 
+$(OBJDIR)/eqi_xpsi_fun.o : eqi_xpsi_fun.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/xpblind_copy.o : xpblind_copy.f90 
+$(OBJDIR)/eqi_fromgeqdsk.o : eqi_fromgeqdsk.f90 $(OBJDIR)/eqi_geq_mod.o $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_geq_axis.o : eqi_geq_axis.f90 $(OBJDIR)/eqi_geq_axis_data.o 
+$(OBJDIR)/eqi_tau_bounce.o : eqi_tau_bounce.f90 $(OBJDIR)/eqi_vtaub_mod.o $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_xtrz.o : eqi_xtrz.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_bdfind_circ.o : eqi_bdfind_circ.f90 
+$(OBJDIR)/xplasma_integ_wksub.o : xplasma_integ_wksub.f90 $(OBJDIR)/eqi_intg_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_irhofun.o : eqi_irhofun.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_bdfast.o : eqi_bdfast.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_geq_axis_rsrch.o : eqi_geq_axis_rsrch.f90 $(OBJDIR)/eqi_geq_axis_data.o 
+$(OBJDIR)/eqi_rzdist.o : eqi_rzdist.f90 
+$(OBJDIR)/eqm_brzx.o : eqm_brzx.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqm_geq_curtime.o : eqm_geq_curtime.f90 $(OBJDIR)/eqi_geq_mod.o 
+$(OBJDIR)/eqi_geq_getlun.o : eqi_geq_getlun.f90 $(OBJDIR)/eqi_geq_mod.o 
+$(OBJDIR)/eqi_fromg_err.o : eqi_fromg_err.f90 $(OBJDIR)/eqi_geq_mod.o $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/geqdsk_index1_sub.o : geqdsk_index1_sub.f90 $(OBJDIR)/geqdsk_index_mod.o $(OBJDIR)/geqdsk_aux.o 
+$(OBJDIR)/eqi_fastinv.o : eqi_fastinv.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_contour.o : eqi_contour.f90 $(OBJDIR)/eqi_geq_mod.o 
+$(OBJDIR)/eqi_geq_psimin.o : eqi_geq_psimin.f90 $(OBJDIR)/eqi_geq_mod.o 
+$(OBJDIR)/xplasma_checkname_sub.o : xplasma_checkname_sub.f90 
+$(OBJDIR)/xplasma_integ_work.o : xplasma_integ_work.f90 $(OBJDIR)/eqi_intg_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_inv.o : eqi_inv.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_rzfx.o : eqi_rzfx.f90 
+$(OBJDIR)/eqi_geq_findrz.o : eqi_geq_findrz.f90 $(OBJDIR)/eqi_geq_mod.o 
+$(OBJDIR)/eqi_geq_intrp.o : eqi_geq_intrp.f90 
+$(OBJDIR)/eqi_tbdy.o : eqi_tbdy.f90 
+$(OBJDIR)/eqi_bdfind.o : eqi_bdfind.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_rzbox_info.o : eqi_rzbox_info.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_xinv2d.o : eqi_xinv2d.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_nlimitr.o : eqi_nlimitr.f90 $(OBJDIR)/eqi_geq_mod.o 
+$(OBJDIR)/eqm_bpsi.o : eqm_bpsi.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_geq_axis_zsrch.o : eqi_geq_axis_zsrch.f90 $(OBJDIR)/eqi_geq_axis_data.o 
+$(OBJDIR)/eqi_geqdsk.o : eqi_geqdsk.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_bbox.o : eqi_bbox.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_xpsi.o : eqi_xpsi.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_bprobe.o : eqi_bprobe.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/geq_ckrzc.o : geq_ckrzc.f90 
+$(OBJDIR)/eqi_dxa_search.o : eqi_dxa_search.f90 
+$(OBJDIR)/eqi_evenx.o : eqi_evenx.f90 
+$(OBJDIR)/xplasma_fluxav_brk_add0.o : xplasma_fluxav_brk_add0.f90 
+$(OBJDIR)/eqi_rzsmedr.o : eqi_rzsmedr.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_qpsi_regen.o : eqi_qpsi_regen.f90 $(OBJDIR)/eqi_geq_mod.o 
+$(OBJDIR)/eqi_fbmod.o : eqi_fbmod.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/xdistrib_sub.o : xdistrib_sub.f90 $(OBJDIR)/xdistrib_mod.o 
+$(OBJDIR)/eqi_rzsmedg.o : eqi_rzsmedg.f90 
+$(OBJDIR)/eqi_fxcep.o : eqi_fxcep.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_geq_psiminr.o : eqi_geq_psiminr.f90 $(OBJDIR)/eqi_geq_mod.o 
+$(OBJDIR)/eqi_geq_psfind.o : eqi_geq_psfind.f90 $(OBJDIR)/xdistrib_mod.o 
+$(OBJDIR)/eqi_cbdy_pts.o : eqi_cbdy_pts.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_obj.o 
+$(OBJDIR)/eqi_rzsmedz.o : eqi_rzsmedz.f90 $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/eqi_rzbox.o : eqi_rzbox.for $(OBJDIR)/eqi_rzbox_module.o $(OBJDIR)/xplasma_definitions.o 
+$(OBJDIR)/feqi_1int.o : feqi_1int.for $(OBJDIR)/xdistrib_mod.o 

@@ -1,0 +1,16 @@
+;enter TRANSP runid nnnnnAmm (.treq_data file must exist):$
+d 0.1
+;enter TRANSP runid nnnnnAmm (.treq_data file must exist):$
+46243c02
+;xplasma_debug_master: action option:$
+@jet
+;xplasma_debug_master: action option:$
+q
+;enter TRANSP runid nnnnnAmm (.treq_data file must exist):$
+11114p06
+;xplasma_debug_master: action option:$
+@nstx
+;xplasma_debug_master: action option:$
+q
+;enter TRANSP runid nnnnnAmm (.treq_data file must exist):$
+q
