@@ -1,0 +1,66 @@
+name: Build and Test
+
+on: [push]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: configure
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install tcsh
+        sudo apt-get -y install gfortran
+        sudo apt-get -y install libopenblas-dev
+        sudo apt-get -y install libnetcdf-dev libnetcdff-dev
+        curl -L -o nccmp-1.8.3.1.tar.gz https://gitlab.com/remikz/nccmp/-/archive/1.8.3.1/nccmp-1.8.3.1.tar.gz
+        tar -xzf nccmp-1.8.3.1.tar.gz
+        cd nccmp-1.8.3.1
+        chmod +x ./configure
+    - name: ezcdf
+      env:
+        SSHK: ${{ secrets.EZCDF_SECRET }}
+      run: |
+        mkdir -p $HOME/.ssh
+        echo "$SSHK" > $HOME/.ssh/ssh.key
+        chmod 600 $HOME/.ssh/ssh.key
+        export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/ssh.key"
+        cd $HOME
+        git clone --depth 1 --branch v0.0.3 git@github.com:PrincetonUniversity/ezcdf.git
+        cd ezcdf
+        make
+        make install
+    - name: pspline
+      env:
+        SSHK: ${{ secrets.PSPLINE_SECRET }}
+      run: |
+        mkdir -p $HOME/.ssh
+        echo "$SSHK" > $HOME/.ssh/ssh.key
+        chmod 600 $HOME/.ssh/ssh.key
+        export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/ssh.key"
+        cd $HOME
+        git clone --depth 1 --branch v2.0.1 git@github.com:PrincetonUniversity/pspline.git
+        cd pspline
+        make -j
+        make install
+    - name: ufiles
+      env:
+        SSHK: ${{ secrets.UFILES_SECRET }}
+      run: |
+        mkdir -p $HOME/.ssh
+        echo "$SSHK" > $HOME/.ssh/ssh.key
+        chmod 600 $HOME/.ssh/ssh.key
+        export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/ssh.key"
+        cd $HOME
+        git clone --depth 1 --branch v0.2.9 git@github.com:PrincetonUniversity/ufiles.git
+        cd ufiles
+        source environ
+        make -f makefile.mk
+        cd $PREFIX
+        pwd
+    - name: plasma_state
+      run: pwd && ls $HOME
+    - name: test1
+      run: |
+        echo "Need to add tests"
