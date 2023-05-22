@@ -57,13 +57,11 @@ jobs:
         cd ufiles
         source environ
         make -f makefile.mk
-        cd $PREFIX
-        pwd
     - name: plasma_state
       run: |
         export OPENBLAS_HOME=/usr/lib/x86_64-linux-gnu
         export EZCDF_HOME=$HOME/ezcdf/builds
-        export PSPLINE_HOME=$HOME/pspline/builds
+        export PSPLINE_HOME=$HOME/pspline/build
         export UFILES_ROOT=$HOME/ufiles/builds/gcc/11
         source environ
         make
