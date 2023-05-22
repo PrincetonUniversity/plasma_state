@@ -60,7 +60,13 @@ jobs:
         cd $PREFIX
         pwd
     - name: plasma_state
-      run: pwd && ls $HOME
+      run: |
+        export OPENBLAS_HOME=/usr/lib/x86_64-linux-gnu
+        export EZCDF_HOME=$HOME/ezcdf/builds
+        export PSPLINE_HOME=$HOME/pspline/builds
+        export UFILES_ROOT=$HOME/ufiles/builds/gcc/11
+        source environ
+        make
     - name: test1
       run: |
         echo "Need to add tests"
