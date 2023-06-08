@@ -4,9 +4,6 @@
 ifndef MAKE_SO
 	MAKE_SO = 0
 endif
-ifndef OMP_ACTIVATE
-	OMP_ACTIVATE = 0
-endif
 ifndef DEBUG
 	DEBUG = 0
 endif
@@ -21,10 +18,6 @@ endif
 AR = ar rcs
 
 # Fortran flags
-FC = ifort
-FC90 = $(FC)
-MPI_FC = mpif90
-
 FFLAGS_OPT = -c -g -O2 -nowarn -ftz -traceback -align dcommons -heap-arrays 20 $(FPIC)
 FFLAGS_DBG = -c -g -O0 -w -check bounds -check pointer -check uninit -fpe0 -traceback -align dcommons -heap-arrays 20 $(FPIC)
 ifeq ($(DEBUG),0)
@@ -32,9 +25,6 @@ ifeq ($(DEBUG),0)
 else
 	FFLAGS = $(FFLAGS_DBG)
 endif
-MPI_FFLAGS = $(FFLAGS)
-
-FOPENMP = -fopenmp
 
 FPP = -fpp
 MFLAG = -module
@@ -43,11 +33,6 @@ L_FLIBS = -L$(FLIBROOT)/lib -lifport -limf -lifcore -lm -lirc
 
 
 # C/C++ flags
-CC = icc
-CXX= icpc
-MPI_CC = mpicc
-MPI_CXX = mpicxx
-
 CFLAGS_OPT = -c -g -O2 -w -mp $(FPIC)
 CFLAGS_DBG = -c -g -O0 -w -mp $(FPIC)
 CXXFLAGS_OPT = -c -g -O2 -w -mp $(FPIC)
@@ -59,8 +44,8 @@ else
 	CFLAGS = $(CFLAGS_DBG)
 	CXXFLAGS = $(CXXFLAGS_DBG)
 endif
-MPI_CFLAGS = $(CFLAGS)
-MPI_CXXFLAGS = $(CXXFLAGS)
+
+CPP = -cpp
 
 L_CLIBS = -L/usr/lib64 -lc -lstdc++
 
@@ -81,8 +66,3 @@ CDEFS := -D__LINUX
 # MDS+ not installed on stellar
 FDEFS := $(FDEFS) -D__NOMDSPLUS
 CDEFS := $(CDEFS) -D__NOMDSPLUS
-
-#ifdef NO_CQL3D
-#	FDEFS := $(FDEFS) -D__NOCQL3D
-#	CDEFS := $(CDEFS) -D__NOCQL3D
-#endif
