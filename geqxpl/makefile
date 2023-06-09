@@ -12,7 +12,7 @@ EXEDIR := $(PREFIX)/bin
 SRCF := geqxpl_rawplot.f90
 OBJF := $(OBJDIR)/geqxpl_rawplot.o
 
-LIBS := old_xplasma xplasma_debug xplasma2 geqdsk_mds nscrunch \
+LIBS := rngsel_sub old_xplasma xplasma_debug xplasma2 geqdsk_mds nscrunch \
 	ps_bloat ps_smlib ps_comput ps_portlib
 
 L_PLASMA_STATE := -L$(LIBDIR) $(addprefix -l, $(LIBS))

@@ -9,13 +9,13 @@ LIBDIR := $(PREFIX)/lib
 OBJDIR := $(PREFIX)/obj/$(NAME)
 EXEDIR := $(PREFIX)/bin
 
-LIBS := plasma_state ps_xplasma2 plasma_state_kernel xplasma2 nscrunch \
-	ps_bloat ps_smlib ps_comput ps_portlib
+LIBS := rngsel_sub plasma_state ps_xplasma2 plasma_state_kernel \
+	xplasma2 nscrunch ps_bloat ps_smlib ps_comput ps_portlib
 
 L_PLASMA_STATE := -L$(LIBDIR) $(addprefix -l, $(LIBS))
 
-L_LIBS := $(L_PLASMA_STATE) $(L_UFILES) $(L_PSPLINE) $(L_EZCDF) $(L_NETCDF) \
-	$(L_LAPACK) $(L_BLAS) $(L_EDIT)
+L_LIBS := $(L_PLASMA_STATE) $(L_UFILES) $(L_SGLIB) $(L_PSPLINE) \
+	$(L_EZCDF) $(L_MDSPLUS) $(L_NETCDF) $(L_LAPACK) $(L_BLAS) $(L_EDIT)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL) -I$(PREFIX)/mod

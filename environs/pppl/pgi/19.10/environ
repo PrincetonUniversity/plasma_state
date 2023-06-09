@@ -28,7 +28,7 @@ export EZCDF_HOME=/p/pshare/transp/opt/ezcdf/0.0.3/pgi/19.10
 export LD_LIBRARY_PATH=$EZCDF_HOME/lib:$LD_LIBRARY_PATH
 export L_EZCDF=" -L$EZCDF_HOME/lib -lezcdf"
 
-export UFILES_ROOT=/p/pshare/transp/opt/ufiles/0.2.8/pgi/19.10
+export UFILES_ROOT=/p/pshare/transp/opt/ufiles/0.3.1/pgi/19.10
 export LD_LIBRARY_PATH=$UFILES_ROOT/lib:$LD_LIBRARY_PATH
 export L_UFILES=" -L$UFILES_ROOT/lib -luflib_userio -luflib -lr4smlib_userio -lr4smlib -lmds_sub -lufhdf -lmdstransp -linterp_sub -lextrac_sub -ltrgraf -lureadsub -ltokid -lufencod -lufport"
 export L_MDSDUMMY=" -L$UFILES_ROOT/lib -lmds_dummy -lmdstransp -lureadsub -lufencod -lufport"

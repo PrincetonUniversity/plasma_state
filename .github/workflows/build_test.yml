@@ -56,7 +56,7 @@ jobs:
         chmod 600 $HOME/.ssh/ssh.key
         export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/ssh.key"
         cd $HOME
-        git clone --depth 1 --branch v0.2.11 git@github.com:PrincetonUniversity/ufiles.git
+        git clone --depth 1 --branch v0.3.1 git@github.com:PrincetonUniversity/ufiles.git
         cd ufiles
         export PSPLINE_HOME=$HOME/pspline/build
         source environ
