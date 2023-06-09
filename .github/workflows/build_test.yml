@@ -44,6 +44,9 @@ jobs:
         cd pspline
         make -j
         make install
+        make clean
+        make shared
+        cp libpspline.so build/lib/
     - name: ufiles
       env:
         SSHK: ${{ secrets.UFILES_SECRET }}
@@ -53,10 +56,12 @@ jobs:
         chmod 600 $HOME/.ssh/ssh.key
         export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/ssh.key"
         cd $HOME
-        git clone --depth 1 --branch v0.2.9 git@github.com:PrincetonUniversity/ufiles.git
+        git clone --depth 1 --branch v0.2.11 git@github.com:PrincetonUniversity/ufiles.git
         cd ufiles
+        export PSPLINE_HOME=$HOME/pspline/build
+        export MAKE_SO=1
         source environ
-        make -f makefile.mk
+        make
     - name: plasma_state
       run: |
         export OPENBLAS_HOME=/usr/lib/x86_64-linux-gnu

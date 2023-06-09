@@ -13,7 +13,7 @@ LIBS := geqdsk_mds xplasma2 ps_portlib
 
 L_PLASMA_STATE := -L$(LIBDIR) $(addprefix -l, $(LIBS))
 
-L_LIBS := $(L_PLASMA_STATE) $(L_MDSDUMMY) $(L_PSPLINE) $(L_EZCDF) $(L_NETCDF) $(L_MDSPLUS)
+L_LIBS := $(L_PLASMA_STATE) $(L_MDSDUMMY) $(L_PSPLINE) $(L_EZCDF) $(L_NETCDF) $(L_MDSPLUS) $(L_EDIT)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL) -I$(PREFIX)/mod
