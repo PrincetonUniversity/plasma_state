@@ -59,8 +59,8 @@ jobs:
         git clone --depth 1 --branch v0.2.11 git@github.com:PrincetonUniversity/ufiles.git
         cd ufiles
         export PSPLINE_HOME=$HOME/pspline/build
-        export MAKE_SO=1
         source environ
+        export MAKE_SO=1
         make --no-print-directory
     - name: plasma_state
       run: |
@@ -68,8 +68,8 @@ jobs:
         export EZCDF_HOME=$HOME/ezcdf/builds
         export PSPLINE_HOME=$HOME/pspline/build
         export UFILES_ROOT=$HOME/ufiles/builds/gcc/11
-        export MAKE_SO=1
         source environ
+        export MAKE_SO=1
         make --no-print-directory
     - name: test1
       run: |
