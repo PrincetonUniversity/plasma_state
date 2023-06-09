@@ -31,7 +31,7 @@ export LD_LIBRARY_PATH=$EZCDF_HOME/lib:$LD_LIBRARY_PATH
 export L_EZCDF=" -L$EZCDF_HOME/lib -lezcdf"
 
 # UFILES
-export UFILES_ROOT=/projects/TRANSP/opt/ufiles/0.2.7/intel/2021
+export UFILES_ROOT=/projects/TRANSP/opt/ufiles/0.3.1/intel/2021
 export LD_LIBRARY_PATH=$UFILES_ROOT/lib:$LD_LIBRARY_PATH
 export L_UFILES=" -L$UFILES_ROOT/lib -luflib_userio -luflib -lr4smlib_userio -lr4smlib -lmds_sub -lufhdf -lmdstransp -linterp_sub -lextrac_sub -ltrgraf -lureadsub -ltokid -lufencod -lufport"
 export L_MDSDUMMY=" -L$UFILES_ROOT/lib -lmds_dummy -lmdstransp -lureadsub -lufencod"
@@ -43,4 +43,3 @@ export FTN_TRAILER="-L$FLIBROOT -lifport -lintlc -limf -lifcore -ldl -lm -lirc -
 export CPP_TRAILER=" -L/usr/lib64 -lstdc++"
 
 export LOADER_TRAILER=" -L$LOCAL/other -lreadline -lhistory -ltermcap -ldl"
-
