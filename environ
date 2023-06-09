@@ -96,6 +96,7 @@ else
     # decalre an associative array
     declare -A version_map
     version_map["pppl,gcc"]='9.3.0'
+    version_map["pppl,pgi"]='19.10'
     version_map["iter,gcc"]='10.2.0'
     version_map["pppl,intel"]='2019'
     version_map["stellar,intel"]='2021'
