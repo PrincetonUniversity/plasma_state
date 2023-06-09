@@ -9,12 +9,13 @@ LIBDIR := $(PREFIX)/lib
 OBJDIR := $(PREFIX)/obj/$(NAME)
 EXEDIR := $(PREFIX)/bin
 
-LIBS := nscrunch ps_comput ps_portlib
+LIBS := rngsel_sub nscrunch ps_comput ps_portlib
 
 L_PLASMA_STATE := -L$(LIBDIR) $(addprefix -l, $(LIBS))
 
 L_LIBS := $(L_PLASMA_STATE) $(L_UFILES) $(L_SGLIB) $(L_EZCDF) \
-	$(L_PSPLINE) $(L_NETCDF) $(L_LAPACK) $(L_BLAS) $(L_EDIT)
+	$(L_PSPLINE) $(L_MDSPLUS) $(L_NETCDF) $(L_LAPACK) \
+	$(L_BLAS) $(L_EDIT)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL) -I$(PREFIX)/mod

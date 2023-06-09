@@ -9,7 +9,7 @@ LIBDIR := $(PREFIX)/lib
 OBJDIR := $(PREFIX)/obj/$(NAME)
 EXEDIR := $(PREFIX)/bin
 
-LIBS := old_xplasma xplasma_debug xplasma2 geqdsk_mds nscrunch \
+LIBS := rngsel_sub old_xplasma xplasma_debug xplasma2 geqdsk_mds nscrunch \
 	ps_bloat ps_smlib ps_comput ps_portlib
 
 L_PLASMA_STATE := -L$(LIBDIR) $(addprefix -l, $(LIBS))
