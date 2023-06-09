@@ -33,10 +33,10 @@ libs:	check build $(NAME)
 force:	check rebuild $(NAME)
 
 build:
-	@set -e; for l in $(LIBS); do cd ../$${l}; make -f $${l}_makefile.mk -j; done
+	@set -e; for l in $(LIBS); do cd ../$${l}; make -j; done
 
 rebuild:
-	@set -e; for l in $(LIBS); do cd ../$${l}; make -f $${l}_makefile.mk clobber; make -f $${l}_makefile.mk -j; done
+	@set -e; for l in $(LIBS); do cd ../$${l}; make clobber; make -j; done
 
 check:
 	@test -d $(EXEDIR) || mkdir -p $(EXEDIR)

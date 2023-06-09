@@ -29,7 +29,7 @@ jobs:
         cd $HOME
         git clone --depth 1 --branch v0.0.3 git@github.com:PrincetonUniversity/ezcdf.git
         cd ezcdf
-        make
+        make --no-print-directory
         make install
     - name: pspline
       env:
@@ -42,8 +42,11 @@ jobs:
         cd $HOME
         git clone --depth 1 --branch v2.0.1 git@github.com:PrincetonUniversity/pspline.git
         cd pspline
-        make -j
+        make --no-print-directory -j
         make install
+        make clean
+        make --no-print-directory shared
+        cp libpspline.so build/lib/
     - name: ufiles
       env:
         SSHK: ${{ secrets.UFILES_SECRET }}
@@ -53,10 +56,12 @@ jobs:
         chmod 600 $HOME/.ssh/ssh.key
         export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/ssh.key"
         cd $HOME
-        git clone --depth 1 --branch v0.2.9 git@github.com:PrincetonUniversity/ufiles.git
+        git clone --depth 1 --branch v0.2.11 git@github.com:PrincetonUniversity/ufiles.git
         cd ufiles
+        export PSPLINE_HOME=$HOME/pspline/build
         source environ
-        make -f makefile.mk
+        export MAKE_SO=1
+        make --no-print-directory
     - name: plasma_state
       run: |
         export OPENBLAS_HOME=/usr/lib/x86_64-linux-gnu
@@ -64,7 +69,8 @@ jobs:
         export PSPLINE_HOME=$HOME/pspline/build
         export UFILES_ROOT=$HOME/ufiles/builds/gcc/11
         source environ
-        make
+        export MAKE_SO=1
+        make --no-print-directory
     - name: test1
       run: |
         echo "Need to add tests"

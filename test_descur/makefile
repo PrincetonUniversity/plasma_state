@@ -9,11 +9,12 @@ LIBDIR := $(PREFIX)/lib
 OBJDIR := $(PREFIX)/obj/$(NAME)
 EXEDIR := $(PREFIX)/bin
 
-LIBS := nscrunch ps_portlib
+LIBS := nscrunch ps_comput ps_portlib
 
 L_PLASMA_STATE := -L$(LIBDIR) $(addprefix -l, $(LIBS))
 
-L_LIBS := $(L_PLASMA_STATE) $(L_UFILES) $(L_SGLIB) $(L_EZCDF) $(L_NETCDF) $(L_LAPACK) $(L_BLAS) $(L_EDIT)
+L_LIBS := $(L_PLASMA_STATE) $(L_UFILES) $(L_SGLIB) $(L_EZCDF) \
+	$(L_PSPLINE) $(L_NETCDF) $(L_LAPACK) $(L_BLAS) $(L_EDIT)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL) -I$(PREFIX)/mod
@@ -29,10 +30,10 @@ libs:	check build $(NAME)
 force:	check rebuild $(NAME)
 
 build:
-	@set -e; for l in $(LIBS); do cd ../$${l}; make -f $${l}_makefile.mk -j; done
+	@set -e; for l in $(LIBS); do cd ../$${l}; make -j; done
 
 rebuild:
-	@set -e; for l in $(LIBS); do cd ../$${l}; make -f $${l}_makefile.mk clobber; make -f $${l}_makefile.mk -j; done
+	@set -e; for l in $(LIBS); do cd ../$${l}; make clobber; make -j; done
 
 check:
 	@test -d $(EXEDIR) || mkdir -p $(EXEDIR)

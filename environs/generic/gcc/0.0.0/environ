@@ -45,9 +45,8 @@ export L_EZCDF=" -L$EZCDF_HOME/lib -lezcdf"
 if [[ -z "${UFILES_ROOT}" ]]; then
    echo "ERROR: UFILES_ROOT not defined. Is it installed?"
 fi
-
 export L_UFILES=" -L$UFILES_ROOT/lib -luflib_userio -luflib -lr4smlib_userio -lr4smlib -lmds_sub -lufhdf -lmdstransp -linterp_sub -lextrac_sub -ltrgraf -lureadsub -ltokid -lufencod -lufport"
-export L_MDSDUMMY=" -L$UFILES_ROOT/lib -lmds_dummy -lmdstransp -lureadsub -lufencod"
+export L_MDSDUMMY=" -L$UFILES_ROOT/lib -lmds_dummy -lmdstransp -lureadsub -lufencod -lufport"
 export L_SGLIB=" -L$UFILES_ROOT/lib -lsg -ljc -lufport"
 export L_SGDUMMY=" -L$UFILES_ROOT/lib -lsgdummy"
 

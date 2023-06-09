@@ -22,6 +22,8 @@ subroutine ccps_frantic(iobj_plasma, iobj_srces, ilun_msgs, &
   type (plasma_state), pointer :: ss_plasma, ss_srces
   !-------------------------
 
+  call ps_bad_exit("Frantic not available as part of this version of plasma state")
+
   call ccps_argcheck('ccps_frantic plasma',iobj_plasma,ierr)
   if(ierr.ne.0) return
   call ccps_argcheck('ccps_frantic srces',iobj_srces,ierr)
@@ -34,7 +36,6 @@ subroutine ccps_frantic(iobj_plasma, iobj_srces, ilun_msgs, &
   ss_plasma => ptr_plasma%ps_ptr
   ss_srces => ptr_srces%ps_ptr
 
-  call ps_frantic(ss_plasma, ss_srces, ilun_msgs, &
-       iwall, ihalo, ireco, ierr)
+  !call ps_frantic(ss_plasma, ss_srces, ilun_msgs, iwall, ihalo, ireco, ierr)
 
 end subroutine ccps_frantic
