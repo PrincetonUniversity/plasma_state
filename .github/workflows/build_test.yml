@@ -68,6 +68,7 @@ jobs:
         export EZCDF_HOME=$HOME/ezcdf/builds
         export PSPLINE_HOME=$HOME/pspline/build
         export UFILES_ROOT=$HOME/ufiles/builds/gcc/11
+        export MAKE_SO=1
         source environ
         make --no-print-directory
     - name: test1
