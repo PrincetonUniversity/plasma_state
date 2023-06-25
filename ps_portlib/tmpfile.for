@@ -58,7 +58,7 @@ C--------------
 C
       zfile=' '
 C
-      call sget_env('TMPDIR_TR',zpath,iertmp)
+      call sget_env('TMPDIR_TR',zpath)
       ilpath=len_trim(zpath)
       if(ilpath.eq.0) then
          call execute_command_line('mkdir -p ./tmp',exitstat=istat) ! istat not checked
