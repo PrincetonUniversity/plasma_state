@@ -24,3 +24,16 @@ The builds will get installed in a directory such as:
 builds/{COMPILER}/{COMPILER_VERSION}
 ```
 where the compiler and compiler version are specified by the environs.
+
+## Contributing
+
+Contributions to this repo are welcome, particularly for bug fixes. All changes must be made with a pull request from a branch off of `main`. The pull request must:
+- Pass the tests in the continuous integration via GitHub Actions
+- Be labeled with `patch`, `minor`, or `major`
+- Be reviewed by at least one of the CODEOWNERS
+
+Updates to the `main` branch are automatically tagged with an updated version number. The labels tell the semantic versioning GitHub Action how to update the version number:
+- `patch` update for trivial updates and bug fixes
+- `minor` update for new functionality
+- `major` update for significant new functionality that could break backwards compatibility
+The CI will fail if an appropriate label is not used or if more than one is selected. The label can be changed.
