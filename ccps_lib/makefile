@@ -44,7 +44,7 @@ $(NAME): $(OBJF) $(OBJC)
 	@$(AR) $(LIBAR) $(OBJF) $(OBJC)
 ifeq ($(MAKE_SO),1)
 	@echo "Building $(NAME) shared library"
-	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF) $(OBJC)
+	@$(CXX) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF) $(OBJC)
 endif
 
 include make.depend
