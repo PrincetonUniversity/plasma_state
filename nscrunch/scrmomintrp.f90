@@ -370,7 +370,8 @@ contains
 
     !-----------------------
     zdelx=0.15_fp
-
+    xbrk1=zero
+    xbrk2=zdelx
     do i=ic0+1,ic2
       if(abs(zmoms(i)).gt.ztol) then
         if(xsrch0.gt.zero) then
