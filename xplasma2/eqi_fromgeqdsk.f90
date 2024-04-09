@@ -243,7 +243,7 @@ subroutine eqi_fromGeqdsk(filename, ihermite, inew_device, &
   real*8, dimension(:), allocatable :: psis0
   real*8 :: rbdy00,zbdy00,psibdy0,psibdy,psi_test,psi_ok,psi_avg,psibdy_use
   real*8 :: psi_avg_ok,psi_inc,psibdy_reset
-  real*8 :: psi_avg_save,zfac_fail_save,zfac_ok_save
+  real*8 :: psi_avg_save,zfac_fail_save,zfac_ok_save,psi_step,fbdy_try
   real*8 :: zth,zth2,zth2p,diffmax,psitmp
   real*8 :: psidum1,psidum2
   integer :: ii,jj,jj1,jj2,istat,nsing
@@ -251,6 +251,7 @@ subroutine eqi_fromGeqdsk(filename, ihermite, inew_device, &
   real*8, dimension(:), allocatable :: zwk
 
   real*8, parameter :: limtol = 1.0d-4
+  integer, parameter :: itermax=6
 
   !--------------------
   !  PSI0 list...
@@ -1037,18 +1038,33 @@ subroutine eqi_fromGeqdsk(filename, ihermite, inew_device, &
 
      lmask(1)=.FALSE.
      tol=ctol*psi_test
-
-     call zriddery(1, lmask(1:1), psi_ok, psi_test, tol, ztol, &
-          eqi_find_curv, psibdy_use, ifail, &
-          1, cbdy_use, 1, zerr, 1)
-
-     if((ifail.ne.0).or.(zerr.ne.0.0_r8)) then
-        call eqi_fromg_err( &
-             ' ?eqi_fromgeqdsk: boundary-curvature-match root finder failure!')
-        ier = 120
-        go to 1000
-     endif
-
+     
+     psi_step = 0.1_fp/(itermax-1)*psimax
+     
+     !
+     do iter=1,itermax
+        
+        call zriddery(1, lmask(1:1), psi_ok, psi_test, tol, ztol, &
+             eqi_find_curv, psibdy_use, ifail, &
+             1, cbdy_use, 1, zerr, 1)
+        
+        if((ifail.ne.0).or.(zerr.ne.0.0_r8)) then
+           call eqi_fromg_err( &
+                ' ?eqi_fromgeqdsk: boundary-curvature-match root finder failure!')
+           ier = 120
+           go to 1000
+        endif
+        
+        fbdy_try = psibdy_use/psimax
+        !check if solution located in the region [0.95,1.0[ * psimax
+        if((fbdy_try.ge.0.95_R8).and.(fbdy_try.lt.1.00_R8)) then
+           exit
+        endif
+        ! wrong solution found, itterarte more
+        psi_ok = psi_ok + psi_step
+        
+     enddo
+     
   endif
 
   !  pick off subset of points that are alligned with the the(1:nt1) grid
