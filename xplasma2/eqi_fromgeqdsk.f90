@@ -1043,12 +1043,11 @@ subroutine eqi_fromGeqdsk(filename, ihermite, inew_device, &
      
      !
      do iter=1,itermax
-        
         call zriddery(1, lmask(1:1), psi_ok, psi_test, tol, ztol, &
              eqi_find_curv, psibdy_use, ifail, &
              1, cbdy_use, 1, zerr, 1)
         
-        if((ifail.ne.0).or.(zerr.ne.0.0_r8)) then
+        if(((ifail.ne.0).or.(zerr.ne.0.0_r8)).and.(iter.eq.itermax))then
            call eqi_fromg_err( &
                 ' ?eqi_fromgeqdsk: boundary-curvature-match root finder failure!')
            ier = 120
