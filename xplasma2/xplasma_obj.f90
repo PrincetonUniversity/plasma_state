@@ -2369,20 +2369,22 @@ module xplasma_obj
          do ii=1,irank
             igrid = s%profs(iindex)%gridIds(ii)  ! xplasma grid id
             igrid = s%dict(igrid)%dindex         ! actual index
-
+            
             s%grids(igrid)%nrefs = s%grids(igrid)%nrefs - 1
-
-         enddo
 
          ! at present a profile can have up to maxApro = 1 assocated profile.
          ! associations point both ways, so, fixup on delete...
-         do ii=1,maxApro
-            iprof = s%profs(iindex)%profIds(ii)
-            if(iprof.gt.0) then
-               iprof=s%dict(igrid)%dindex
-               s%profs(iprof)%profIds(maxApro)=0 ! maxApro = 1 assumed here!
-            endif
+            do i=1,maxApro
+               iprof = s%profs(iindex)%profIds(i)
+               if(iprof.gt.0) then
+                  iprof=s%dict(igrid)%dindex
+                  if(iprof.gt.0) then
+                     s%profs(iprof)%profIds(maxApro)=0 ! maxApro = 1 assumed here!
+                  endif
+               endif
+            enddo
          enddo
+
 
          !  OK... now delete the profile itself, and compress the profile list.
 
