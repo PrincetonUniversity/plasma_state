@@ -5,6 +5,7 @@ module load PrgEnv-gnu/8.5.0
 module load gcc-native/13.2
 module load cray-hdf5/1.14.3.1
 module load cray-netcdf/4.9.0.13
+module load cray-libsci
 
 export SOFT_HOME=/global/cfs/projectdirs/m4497/software
 
@@ -21,13 +22,8 @@ export LOADER_TRAILER=" -L$LOCAL/other -lreadline -lhistory -ltermcap -ldl"
 
 # OPENBLAS
 
-if [[ -z "${OPENBLAS_HOME}" ]]; then
-   export OPENBLAS_HOME="/usr/lib64"
-fi
-
 export L_BLAS="-L$CRAY_LIBSCI_PREFIX/lib -lsci_gnu"
 export L_LAPACK="-L$CRAY_LIBSCI_PREFIX/lib -lsci_gnu"
-
 
 # NETCDF
 export L_NETCDF=`pkg-config --libs netcdf`

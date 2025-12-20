@@ -40,7 +40,7 @@ L_FLIBS = -L$(FLIBROOT)/lib -lgfortran -lm
 # C/C++ flags
 CFLAGS_OPT = -c -g -O3 -m64 $(FPIC)
 CFLAGS_DBG = -c -g -O0 -m64 $(FPIC)
-CXXFLAGS_OPT = -c -g -O2 -m64 $(FPIC)
+CXXFLAGS_OPT = -c -g -O3 -m64 $(FPIC)
 CXXFLAGS_DBG = -c -g -O0 -m64 $(FPIC)
 ifeq ($(DEBUG),0)
 	CFLAGS = $(CFLAGS_OPT)
