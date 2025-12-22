@@ -19,7 +19,7 @@ FLUX_FLG = -xHost -fp-model precise -shared-intel -limf -L$(FLIBROOT)/lib
 AR = ar rcs
 
 # Fortran flags
-FFLAGS_OPT = -c -O2 -no-ftz -nowarn -align dcommons -mcmodel=medium $(FLUX_FLG) $(FPIC)
+FFLAGS_OPT = -c -O -no-ftz -nowarn -align dcommons -mcmodel=medium $(FLUX_FLG) $(FPIC)
 FFLAGS_DBG = -c -g -no-ftz -w -check bounds -traceback -check pointer -check uninit -fpe0 -traceback -align dcommons -heap-arrays 20 -mcmodel=medium -init=zero $(FLUX_FLG) $(FPIC)
 ifeq ($(DEBUG),0)
 	FFLAGS = $(FFLAGS_OPT)
