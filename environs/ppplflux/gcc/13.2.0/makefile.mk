@@ -20,8 +20,8 @@ FFLUX = -march=znver4
 #-ffast-math
 
 # Fortran flags
-FFLAGS_OPT = -c -g -O2 -m64 -ffpe-trap=invalid,zero,overflow -fallow-argument-mismatch -fallow-invalid-boz -fno-range-check -fdollar-ok $(FPIC) $(FFLUX)
-FFLAGS_DBG = -c -g -O0 -m64 -ffpe-trap=invalid,zero,overflow -fallow-argument-mismatch -fallow-invalid-boz -fno-range-check -fdollar-ok $(FPIC)
+FFLAGS_OPT = -c -g -O2 -m64 -fallow-argument-mismatch -fno-range-check -fdollar-ok $(FPIC) $(FFLUX)
+FFLAGS_DBG = -c -g -O0 -m64 -ffpe-trap=invalid,zero,overflow -fallow-argument-mismatch -fno-range-check -fdollar-ok -finit-local-zero $(FPIC)
 ifeq ($(DEBUG),0)
 	FFLAGS = $(FFLAGS_OPT)
 else
