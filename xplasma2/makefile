@@ -25,7 +25,13 @@ OBJF := $(OBJF:%.for=$(OBJDIR)/%.o)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL) -I$(NETCDF_FORTRAN_HOME)/include -I$(EZCDF_HOME)/mod -I$(PSPLINE_HOME)/include
-FFLG := $(FFLAGS)
+ifeq ($(MAKE_SO),1)
+    FPIC := -fPIC
+else
+    FPIC :=
+endif
+
+FFLG := $(FFLAGS) $(FPIC)
 
 
 .PHONY: clean realclean clobber check
@@ -41,7 +47,14 @@ $(NAME): $(OBJF)
 	@$(AR) $(LIBAR) $(OBJF)
 ifeq ($(MAKE_SO),1)
 	@echo "Building $(NAME) shared library"
-	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
+	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) \
+		$(OBJF) \
+		-L$(PSPLINE_HOME)/lib \
+		-lpspline \
+		-L$(EZCDF_HOME)/lib \
+		-lezcdf \
+		-L$(PREFIX)/lib \
+		-lnscrunch -lps_bloat -lps_comput
 endif
 
 include make.depend

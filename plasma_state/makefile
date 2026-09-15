@@ -16,7 +16,13 @@ OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL) -I$(NETCDF_FORTRAN_HOME)/include
-FFLG := $(FFLAGS)
+ifeq ($(MAKE_SO),1)
+	FPIC := -fPIC
+else
+	FPIC :=
+endif
+
+FFLG := $(FFLAGS) $(FPIC)
 
 
 .PHONY: clean realclean clobber check
@@ -32,7 +38,8 @@ $(NAME): $(OBJF)
 	@$(AR) $(LIBAR) $(OBJF)
 ifeq ($(MAKE_SO),1)
 	@echo "Building $(NAME) shared library"
-	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
+	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF) \
+	-L$(PREFIX)/lib -lplasma_state_kernel -lps_xplasma2
 endif
 
 include make.depend

@@ -22,6 +22,8 @@ else
             SITE_ENV='ppplflux'
         elif [[ $HOSTNAME == "lynx"* ]]; then
             SITE_ENV='pppllynx'
+        elif [[ $HOSTNAME == "ranger"* ]]; then
+            SITE_ENV='ppplranger'
         else
             SITE_ENV='pppl'
 	fi        
@@ -66,6 +68,8 @@ else
     elif [ $SITE_ENV = 'ppplflux' ]; then
         COMPILER='GCC'
     elif [ $SITE_ENV = 'pppllynx' ]; then
+        COMPILER='GCC'
+    elif [ $SITE_ENV = 'ppplranger' ]; then
         COMPILER='GCC'
     elif [ $SITE_ENV = 'stellar' ]; then
         COMPILER='ICC'
@@ -117,6 +121,7 @@ else
     version_map["ppplflux,intel"]='2023'
     version_map["ppplflux,gcc"]='13.2.0'
     version_map["pppllynx,gcc"]='13.4.0'
+    version_map["ppplranger,gcc"]='13.3.0'
     version_map["stellar,intel"]='2021'
     version_map["iris,intel"]='2018'
     version_map["omega,gcc"]='8.3.1'

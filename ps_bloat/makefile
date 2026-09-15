@@ -14,7 +14,14 @@ OBJF := $(SRCF:%.for=$(OBJDIR)/%.o)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL)
-FFLG := $(FFLAGS)
+
+ifeq ($(MAKE_SO),1)
+    FPIC := -fPIC
+else
+    FPIC :=
+endif
+
+FFLG := $(FFLAGS) $(FPIC)
 
 
 .PHONY: clean realclean clobber check
@@ -30,7 +37,8 @@ $(NAME): $(OBJF)
 	@$(AR) $(LIBAR) $(OBJF)
 ifeq ($(MAKE_SO),1)
 	@echo "Building $(NAME) shared library"
-	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
+	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF) \
+	-L$(PREFIX)/lib -lps_smlib
 endif
 
 include make.depend

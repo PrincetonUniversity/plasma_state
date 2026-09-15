@@ -20,11 +20,18 @@ OBJC := $(SRCC:%.c=$(OBJDIR)/%.o)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL)
-FFLG := $(FFLAGS)
 
 CDEF := $(CDEFS)
 CINC := $(CINCL) -I../include
-CFLG := $(CFLAGS)
+
+ifeq ($(MAKE_SO),1)
+    FPIC := -fPIC
+else
+    FPIC :=
+endif
+
+FFLG := $(FFLAGS) $(FPIC)
+CFLG := $(CFLAGS) $(FPIC)
 
 
 .PHONY: clean realclean clobber check
