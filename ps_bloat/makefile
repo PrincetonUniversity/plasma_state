@@ -1,57 +1,164 @@
-# Makefile to build libps_bloat.a
+# ---------------------------------------------------------------------------
+# Makefile: ps_bloat
 #
+# Builds:
+#   libps_bloat.a
+#   libps_bloat.so   when MAKE_SO=1
+#
+# Direct Plasma State dependencies:
+#   libps_smlib.so
+#   libps_comput.so
+#
+# External dependency:
+#   libpspline.so
+# ---------------------------------------------------------------------------
 
 # Include system dependent flags
 include $(COMPILER_FLAGS)
 
 NAME := ps_bloat
+
 OBJDIR := $(PREFIX)/obj/$(NAME)
-LIBAR := $(PREFIX)/lib/lib$(NAME).a
-LIBSO := $(PREFIX)/lib/lib$(NAME).so
+MODDIR := $(PREFIX)/mod
+LIBDIR := $(PREFIX)/lib
+
+LIBAR := $(LIBDIR)/lib$(NAME).a
+LIBSO := $(LIBDIR)/lib$(NAME).so
+
+
+# ---------------------------------------------------------------------------
+# Sources
+# ---------------------------------------------------------------------------
 
 SRCF := $(wildcard *.for)
 OBJF := $(SRCF:%.for=$(OBJDIR)/%.o)
+
+
+# ---------------------------------------------------------------------------
+# Compiler flags
+# ---------------------------------------------------------------------------
 
 FDEF := $(FDEFS)
 FINC := $(FINCL)
 
 ifeq ($(MAKE_SO),1)
-    FPIC := -fPIC
+FPIC := -fPIC
 else
-    FPIC :=
+FPIC :=
 endif
 
 FFLG := $(FFLAGS) $(FPIC)
 
 
-.PHONY: clean realclean clobber check
+# ---------------------------------------------------------------------------
+# Direct Plasma State dependencies
+# ---------------------------------------------------------------------------
 
-all:	check $(NAME)
+L_PS_DEP := \
+	-L$(LIBDIR) \
+	-lps_smlib \
+	-lps_comput
+
+
+# ---------------------------------------------------------------------------
+# External dependencies
+#
+# libpspline.so provides:
+#   cspeval_
+#   cspline_
+# ---------------------------------------------------------------------------
+
+L_EXTERNAL := \
+	-L$(PSPLINE_HOME)/lib \
+	-lpspline
+
+
+# ---------------------------------------------------------------------------
+# Runtime search paths
+# ---------------------------------------------------------------------------
+
+SHARED_RPATH := \
+	-Wl,-rpath,'$$ORIGIN' \
+	-Wl,-rpath,$(PSPLINE_HOME)/lib
+
+
+# ---------------------------------------------------------------------------
+# Targets
+# ---------------------------------------------------------------------------
+
+.PHONY: all clean realclean clobber check depend
+
+all: check $(NAME)
+
+
+# ---------------------------------------------------------------------------
+# Create output directories
+# ---------------------------------------------------------------------------
 
 check:
-	@test -d $(PREFIX)/lib || mkdir -p $(PREFIX)/lib
-	@test -d $(PREFIX)/obj/$(NAME) || mkdir -p $(PREFIX)/obj/$(NAME)
+	@mkdir -p $(LIBDIR)
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Libraries
+# ---------------------------------------------------------------------------
 
 $(NAME): $(OBJF)
+
 	@echo "Building $(NAME) static library"
-	@$(AR) $(LIBAR) $(OBJF)
+	@rm -f $(LIBAR)
+	$(AR) $(LIBAR) $(OBJF)
+
 ifeq ($(MAKE_SO),1)
 	@echo "Building $(NAME) shared library"
-	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF) \
-	-L$(PREFIX)/lib -lps_smlib
+	@rm -f $(LIBSO)
+	$(FC) -shared $(LDFLAGS) \
+		-o $(LIBSO) \
+		$(OBJF) \
+		$(L_PS_DEP) \
+		$(L_EXTERNAL) \
+		$(SHARED_RPATH)
 endif
 
+
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
+
 include make.depend
-$(OBJDIR)/%.o: %.for
-	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+
+
+# ---------------------------------------------------------------------------
+# Fortran compilation
+# ---------------------------------------------------------------------------
+
+$(OBJDIR)/%.o: %.for | check
+	$(FC) $(FPP) $(FFLG) -c $< -o $@ \
+		$(FDEF) $(FINC) \
+		$(MFLAG) $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Clean
+# ---------------------------------------------------------------------------
 
 clean:
 	@rm -f $(OBJDIR)/*.o
 
+
 realclean: clean
-	@rm -f $(LIBAR) $(LIBSO)
+	@rm -f $(LIBAR)
+	@rm -f $(LIBSO)
+
 
 clobber: realclean
+
+
+# ---------------------------------------------------------------------------
+# Generate Fortran dependencies
+# ---------------------------------------------------------------------------
 
 depend:
 	@makedepf90 -b OBJDIR $(SRCF) > make.depend

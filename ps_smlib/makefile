@@ -1,56 +1,133 @@
-# Makefile to build libps_smlib.a
+# ---------------------------------------------------------------------------
+# Makefile: ps_smlib
 #
+# Builds:
+#   libps_smlib.a
+#   libps_smlib.so   when MAKE_SO=1
+#
+# Shared-library dependencies:
+#   none
+# ---------------------------------------------------------------------------
 
-# Include system dependent flags
+# Include system/compiler dependent flags
 include $(COMPILER_FLAGS)
 
 NAME := ps_smlib
+
 OBJDIR := $(PREFIX)/obj/$(NAME)
-LIBAR := $(PREFIX)/lib/lib$(NAME).a
-LIBSO := $(PREFIX)/lib/lib$(NAME).so
+MODDIR := $(PREFIX)/mod
+LIBDIR := $(PREFIX)/lib
+
+LIBAR := $(LIBDIR)/lib$(NAME).a
+LIBSO := $(LIBDIR)/lib$(NAME).so
+
+
+# ---------------------------------------------------------------------------
+# Sources
+# ---------------------------------------------------------------------------
 
 SRCF := $(wildcard *.f90)
 OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
 
+
+# ---------------------------------------------------------------------------
+# Compiler flags
+# ---------------------------------------------------------------------------
+
 FDEF := $(FDEFS)
 FINC := $(FINCL)
+
 ifeq ($(MAKE_SO),1)
-    FPIC := -fPIC
+FPIC := -fPIC
 else
-    FPIC :=
+FPIC :=
 endif
 
 FFLG := $(FFLAGS) $(FPIC)
 
 
+# ---------------------------------------------------------------------------
+# Runtime search path
+# ---------------------------------------------------------------------------
 
-.PHONY: clean realclean clobber check
+SHARED_RPATH := -Wl,-rpath,'$$ORIGIN'
 
-all:	check $(NAME)
+
+# ---------------------------------------------------------------------------
+# Targets
+# ---------------------------------------------------------------------------
+
+.PHONY: all clean realclean clobber check depend
+
+all: check $(NAME)
+
+
+# ---------------------------------------------------------------------------
+# Create output directories
+# ---------------------------------------------------------------------------
 
 check:
-	@test -d $(PREFIX)/lib || mkdir -p $(PREFIX)/lib
-	@test -d $(PREFIX)/obj/$(NAME) || mkdir -p $(PREFIX)/obj/$(NAME)
+	@mkdir -p $(LIBDIR)
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Libraries
+# ---------------------------------------------------------------------------
 
 $(NAME): $(OBJF)
+
 	@echo "Building $(NAME) static library"
-	@$(AR) $(LIBAR) $(OBJF)
+	@rm -f $(LIBAR)
+	$(AR) $(LIBAR) $(OBJF)
+
 ifeq ($(MAKE_SO),1)
 	@echo "Building $(NAME) shared library"
-	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
+	@rm -f $(LIBSO)
+	$(FC) -shared $(LDFLAGS) \
+		-o $(LIBSO) \
+		$(OBJF) \
+		$(SHARED_RPATH)
 endif
 
+
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
+
 include make.depend
-$(OBJDIR)/%.o: %.f90
-	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+
+
+# ---------------------------------------------------------------------------
+# Fortran compilation
+# ---------------------------------------------------------------------------
+
+$(OBJDIR)/%.o: %.f90 | check
+	$(FC) $(FFLG) -c $< -o $@ \
+		$(FDEF) $(FINC) \
+		$(MFLAG) $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Clean
+# ---------------------------------------------------------------------------
 
 clean:
 	@rm -f $(OBJDIR)/*.o
 
+
 realclean: clean
-	@rm -f $(LIBAR) $(LIBSO)
+	@rm -f $(LIBAR)
+	@rm -f $(LIBSO)
+
 
 clobber: realclean
+
+
+# ---------------------------------------------------------------------------
+# Generate Fortran dependencies
+# ---------------------------------------------------------------------------
 
 depend:
 	@makedepf90 -b OBJDIR $(SRCF) > make.depend
