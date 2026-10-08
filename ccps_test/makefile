@@ -20,7 +20,7 @@ L_LIBS := $(L_PLASMA_STATE) $(L_UFILES) $(L_SGLIB) $(L_PSPLINE) \
 	$(L_EDIT) $(L_FLIBS)
 
 CDEF := $(DEFS)
-CINC := $(CINCL) -I../include -I../ccps_lib
+CINC := $(CINCL) -I../include -I../ccps_lib $(FINCL) -I$(PREFIX)/mod
 CXXFLG := $(CXXFLAGS)
 LDCXX := $(CXX)
 ifeq ($(_COMPILER),PGC)
@@ -48,10 +48,10 @@ check:
 
 $(NAME): $(OBJDIR)/ccps_test.o
 	@echo "Building $(NAME) executable"
-	@$(LDCXX) $(LDFLAGS) $< -o $(EXEDIR)/$@ $(L_LIBS)
+	$(LDCXX) $(LDFLAGS) $< -o $(EXEDIR)/$@ $(L_LIBS) $(CINC)
 
 $(OBJDIR)/%.o: %.cxx
-	@$(CXX) $(CXXFLG) $< -o $@ $(CDEF) $(CINC)
+	$(CXX) $(CXXFLG) $< -o $@ $(CDEF) $(CINC)
 
 clean:
 	@rm -f $(OBJDIR)/*.o

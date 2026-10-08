@@ -1,52 +1,159 @@
-# Makefile to build libplasma_state.a
+# ---------------------------------------------------------------------------
+# Makefile: plasma_state
 #
+# Builds:
+#   libplasma_state.a
+#   libplasma_state.so   when MAKE_SO=1
+#
+# Direct Plasma State dependencies:
+#   libplasma_state_kernel.so
+#   libps_xplasma2.so
+#   libps_portlib.so
+#   libps_comput.so
+# ---------------------------------------------------------------------------
 
 # Include system dependent flags
 include $(COMPILER_FLAGS)
 
 NAME := plasma_state
-OBJDIR := $(PREFIX)/obj/$(NAME)
-LIBAR := $(PREFIX)/lib/lib$(NAME).a
-LIBSO := $(PREFIX)/lib/lib$(NAME).so
 
-MODS := plasma_state_mod.mod pspro.mod ps_nidlist_defn.mod
+OBJDIR := $(PREFIX)/obj/$(NAME)
+MODDIR := $(PREFIX)/mod
+LIBDIR := $(PREFIX)/lib
+
+LIBAR := $(LIBDIR)/lib$(NAME).a
+LIBSO := $(LIBDIR)/lib$(NAME).so
+
+
+# ---------------------------------------------------------------------------
+# Modules and sources
+# ---------------------------------------------------------------------------
+
+MODS := \
+	plasma_state_mod.mod \
+	pspro.mod \
+	ps_nidlist_defn.mod
+
 SRCM := $(MODS:%.mod=%.f90)
-SRCF := $(SRCM) $(filter-out $(SRCM), $(wildcard *.f90))
+
+SRCF := $(SRCM) $(filter-out $(SRCM),$(wildcard *.f90))
 OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
 
+
+# ---------------------------------------------------------------------------
+# Compiler flags
+# ---------------------------------------------------------------------------
+
 FDEF := $(FDEFS)
-FINC := $(FINCL) -I$(NETCDF_FORTRAN_HOME)/include
-FFLG := $(FFLAGS)
 
+FINC := $(FINCL) \
+	-I$(NETCDF_FORTRAN_HOME)/include
 
-.PHONY: clean realclean clobber check
-
-all:	check $(NAME)
-
-check:
-	@test -d $(PREFIX)/lib || mkdir -p $(PREFIX)/lib
-	@test -d $(PREFIX)/obj/$(NAME) || mkdir -p $(PREFIX)/obj/$(NAME)
-
-$(NAME): $(OBJF)
-	@echo "Building $(NAME) static library"
-	@$(AR) $(LIBAR) $(OBJF)
 ifeq ($(MAKE_SO),1)
-	@echo "Building $(NAME) shared library"
-	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
+FPIC := -fPIC
+else
+FPIC :=
 endif
 
-include make.depend
-$(OBJDIR)/%.o: %.f90
-	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+FFLG := $(FFLAGS) $(FPIC)
 
-clean: 
+
+# ---------------------------------------------------------------------------
+# Direct Plasma State dependencies
+# ---------------------------------------------------------------------------
+
+L_PS_DEP := \
+	-L$(LIBDIR) \
+	-lplasma_state_kernel \
+	-lps_xplasma2 \
+	-lps_portlib \
+	-lps_comput
+
+
+# ---------------------------------------------------------------------------
+# Runtime search path
+# ---------------------------------------------------------------------------
+
+SHARED_RPATH := -Wl,-rpath,'$$ORIGIN'
+
+
+# ---------------------------------------------------------------------------
+# Targets
+# ---------------------------------------------------------------------------
+
+.PHONY: all clean realclean clobber check depend
+
+all: check $(NAME)
+
+
+# ---------------------------------------------------------------------------
+# Create output directories
+# ---------------------------------------------------------------------------
+
+check:
+	@mkdir -p $(LIBDIR)
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Libraries
+# ---------------------------------------------------------------------------
+
+$(NAME): $(OBJF)
+
+	@echo "Building $(NAME) static library"
+	@rm -f $(LIBAR)
+	$(AR) $(LIBAR) $(OBJF)
+
+ifeq ($(MAKE_SO),1)
+	@echo "Building $(NAME) shared library"
+	@rm -f $(LIBSO)
+	$(FC) -shared $(LDFLAGS) \
+		-o $(LIBSO) \
+		$(OBJF) \
+		$(L_PS_DEP) \
+		$(SHARED_RPATH)
+endif
+
+
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
+
+include make.depend
+
+
+# ---------------------------------------------------------------------------
+# Fortran compilation
+# ---------------------------------------------------------------------------
+
+$(OBJDIR)/%.o: %.f90 | check
+	$(FC) $(FPP) $(FFLG) -c $< -o $@ \
+		$(FDEF) $(FINC) \
+		$(MFLAG) $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Clean
+# ---------------------------------------------------------------------------
+
+clean:
 	@rm -f $(OBJDIR)/*.o
-	@cd $(PREFIX)/mod ; rm -f $(MODS)
+	@rm -f $(addprefix $(MODDIR)/,$(MODS))
+
 
 realclean: clean
-	@rm -f $(LIBAR) $(LIBSO)
+	@rm -f $(LIBAR)
+	@rm -f $(LIBSO)
+
 
 clobber: realclean
+
+
+# ---------------------------------------------------------------------------
+# Generate Fortran dependencies
+# ---------------------------------------------------------------------------
 
 depend:
 	@makedepf90 -b OBJDIR $(SRCF) > make.depend
