@@ -76,13 +76,13 @@ export L_NETCDF=" \
 # Adjust paths to your installed Ranger builds.
 # ----------------------------------------------------------------------
 
-export PSPLINE_HOME=/u/mgorelen/transp_external/opt/pspline/2.0.1/gcc/13.3.0
+export PSPLINE_HOME=/u/mgorelen/transp_external/opt/pspline/2.2.0/gcc/13.3.1
 export L_PSPLINE=" -L${PSPLINE_HOME}/lib -lpspline"
 
-export EZCDF_HOME=/u/mgorelen/transp_external/opt/ezcdf/0.0.3/gcc/13.3.0
+export EZCDF_HOME=/u/mgorelen/transp_external/opt/ezcdf/0.4.0/gcc/13.3.0
 export L_EZCDF=" -L${EZCDF_HOME}/lib -lezcdf"
 
-export UFILES_ROOT=/u/mgorelen/transp_external/opt/ufiles/0.5.0/gcc/13.3.0
+export UFILES_ROOT=/u/mgorelen/transp_external/opt/ufiles/0.11.0/gcc/13.3.0
 
 export L_UFILES=" \
 -L${UFILES_ROOT}/lib \
