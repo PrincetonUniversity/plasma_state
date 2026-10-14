@@ -1,68 +1,190 @@
-# Makefile include file for PPPL Intel 2019
+# ============================================================
+# Compiler flags for Intel oneAPI 2023.2.0
 #
+# Compilers:
+#   ifort
+#   icc
+#   icpc
+#
+# Supports:
+#   Static libraries
+#   Shared libraries (MAKE_SO=1)
+#   Debug and optimized builds
+# ============================================================
 
-ifndef MAKE_SO
-	MAKE_SO = 0
-endif
-ifndef DEBUG
-	DEBUG = 0
+MAKE_SO ?= 0
+DEBUG   ?= 0
+
+# ============================================================
+# Position-independent code
+# ============================================================
+
+FPIC :=
+
+ifneq ($(filter 1 TRUE true YES yes,$(MAKE_SO)),)
+    FPIC := -fPIC
 endif
 
-ifeq ($(MAKE_SO),1)
-	FPIC := -fPIC
-endif
-ifeq ($(MAKE_SO),TRUE)
-	FPIC := -fPIC
-endif
-FLUX_FLG = -xHost -fp-model precise -shared-intel -limf -L$(FLIBROOT)/lib
+# ============================================================
+# Archive tools
+# ============================================================
 
-AR = ar rcs
+AR      = ar rcs
+RANLIB  = ranlib
 
+# ============================================================
+# Intel compiler options
+# ============================================================
+
+# Use generic architecture for portability.
+# Replace with -xHost only when targeting the build machine.
+
+ARCH_FLAGS :=
+
+# Floating-point behavior
+FP_FLAGS := -fp-model precise -no-ftz
+
+# Memory model
+MEM_FLAGS := -mcmodel=medium
+
+# ============================================================
 # Fortran flags
-FFLAGS_OPT = -c -O -no-ftz -nowarn -align dcommons -mcmodel=medium $(FLUX_FLG) $(FPIC)
-FFLAGS_DBG = -c -g -no-ftz -w -check bounds -traceback -check pointer -check uninit -fpe0 -traceback -align dcommons -heap-arrays 20 -mcmodel=medium -init=zero $(FLUX_FLG) $(FPIC)
+# ============================================================
+
+FFLAGS_OPT = \
+    -c \
+    -O2 \
+    -nowarn \
+    -align dcommons \
+    $(MEM_FLAGS) \
+    $(ARCH_FLAGS) \
+    $(FP_FLAGS) \
+    $(FPIC)
+
+FFLAGS_DBG = \
+    -c \
+    -g \
+    -O0 \
+    -check bounds \
+    -check pointer \
+    -check uninit \
+    -traceback \
+    -fpe0 \
+    -align dcommons \
+    -heap-arrays 20 \
+    -init=zero \
+    $(MEM_FLAGS) \
+    $(FP_FLAGS) \
+    $(FPIC)
+
 ifeq ($(DEBUG),0)
-	FFLAGS = $(FFLAGS_OPT)
+    FFLAGS = $(FFLAGS_OPT)
 else
-	FFLAGS = $(FFLAGS_DBG)
+    FFLAGS = $(FFLAGS_DBG)
 endif
 
-FPP = -fpp
+# ============================================================
+# Fortran preprocessing and modules
+# ============================================================
+
+FPP   = -fpp
 MFLAG = -module
 
-L_FLIBS = -L$(FLIBROOT)/lib -lifport -limf -lifcore -lm -lirc
+# ============================================================
+# Intel Fortran runtime libraries
+# ============================================================
 
+L_FLIBS = \
+    -L$(FLIBROOT) \
+    -lifport \
+    -limf \
+    -lifcore \
+    -lm \
+    -lirc
 
-# C/C++ flags
-CFLAGS_OPT  = -c -O2 -fp-model=precise $(FLUX_FLG) -w $(FPIC)
-CFLAGS_DBG  = -c -g -O0 -fp-model=precise $(FLUX_FLG) -w $(FPIC)
-CXXFLAGS_OPT = -c -O2 -fp-model=precise $(FLUX_FLG) -w $(FPIC)
-CXXFLAGS_DBG = -c -g -O0 -fp-model=precise $(FLUX_FLG) -w $(FPIC)
+# ============================================================
+# C flags
+# ============================================================
+
+CFLAGS_OPT = \
+    -c \
+    -O2 \
+    -fp-model=precise \
+    $(ARCH_FLAGS) \
+    $(FPIC)
+
+CFLAGS_DBG = \
+    -c \
+    -g \
+    -O0 \
+    -fp-model=precise \
+    $(FPIC)
+
 ifeq ($(DEBUG),0)
-	CFLAGS = $(CFLAGS_OPT)
-	CXXFLAGS = $(CXXFLAGS_OPT)
+    CFLAGS = $(CFLAGS_OPT)
 else
-	CFLAGS = $(CFLAGS_DBG)
-	CXXFLAGS = $(CXXFLAGS_DBG)
+    CFLAGS = $(CFLAGS_DBG)
 endif
 
-CPP = -cpp
+# ============================================================
+# C++ flags
+# ============================================================
 
-L_CLIBS = -L/usr/lib64 -lc -lstdc++
+CXXFLAGS_OPT = \
+    -c \
+    -O2 \
+    -fp-model=precise \
+    $(ARCH_FLAGS) \
+    $(FPIC)
 
+CXXFLAGS_DBG = \
+    -c \
+    -g \
+    -O0 \
+    -fp-model=precise \
+    $(FPIC)
 
-# For readline etc
-L_EDIT = -L/usr/lib64 -lreadline -lhistory -ltermcap
+ifeq ($(DEBUG),0)
+    CXXFLAGS = $(CXXFLAGS_OPT)
+else
+    CXXFLAGS = $(CXXFLAGS_DBG)
+endif
 
+# ============================================================
+# C preprocessing
+# ============================================================
 
-# Default include directories
+CPP = 
+
+# ============================================================
+# C/C++ libraries
+# ============================================================
+
+L_CLIBS = -lstdc++ -lm -ldl
+
+# ============================================================
+# Readline libraries
+# ============================================================
+
+L_EDIT = -lreadline -lhistory -ltinfo
+
+# ============================================================
+# Include directories
+# ============================================================
+
 FINCL :=
 CINCL :=
 
+# ============================================================
+# Preprocessor definitions
+# ============================================================
 
-# Default definitions
 FDEFS := -D__LINUX -D__UNIX -D__F90
 CDEFS := -D__LINUX
 
-#FDEFS := $(FDEFS) -D__NOMDSPLUS
-#CDEFS := $(CDEFS) -D__NOMDSPLUS
+# ============================================================
+# Optional MDSplus disabling
+# ============================================================
+
+# FDEFS += -D__NOMDSPLUS
+# CDEFS += -D__NOMDSPLUS
